@@ -1,0 +1,103 @@
+{
+	"animations": [
+		{
+			"loop": false,
+			"offsets": [-9, 3],
+			"anim": "ready",
+			"fps": 1,
+			"name": "spr_ralsei_rock_blush_",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [0, 0],
+			"anim": "oi",
+			"fps": 1,
+			"name": "spr_ralsei_sing_cuss_",
+			"indices": []
+		},
+		{
+			"offsets": [0, 0],
+			"loop": true,
+			"fps": 2,
+			"anim": "idle",
+			"indices": [2, 3],
+			"name": "spr_ralsei_sing_polite_"
+		},
+		{
+			"offsets": [2, 2],
+			"loop": false,
+			"fps": 4,
+			"anim": "idle-alt",
+			"indices": [],
+			"name": "spr_ralsei_sing_clap"
+		},
+		{
+			"offsets": [20, -5],
+			"loop": true,
+			"fps": 8,
+			"anim": "singRIGHT-alt",
+			"indices": [],
+			"name": "spr_ralsei_sing_rude_"
+		},
+		{
+			"offsets": [0, 0],
+			"loop": false,
+			"fps": 12,
+			"anim": "singLEFT",
+			"indices": [2,0,2],
+			"name": "spr_ralsei_sing_polite_"
+		},
+		{
+			"offsets": [0, 0],
+			"loop": false,
+			"fps": 12,
+			"anim": "singUP",
+			"indices": [2,0,2],
+			"name": "spr_ralsei_sing_polite_"
+		},
+		{
+			"offsets": [0, 0],
+			"loop": false,
+			"fps": 12,
+			"anim": "singRIGHT",
+			"indices": [2,0,2],
+			"name": "spr_ralsei_sing_polite_"
+		},
+		{
+			"offsets": [0, 0],
+			"loop": false,
+			"fps": 8,
+			"anim": "singLEFT-hold",
+			"indices": [0,1],
+			"name": "spr_ralsei_sing_polite_"
+		},
+		{
+			"offsets": [0, 0],
+			"loop": false,
+			"fps": 8,
+			"anim": "singUP-hold",
+			"indices": [0,1],
+			"name": "spr_ralsei_sing_polite_"
+		},
+		{
+			"offsets": [0, 0],
+			"loop": false,
+			"fps": 8,
+			"anim": "singRIGHT-hold",
+			"indices": [0,1],
+			"name": "spr_ralsei_sing_polite_"
+		}
+	],
+	"vocals_file": "",
+	"no_antialiasing": true,
+	"image": "characters/ralsei",
+	"position": [0, 350],
+	"healthicon": "bf",
+	"flip_x": false,
+	"healthbar_colors": [49, 176, 209],
+	"camera_position": [0, 0],
+	"sing_duration": 1,
+	"scale": 2,
+	"_editor_isPlayer": false
+}

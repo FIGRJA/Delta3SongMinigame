@@ -1,0 +1,79 @@
+{
+	"animations": [
+		{
+			"loop": false,
+			"offsets": [0, 0],
+			"anim": "idle",
+			"fps": 1,
+			"name": "spr_susie_drum_0",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [0, 0],
+			"anim": "singUP",
+			"fps": 18,
+			"name": "spr_susie_drum_right_",
+			"indices": [0,1]
+		},
+		{
+			"loop": false,
+			"offsets": [0, 0],
+			"anim": "singDOWN",
+			"fps": 18,
+			"name": "spr_susie_drum_mid_",
+			"indices": [0,1]
+		},
+		{
+			"loop": false,
+			"offsets": [0, 0],
+			"anim": "singDOWN-alt",
+			"fps": 18,
+			"name": "spr_susie_drum_left_",
+			"indices": [0,1]
+		},
+		{
+			"loop": false,
+			"offsets": [0, 0],
+			"anim": "singUP-alt",
+			"fps": 18,
+			"name": "spr_susie_drum_mid_",
+			"indices": [0,1]
+		},
+		{
+			"loop": false,
+			"offsets": [0, 6],
+			"anim": "clap",
+			"fps": 8,
+			"name": "spr_susie_drumsticks_",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [0, 6],
+			"anim": "clap-alt",
+			"fps": 8,
+			"name": "spr_susie_drumsticks2_",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [0, 0],
+			"anim": "ready",
+			"fps": 1,
+			"name": "spr_susie_drum_ready_",
+			"indices": []
+		}
+	],
+	"vocals_file": "",
+	"no_antialiasing": true,
+	"image": "characters/susi",
+	"position": [0, 350],
+	"healthicon": "bf",
+	"flip_x": false,
+	"healthbar_colors": [49, 176, 209],
+	"camera_position": [0, 0],
+	"sing_duration": 4,
+	"scale": 2,
+	"_editor_isPlayer": true
+}

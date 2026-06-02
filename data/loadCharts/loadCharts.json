@@ -1,0 +1,26 @@
+{
+	"player1": "kris",
+	"events": [],
+	"gfVersion": "susi",
+	"player2": "ralsei",
+	"notes": [
+		{
+			"sectionNotes": [],
+			"sectionBeats": 4,
+			"gfSection": false,
+			"altAnim": false,
+			"bpm": 150,
+			"changeBPM": false,
+			"mustHitSection": true
+		}
+	],
+	"gameOverChar": "nobody",
+	"splashSkin": null,
+	"song": "songChart",
+	"stage": "D3Main",
+	"needsVoices": true,
+	"arrowSkin": "",
+	"bpm": 1,
+	"speed": 0.1,
+	"format": "psych_v1_convert"
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="texture.png" width="80" height="2320">
+	<SubTexture name="spr_dw_tv_starbgtile_00" x="0" y="0" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_01" x="0" y="80" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_02" x="0" y="160" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_03" x="0" y="240" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_04" x="0" y="320" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_05" x="0" y="400" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_06" x="0" y="480" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_07" x="0" y="560" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_08" x="0" y="640" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_09" x="0" y="720" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_10" x="0" y="800" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_11" x="0" y="880" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_12" x="0" y="960" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_13" x="0" y="1040" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_14" x="0" y="1120" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_15" x="0" y="1200" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_16" x="0" y="1280" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_17" x="0" y="1360" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_18" x="0" y="1440" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_19" x="0" y="1520" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_20" x="0" y="1600" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_21" x="0" y="1680" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_22" x="0" y="1760" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_23" x="0" y="1840" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_24" x="0" y="1920" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_25" x="0" y="2000" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_26" x="0" y="2080" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_27" x="0" y="2160" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+	<SubTexture name="spr_dw_tv_starbgtile_28" x="0" y="2240" width="80" height="80" frameX="-0" frameY="-0" frameWidth="80" frameHeight="80"/>
+</TextureAtlas>

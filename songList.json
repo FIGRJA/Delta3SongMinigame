@@ -1,0 +1,51 @@
+{
+    "dificulties":[
+        {
+            "name":"play",
+            "prefix":"music_timing_",
+            "postfix":"",
+            "dir":"SongCharts/normal/"
+        }
+    ],
+    "songs":[
+        {
+            "name":"practice",
+            "bpm":75,
+            "songMain":"ch3-practice_song_noguit",
+            "songPlay":"ch3-practice_song_combined",
+            "album":null,
+            "index":1,
+            "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
+            "isFull":false
+        },{
+            "name":"rase up you'r bat",
+            "bpm":230,
+            "songMain":"ch3_karaoke_no_guitar",
+            "songPlay":"ch3_karaoke_full",
+            "album":null,
+            "index":0,
+            "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
+            "isFull":true
+        },{
+            "name":"tenna",
+            "bpm":148,
+            "songMain":"tenna_battle",
+            "songPlay":"tenna_battle_guitar",
+            "album":null,
+            "index":2,
+            "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
+            "isFull":false
+       
+        },{
+            "name":"knockyoudown",
+            "bpm":200,
+            "songMain":"rhythm_knockdown_no_guit",
+            "songPlay":"rhythm_knockdown_combined",
+            "album":null,
+            "index":10,
+            "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
+            "isFull":false
+        }
+    ]
+
+}

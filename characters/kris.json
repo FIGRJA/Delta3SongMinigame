@@ -1,0 +1,55 @@
+{
+	"animations": [
+		{
+			"offsets": [0, 0],
+			"loop": false,
+			"fps": 8,
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "spr_kris_guitar_low_"
+		},
+		{
+			"offsets": [-4, 4],
+			"loop": false,
+			"fps": 8,
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "spr_kris_guitar_high_"
+		},
+		{
+			"offsets": [-4, 8],
+			"loop": false,
+			"fps": 8,
+			"anim": "singRIGHT-alt",
+			"indices": [],
+			"name": "spr_kris_guitar_hold_"
+		},
+		{
+			"loop": false,
+			"offsets": [-1, 0],
+			"anim": "idle",
+			"fps": 1,
+			"name": "spr_kris_guitar_ready",
+			"indices": []
+		},
+		{
+			"offsets": [0, 0],
+			"indices": [],
+			"fps": 2,
+			"anim": "idle-alt",
+			"loop": true,
+			"name": "spr_kris_rock_2"
+		}
+	],
+	"vocals_file": "",
+	"no_antialiasing": true,
+	"image": "characters/kris",
+	"position": [0, 350],
+	"healthicon": "bf",
+	"flip_x": true,
+	"healthbar_colors": [49, 176, 209],
+	"camera_position": [0, 0],
+	"sing_duration": 4,
+	"scale": 2,
+	"_editor_isPlayer": true
+}

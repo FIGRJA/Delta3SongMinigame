@@ -1,0 +1,209 @@
+{
+	"camera_boyfriend": [
+		86,
+		-44
+	],
+	"preload": {
+		"images/smoke": 3,
+		"images/stagecurtains": 2,
+		"images/spotlight": 3,
+		"images/stagefront": 3,
+		"images/stageback": 3,
+		"images/stage_light": 2
+	},
+	"_editorMeta": {
+		"boyfriend": "kris",
+		"dad": "ralsei",
+		"gf": "susi"
+	},
+	"boyfriend": [
+		310,
+		-115
+	],
+	"stageUI": "",
+	"girlfriend": [
+		115,
+		-130
+	],
+	"defaultZoom": 1.45,
+	"objects": [
+		{
+			"x": 4,
+			"y": -10,
+			"scale": [
+				1.03,
+				1.03
+			],
+			"image": "bg/spr_rhythmgame_bg_1",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "bgLight",
+			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
+			"x": 4,
+			"y": -10,
+			"scale": [
+				1.03,
+				1.03
+			],
+			"image": "bg/spr_rhythmgame_bg_0",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "bgDark",
+			"antialiasing": true,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 0,
+			"type": "sprite"
+		},
+		{
+			"x": -1,
+			"y": -1,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_bg_mask_0",
+			"flipX": false,
+			"filters": 3,
+			"color": "3c6498",
+			"angle": 0,
+			"name": "over",
+			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 0,
+			"type": "sprite"
+		},
+		{
+			"x": 241,
+			"y": 254,
+			"scale": [
+				0.55,
+				0.5
+			],
+			"image": "bg/spr_tenna_enemy_bg_parts_2",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "L1",
+			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 0.4,
+			"type": "sprite"
+		},
+		{
+			"x": 425,
+			"y": 255,
+			"scale": [
+				0.5,
+				0.5
+			],
+			"image": "bg/spr_tenna_enemy_bg_parts_2",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "L2",
+			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 0.4,
+			"type": "sprite"
+		},
+		{
+			"x": 67,
+			"y": 254,
+			"scale": [
+				0.5,
+				0.5
+			],
+			"image": "bg/spr_tenna_enemy_bg_parts_2",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "L3",
+			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 0.4,
+			"type": "sprite"
+		},
+		{
+			"x": 4,
+			"y": -10,
+			"scale": [
+				1.03,
+				1.03
+			],
+			"image": "spr_rhythmgame_bg_mask_1",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "sprite1",
+			"antialiasing": true,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 0.3,
+			"type": "sprite"
+		},
+		{
+			"type": "gf"
+		},
+		{
+			"type": "boyfriend"
+		},
+		{
+			"type": "dad"
+		}
+	],
+	"camera_girlfriend": [
+		151,
+		-148
+	],
+	"opponent": [
+		505,
+		-125
+	],
+	"directory": "",
+	"camera_speed": 1,
+	"hide_girlfriend": false,
+	"camera_opponent": [
+		-340,
+		-39
+	]
+}
