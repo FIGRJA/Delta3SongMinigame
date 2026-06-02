@@ -1,0 +1,4 @@
+auto lyric
+
+Value 1: Null
+Value 2: lyric 1+1
