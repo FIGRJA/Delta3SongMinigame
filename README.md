@@ -12,12 +12,21 @@
 2. copy `mus` in mod root folder from **deltarune** folder
 3. enjoy
 
+## how play
+- used **Right** and **Left** buttons
+- located in **Freeplay** 
+- for restart songMenu use **TAB**
+- for continue in pause use **Back** button
+
 # Add songs
 1. ### ERS(Enhanced Rhythm Songs)
     1. create mod folder in `mods` 
     2. copy `SongCharts` and `mus` in folder
+    3. in `SongCharts` needs `music_timing_customsong` files
 2. ### self-charts
     1. create mod folder in `mods` for this
     2. copy and edit `songList.json`
     3. good luck to understand
 ## ⚠ all songs always loaded without _ModManager in FNF_ , so don't need copy `pack.json`
+
+

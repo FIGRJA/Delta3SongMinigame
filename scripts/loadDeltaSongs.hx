@@ -303,7 +303,7 @@ function onEvent(N,v1,v2,T) {
 	//word = -1;
 	var dR = v2.split("\n");
 	if (dR[1]=="null") dR[1]=dR[0];
-    debugPrint(v2);
+    //debugPrint(v2);
     //songTxt.text = dR[0];
 	
 	//var tirg:Array = [];
@@ -327,7 +327,7 @@ function onEvent(N,v1,v2,T) {
 				//tirg = d[1].substring(i+tmpA,d[1].indexOf("]",i+tmpA)).split(":");
 				tmpN = d[1].substring(i+1,d[1].indexOf("]",i)).split(":")[0];
 				tmpS = d[1].substring(i+1,d[1].indexOf("]",i)).split(":")[1];
-				debugPrint(tmpN+" "+tmpS);
+				//debugPrint(tmpN+" "+tmpS);
 				i = d[1].indexOf("]",i)+1-tmpN;
 			}
 			var r = "";
@@ -372,7 +372,7 @@ function opponentNoteHit(daNote) {
 	try{
 	if (!daNote.isSustainNote&&(RstrinNEXT.length>0||Rstrin.length>0)) {
 		word += 1;
-		debugPrint(word);
+		//debugPrint(word);
 		if (word>=Rstrin.length){Rstrin=RstrinNEXT.copy();RstrinNEXT=[];word=0;}
 		//debugPrint(daNote.sustainLength/Rstrin[word].length/1000);
 		FlxTimer.loop(daNote.sustainLength/Rstrin[word].length/1300, (tim) -> {
