@@ -211,7 +211,7 @@ function stringsetloc(defString, tag) {
 }
 
 function scr_rhythmgame_clear_lyric(timming) {
-	scr_rhythmgame_add_lyric(timming, "", "");
+	scr_rhythmgame_add_lyric(timming, " ", " ");
 }
 //var lyricBuffer = [0,""];
 

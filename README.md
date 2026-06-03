@@ -8,8 +8,8 @@
 - support lyric(not finished)
 
 # Install
-1. clone **repo**
-2. copy `mus` in mod root folder from **deltarune**  folder
+1. clone **repo** or download (`code` -> `download Zip`) in `mods` folder
+2. copy `mus` in mod root from **deltarune**  folder
 3. enjoy
 
 ## how play

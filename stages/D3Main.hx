@@ -191,7 +191,7 @@ for (mod in loadSongsLists()) for (song in mod[1].songs) {
 			continue;
 		PlayState.SONG.bpm = song.bpm;
 		Conductor.bpm = song.bpm;
-		PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
+		//PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
 		//debugPrint(song.speed);*
 		//PlayState.SONG.speed = 1;
 		//game.songSpeed = 1.1;

@@ -1,4 +1,4 @@
-import haxe.macro.Expr.Catch;
+//import haxe.macro.Expr.Catch;
 import backend.Controls;
 import backend.MusicBeatState;
 import backend.Mods;
@@ -156,7 +156,7 @@ function onCreate() {
 
 	for (mod in loadSongsLists())
 		for (song in mod[1].songs) {
-			var action = new FlxText(0, 0, 1200, song.name, 100, true);
+			var action = new FlxText(0, 0, 12000, song.name, 100, true);
 			action.font = Paths.getPath("fronts/fnt_main.ttf");
 			action.cameras = [menu];
 			// action.angle = 10;
