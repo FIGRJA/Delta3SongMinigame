@@ -816,7 +816,8 @@ function onEndSong() {
 
 	PlayState.SONG.song = "songChart";
 	//FlxG.sound.music.destroy();
-	MusicBeatState.startTransition();
+	//MusicBeatState.startTransition();
+	CustomSubstate.openCustomSubstate('END', true);
 }
 var ShapeTM;
 function shareSprite(sp:FlxSprite,x) {
