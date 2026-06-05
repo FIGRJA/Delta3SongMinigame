@@ -1,6 +1,6 @@
 ## P-Slice mod . show and play deltarune song charts
 
-# Feachurs
+# Features
 - self-lists
     - from gameScript(like **haxe** in Game)
     - from txt charts

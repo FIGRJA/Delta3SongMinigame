@@ -21,7 +21,7 @@ var inst:FlxSound;
 
 function onCreate() {
 	pauseBG.angle = -10;
-	FlxG.cameras.insert(pauseBG,2, false);
+	FlxG.cameras.insert(pauseBG,3, false);
 	// pauseBG.visible =false;
 	// pauseBG.x = -400;
 }

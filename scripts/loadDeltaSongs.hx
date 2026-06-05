@@ -4,98 +4,109 @@ import crowplexus.iris.Iris;
 // import objects.Note.EventNote;
 import psychlua.FunkinLua;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
-//import std.StringTools;
+
+// import std.StringTools;
 
 var curStepCrochet:Int;
 var DeltaRuneCode:HScript;
 var songTxt:FlxText;
+var StausLoad = []; // lead,drums,vocal,lyric
 function onCreate() {
-	setVar("load_delta_notes",this);
+	setVar("load_delta_notes", this);
 
 	game.startHScriptsNamed('custom_events/' + "ill make lyric" + '.hx');
 }
 
-function loadSong(file:String,?index:Dynamic,?isFull:Bool=false) {
-
-	//PlayState.instance.clearNotesBefore(0);
-	//PlayState.instance.setSongTime(0);
+function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
+	// PlayState.instance.clearNotesBefore(0);
+	// PlayState.instance.setSongTime(0);
 	curStepCrochet = 60 / PlayState.SONG.bpm * 1000 / 4.0;
-	//var file:String = getVar("load_delta_notes");
-	//var index = getVar("load_delta_notes_index");
+	// var file:String = getVar("load_delta_notes");
+	// var index = getVar("load_delta_notes_index");
 	if (file != null) {
-        if (file.lastIndexOf(".hx")==file.length-3)
-            loadHXNotes(file,index,isFull);
-        else if (file.lastIndexOf(".txt")==file.length-4)
-            load_all_posible_notes_txt(file,index,isFull);
+		if (file.lastIndexOf(".hx") == file.length - 3)
+			loadHXNotes(file, index, isFull);
+		else if (file.lastIndexOf(".txt") == file.length - 4)
+			load_all_posible_notes_txt(file, index, isFull);
 
+		game.unspawnNotes.sort(function(a, b) {
+			return a.strumTime - b.strumTime;
+		});
 
-	    game.unspawnNotes.sort(function(a, b) {
-            return a.strumTime - b.strumTime;
-        });
-
-		//var foundBPM = findClapRals();
-		//if (foundBPM>0){
+		// var foundBPM = findClapRals();
+		// if (foundBPM>0){
 		//	PlayState.SONG.bpm = foundBPM;
 		//	Conductor.bpm = foundBPM;
-		//}
-         writeNoteToSong();
-        // game.unspawnNotes = [];
-        // PlayState.generateSong();
-        debugPrint("loaded " + game.unspawnNotes.length + " notes");
-        // debugPrint("created "+PlayState.SONG.notes[0].sectionNotes.length+" notes");
-    }
+		// }
+		//writeNoteToSong();
+		// game.unspawnNotes = [];
+		// PlayState.generateSong();
+		debugPrint("loaded " + game.unspawnNotes.length + " notes");
+		// debugPrint("created "+PlayState.SONG.notes[0].sectionNotes.length+" notes");
+		//debugPrint(StausLoad);
+		return StausLoad;
+	}
+	return [false,false,false];
 }
 
-function load_all_posible_notes_txt(file:String,postfix:String,?isFull:Bool=false){
-    game.unspawnNotes = [];
-    typeTample = "lead";
-    loadTxtNotes(file.split(".")[0]+postfix+".txt");
-	//DeltaRuneCode.call("scr_rhythmgame_notechart_lead", [type]);
-    typeTample = "drum";
-    loadTxtNotes(file.split(".")[0]+postfix+"_drums"+".txt");
-	//DeltaRuneCode.call("scr_rhythmgame_notechart_drums", [type]);
-    typeTample = "vocal";
-    loadTxtNotes(file.split(".")[0]+postfix+"_vocals"+".txt");
-    //typeTample = "vocal";
-    loadTxtLyrics(file.split(".")[0]+"_lyrics"+postfix+".txt");
-	//DeltaRuneCode.call("scr_rhythmgame_notechart_vocals", [type]);
+function load_all_posible_notes_txt(file:String, postfix:String, ?isFull:Bool = false) {
+	game.unspawnNotes = [];
+	typeTample = "lead";
+	StausLoad[0] = loadTxtNotes(file.split(".")[0] + postfix + ".txt");
+	// DeltaRuneCode.call("scr_rhythmgame_notechart_lead", [type]);
+	typeTample = "drum";
+	StausLoad[1] = loadTxtNotes(file.split(".")[0] + postfix + "_drums" + ".txt");
+	// DeltaRuneCode.call("scr_rhythmgame_notechart_drums", [type]);
+	typeTample = "vocal";
+	StausLoad[2] = loadTxtNotes(file.split(".")[0] + postfix + "_vocals" + ".txt");
+	// typeTample = "vocal";
+	loadTxtLyrics(file.split(".")[0] + "_lyrics" + postfix + ".txt");
+	// DeltaRuneCode.call("scr_rhythmgame_notechart_vocals", [type]);
 }
 
-function loadTxtNotes(file:String){
-    if (NativeFileSystem.exists(file)){
-        var data:Array<String> = File.getContent(file).split("\n");
-        var noteData:Array<Dynamic>;
-        for (note in data){
-            noteData = note.split(",");
-            scr_rhythmgame_addnote(noteData[0],noteData[1],noteData[2],noteData[3],noteData[4]);
-        }
-        debugPrint("loaded "+file);
-    }else{debugPrint("not loaded "+file);}
-
-}
-function loadTxtLyrics(file:String){
-    if (NativeFileSystem.exists(file)){
-        var data:Array<String> = File.getContent(file).split("\n");
-        var noteData:Array<Dynamic>;
-        for (note in data){
-			//if (note.length<8) continue;
-            noteData = note.split(",");
-            if (noteData.length>=1){
-				//debugPrint(noteData[2]);
-				scr_rhythmgame_add_lyric(Std.int(noteData[0]),noteData[1],noteData[3]==null?"null":noteData[2]);
-        }}
-        debugPrint("loaded "+file);
-    }else{debugPrint("not loaded "+file);}
-
+function loadTxtNotes(file:String) {
+	if (NativeFileSystem.exists(file)) {
+		var data:Array<String> = File.getContent(file).split("\n");
+		var noteData:Array<Dynamic>;
+		for (note in data) {
+			noteData = note.split(",");
+			if (noteData.length > 1)
+				scr_rhythmgame_addnote(noteData[0], noteData[1], noteData[2], noteData[3], noteData[4]);
+			// trace(noteData);
+		}
+		debugPrint("loaded " + file);
+		return true;
+	} else {
+		debugPrint("not loaded " + file);
+		return false;
+	}
 }
 
-function loadHXNotes(file:String, index:Int,isFull:Bool=false) {
+function loadTxtLyrics(file:String) {
+	if (NativeFileSystem.exists(file)) {
+		var data:Array<String> = File.getContent(file).split("\n");
+		var noteData:Array<Dynamic>;
+		for (note in data) {
+			// if (note.length<8) continue;
+			noteData = note.split(",");
+			if (noteData.length >= 1) {
+				// debugPrint(noteData[2]);
+				scr_rhythmgame_add_lyric(Std.int(noteData[0]), noteData[1], noteData[3] == null ? "null" : noteData[2]);
+			}
+		}
+		debugPrint("loaded " + file);
+	} else {
+		debugPrint("not loaded " + file);
+	}
+}
+
+function loadHXNotes(file:String, index:Int, isFull:Bool = false) {
 	var scriptToLoad = Paths.modFolders(file);
 	if (NativeFileSystem.exists(scriptToLoad)) {
 		if (!Iris.instances.exists(scriptToLoad)) {
 			try {
 				DeltaRuneCode = new HScript(null, scriptToLoad);
-				//debugPrint("all dune loads");
+				// debugPrint("all dune loads");
 				DeltaRuneCode.set("scr_rhythmgame_addnote_range", scr_rhythmgame_addnote_range);
 				DeltaRuneCode.set("scr_rhythmgame_addnote", scr_rhythmgame_addnote);
 				DeltaRuneCode.set("stringsetloc", stringsetloc);
@@ -103,7 +114,7 @@ function loadHXNotes(file:String, index:Int,isFull:Bool=false) {
 				DeltaRuneCode.set("scr_rhythmgame_add_lyric", scr_rhythmgame_add_lyric);
 				game.hscriptArray.push(DeltaRuneCode);
 				// PlayState.startLuasNamed("custom_events/ill make.lua");
-				//debugPrint("all dune loads");
+				// debugPrint("all dune loads");
 			} catch (e:Dynamic) {
 				debugPrint(e);
 				var newScript:HScript = cast(Iris.instances.get(file), HScript);
@@ -112,31 +123,31 @@ function loadHXNotes(file:String, index:Int,isFull:Bool=false) {
 				return;
 			}
 		}
-	} else{
-        debugPrint("hx file not found",0xFF0000);
+	} else {
+		debugPrint("hx file not found", 0xFF0000);
 		return;
-    }
-	//if (!loadLua("custom_events/ill make.lua"))
+	}
+	// if (!loadLua("custom_events/ill make.lua"))
 	//	return;
-	if (index != null) {    
-		load_all_posible_notes_hx(index,isFull);
+	if (index != null) {
+		load_all_posible_notes_hx(index, isFull);
 	}
 }
 
-function load_all_posible_notes_hx(type = 0,?isFull:Bool=false) {
+function load_all_posible_notes_hx(type = 0, ?isFull:Bool = false) {
 	game.unspawnNotes = [];
-    typeTample = "lead";
+	typeTample = "lead";
 	DeltaRuneCode.call("scr_rhythmgame_notechart_lead", [type]);
-    typeTample = "drum";
+	typeTample = "drum";
 	DeltaRuneCode.call("scr_rhythmgame_notechart_drums", [type]);
-    typeTample = "vocal";
+	typeTample = "vocal";
 	DeltaRuneCode.call("scr_rhythmgame_notechart_vocals", [type]);
 	if (isFull) {
-        typeTample = "lead";
+		typeTample = "lead";
 		DeltaRuneCode.call("scr_rhythmgame_notechart_lead_solo", [0]);
 		DeltaRuneCode.call("scr_rhythmgame_notechart_lead_solo", [1]);
 		DeltaRuneCode.call("scr_rhythmgame_notechart_lead_solo", [2]);
-		//DeltaRuneCode.call("scr_rhythmgame_notechart_lead_solo", [3]);
+		// DeltaRuneCode.call("scr_rhythmgame_notechart_lead_solo", [3]);
 		DeltaRuneCode.call("scr_rhythmgame_notechart_lead_finale", [0]);
 	}
 }
@@ -148,8 +159,8 @@ function scr_rhythmgame_addnote_range(timming, type, sus, ?spec = 0) {
 
 var oldNote:Note;
 
-function scr_rhythmgame_addnote(timming, types, sus, ?spec = 0,?lolTag) {
-	//typeTample = getVar("typeTample");
+function scr_rhythmgame_addnote(timming, types, sus, ?spec = 0, ?lolTag) {
+	// typeTample = getVar("typeTample");
 	sus = sus * 1000;
 	timming = timming * 1000;
 	if (sus > 0) {
@@ -178,7 +189,7 @@ function scr_rhythmgame_addnote(timming, types, sus, ?spec = 0,?lolTag) {
 	// daNote.noteType = typeNote;
 	daNote.scrollFactor.set();
 	daNote.sustainLength = sus;
-	daNote.extraData.set("lolTag",lolTag);
+	daNote.extraData.set("lolTag", lolTag);
 
 	game.unspawnNotes.push(daNote);
 
@@ -195,11 +206,18 @@ function scr_rhythmgame_addnote(timming, types, sus, ?spec = 0,?lolTag) {
 			sustainNote.noteData = daNote.noteData;
 			sustainNote.scrollFactor.set();
 			sustainNote.parent = daNote;
+			
+			
+			//if (oldNote.isSustainNote){
+			//	oldNote.scale.y *= Note.SUSTAIN_SIZE / oldNote.frameHeight;
+			//	oldNote.scale.y /= playbackRate;
+			//}
+			
+
+			sustainNote.correctionOffset = ClientPrefs.data.downScroll?0:daNote.height / 2;
+			boOld = sustainNote;
 			game.unspawnNotes.push(sustainNote);
 			daNote.tail.push(sustainNote);
-
-			sustainNote.correctionOffset = daNote.height / 2;
-			boOld = sustainNote;
 		}
 	}
 	oldNote = daNote;
@@ -213,23 +231,24 @@ function stringsetloc(defString, tag) {
 function scr_rhythmgame_clear_lyric(timming) {
 	scr_rhythmgame_add_lyric(timming, " ", " ");
 }
-//var lyricBuffer = [0,""];
+
+// var lyricBuffer = [0,""];
 
 function scr_rhythmgame_add_lyric(timming, str1 = "", ?str2 = "") {
 	// trigerEvent(timming*1000,"subtitle",str1,null);
-	//if (lyricBuffer[0]>0){
-		var subEvent:EventNote = {
-			strumTime:timming * 1000,//lyricBuffer[0] , // + ClientPrefs.data.noteOffset,
-			event: "ill make lyric",
-			value1: "",//timming * 1000 - lyricBuffer[0],
-			value2: str1+"\n"+str2//lyricBuffer[1]
-		};
-		eventNotes.push(subEvent);
-	//}
-	//lyricBuffer = [
+	// if (lyricBuffer[0]>0){
+	var subEvent:EventNote = {
+		strumTime: timming * 1000, // lyricBuffer[0] , // + ClientPrefs.data.noteOffset,
+		event: "ill make lyric",
+		value1: "", // timming * 1000 - lyricBuffer[0],
+		value2: str1 + "\n" + str2 // lyricBuffer[1]
+	};
+	eventNotes.push(subEvent);
+	// }
+	// lyricBuffer = [
 	//	timming * 1000,
 	//	str1+"\n"+str2
-	//];
+	// ];
 }
 
 function writeNoteToSong() {
@@ -256,21 +275,21 @@ function writeNoteToSong() {
 function findClapRals() {
 	var bpm = -1;
 	var fn = [];
-	for (note in unspawnNotes){
-		if (note.noteType =="vocal"){
-			if(note.noteData ==1&&!note.isSustainNote){
+	for (note in unspawnNotes) {
+		if (note.noteType == "vocal") {
+			if (note.noteData == 1 && !note.isSustainNote) {
 				fn.push(note);
-			}else{
-				//debugPrint(note.noteData);
+			} else {
+				// debugPrint(note.noteData);
 				fn = [];
 			}
 		}
-		if (fn.length>4){
+		if (fn.length > 4) {
 			bpm = fn[1].strumTime - fn[0].strumTime;
-			//debugPrint(bpm);
+			// debugPrint(bpm);
 		}
 	}
-	return bpm/4;
+	return bpm / 4;
 }
 
 function loadLua(file) {

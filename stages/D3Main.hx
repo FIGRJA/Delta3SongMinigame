@@ -165,6 +165,7 @@ var SONG:Dynamic;
 var acurateDrums = 1;
 var moddir = "";
 var shader_;
+var statusLoad;
 function onCreate() // PlayState.SONG.bpm = 0.1;
 {
 	//setVar("D3Main",this);
@@ -191,12 +192,13 @@ for (mod in loadSongsLists()) for (song in mod[1].songs) {
 			continue;
 		PlayState.SONG.bpm = song.bpm;
 		Conductor.bpm = song.bpm;
-		//PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
+		PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
 		//debugPrint(song.speed);*
 		//PlayState.SONG.speed = 1;
 		//game.songSpeed = 1.1;
 		moddir = mod[2];
-		getVar("load_delta_notes").call("loadSong", [path, index, song.isFull]);
+		statusLoad = getVar("load_delta_notes").call("loadSong", [path, index, song.isFull]).returnValue;
+		//debugPrint(statusLoad);
 		SONG = song;
 	}
 	// for (sos in songsList){
@@ -212,6 +214,8 @@ for (mod in loadSongsLists()) for (song in mod[1].songs) {
 	//        //setVar("load_delta_notes_index",sos[0]);
 	//    }
 	// }
+	game.showRating = false;
+	game.showComboNum = false;
 }
 }
 var clear = function() {
@@ -257,7 +261,7 @@ function onCreatePost() {
 	//debugPrint(FlxG.stage.application.window.__attributes);
 	//FlxG.stage.application.window.__backend.flags |= cast WindowFlags.WINDOW_FLAG_STENCIL_BUFFER;
 	FlxG.camera.bgColor = 0x8EEE0000;
-	shader_ = getShader("blue");
+	shader_ = getShader("grayT");
 	//shader_ = game.createRuntimeShader("wiggle");
 	trace(shader_);
 	game.camGame.bgColor = 0x00;
@@ -268,7 +272,12 @@ function onCreatePost() {
 		//cam.visible =false;
 	}
 	//FlxG.game.setFilters(null);
-	//FlxG.game.setFilters([shader_]);
+	//FlxG.game.setFilters([ new ShaderFilter(shader_)]);
+	//Lib.current.alpha = 1;
+	//Lib.current.shader = [shader_];
+	
+	//var gameSprite = cast FlxG.game;
+	//gameSprite.sahder = [shader_];
 	//FlxG.game.alpha = 0.5;
 	//Lib.application.window.opacity = 1;
 	//FlxG.signals.postDraw.add(clear);
@@ -366,20 +375,26 @@ function onCreatePost() {
 	susiCombo.antialiasing = false;
 	susiCombo.alignment = "center";
 	insert(0, susiCombo);
+	susiCombo.visible = statusLoad[1];
+	
 	krisCombo.font = Paths.getPath("fronts/fnt_main.ttf");
 	krisCombo.cameras = [krisNoteCam];
 	// krisCombo.scale.y = 4;
 	krisCombo.antialiasing = false;
 	krisCombo.alignment = "center";
 	insert(0, krisCombo);
+	krisCombo.visible = statusLoad[0];
+
 	ralsCombo.font = Paths.getPath("fronts/fnt_main.ttf");
 	ralsCombo.cameras = [ralseiNoteCam];
 	// ralsCombo.scale.y = 4;
 	ralsCombo.antialiasing = false;
 	ralsCombo.alignment = "center";
 	insert(0, ralsCombo);
+	ralsCombo.visible = statusLoad[2];
+
 	wordCombo.font = Paths.getPath("fronts/fnt_main.ttf");
-	wordCombo.cameras = [ralseiNoteCam, susiNoteCam, krisNoteCam];
+	wordCombo.cameras = [statusLoad[2]?ralseiNoteCam:camGame, statusLoad[1]?susiNoteCam:camGame,statusLoad[0]?krisNoteCam:camGame];
 	// ralsCombo.scale.y = 4;
 	wordCombo.antialiasing = false;
 	wordCombo.alignment = "center";
@@ -532,6 +547,7 @@ function noteMiss(daNote) {
 	}
 }
 
+var ralsClap = false;
 function onSpawnNote(daNote) {
 	daNote.noteSplashData.disabled = true;
 	daNote.lateHitMult = 1;
@@ -593,8 +609,11 @@ function onSpawnNote(daNote) {
 		if (rawType == 2) {
 			daNote.rgbShader.r = 0x00FF37;
 		}
-		if (!daNote.isSustainNote)
+		if (daNote.sustainLength>0)
 			daNote.visible = false;
+		if (!daNote.isSustainNote)
+			//daNote.visible = ralsClap;
+			daNote.scale.x = daNote.scale.x*3;
 	}
 	if (!daNote.isSustainNote) {
 		daNote.scale.y = 0.5;
@@ -607,7 +626,6 @@ function onSpawnNote(daNote) {
 }
 
 var susiSkills = ["singDOWN-alt", "singUP", "singDOWN"];
-var ralsClap = false;
 function onUpdate(e) {
 	//shader_.setFloat("iTime",Conductor.songPosition);
 	//shader_.setFloat("pix",1);
@@ -692,8 +710,10 @@ function onUpdate(e) {
 
 function onUpdatePost(e){
 
-    GL.clearColor(0, 0, 0, 0); 
-	GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT ); 
+    //var context = Lib.current.stage.context3D;
+    //if (context != null) {
+    //    context.clear(0, 0, 0, 0);  // очищаем с прозрачностью
+    //}
 }
 function opponentNoteHit(daNote) {
 	if (!daNote.isSustainNote) {

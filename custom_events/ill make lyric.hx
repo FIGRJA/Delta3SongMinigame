@@ -112,11 +112,11 @@ function opponentNoteHit(daNote) {//требуется пересборка // �
 				//return;
 			    flxM.cancel();
             flxM = new FlxTimer().start(
-                daNote.sustainLength / Rstrin[word].length / 1000 + 1,
+                daNote.sustainLength / 1000 + 1,
                 ()->{
                     if (word+1 >= Rstrin.length){
                         songTxt.text="";
-                        debugPrint("coc");
+                        //debugPrint("coc");
                         //if (flxT != null)
                         //    flxT.cancel();
                     }
