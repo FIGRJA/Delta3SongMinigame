@@ -406,13 +406,14 @@ function onCreatePost() {
 	blackbacknotes.cameras = [ralseiNoteCam, susiNoteCam, krisNoteCam];
 	insert(4, blackbacknotes);
 
-	var distant = 60 / Conductor.bpm * 450;
-	bmpDistant = new FlxBackdrop(null, 0x10, 0, distant); // 0x10 = Y
+	//var distant = 60 / Conductor.bpm * 450;
+	var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed/game.playbackRate)*1;
+	bmpDistant = new FlxBackdrop(null, 0x10, 0, distant-10); // 0x10 = Y
 	// bmpDistant.y = 0;
 	bmpDistant.x = -200;
 	// bmpDistant.scale.y = 1;
 	bmpDistant.scale.x = 50;
-	bmpDistant.loadGraphic(Paths.image("sp/spr_rhythmgame_note_2"));
+	bmpDistant.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 	bmpDistant.cameras = [krisNoteCam, susiNoteCam, ralseiNoteCam];
 	// bmpDistant.velocity.y = (0.45 * (1000) * game.songSpeed * 1);
 	// bmpDistant.velocity.y = distant/(60 / Conductor.bpm)*game.songSpeed ;
@@ -620,6 +621,7 @@ function onSpawnNote(daNote) {
 	}
 	if (daNote.extraData.get("lolTag") != null)
 		daNote.rgbShader.r = 0x000000;
+	//debugPrint(daNote.multSpeed);
 	// else { daNote.blockHit = true;}
 	// daNote.noteType = "";
 	// daNote.animation.play("purpleholdend",true);
@@ -690,7 +692,7 @@ function onUpdate(e) {
 		}
 	}
 
-	bmpDistant.y = (0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * game.songSpeed) + 40;
+	bmpDistant.y = (0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + 5;
 
 	if (susiRofls) {
 		game.gf.stunned = true;

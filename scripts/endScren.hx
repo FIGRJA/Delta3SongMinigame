@@ -89,10 +89,10 @@ function TW(a) {
         var RT = genText_("~~~~~~ concert results ~~~~~~","center");
         RT.x = 220;
         RT.y = 100;
-        //RT.visible=false;
+        RT.visible=false;
         FlxTween.tween(RT, {x: 260}, 0.5 ,{
             startDelay: 1,
-            //onStart:()->{RT.visible=true;},
+            onStart:()->{RT.visible=true;},
             ease: FlxEase.elasticOut,
             onComplete: (_) -> {
                 TW(1);

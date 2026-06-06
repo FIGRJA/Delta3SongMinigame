@@ -96,7 +96,8 @@ var mType = 0;
 var flxT;
 var flxM;
 
-function opponentNoteHit(daNote) {//требуется пересборка // шалит flxM `coc`-119
+function opponentNoteHit(daNote) {//требуется пересборка 
+	
 	try {
 		if (!daNote.isSustainNote && (RstrinNEXT.length > 0 || Rstrin.length > 0)) {
 			word += 1;
