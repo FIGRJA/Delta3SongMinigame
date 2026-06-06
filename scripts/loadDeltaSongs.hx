@@ -1,4 +1,5 @@
 // import haxe.macro.Expr.Case;
+import sys.thread.EventLoop.NextEventTime;
 import psychlua.HScript;
 import crowplexus.iris.Iris;
 // import objects.Note.EventNote;
@@ -38,7 +39,8 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 		//	PlayState.SONG.bpm = foundBPM;
 		//	Conductor.bpm = foundBPM;
 		// }
-		//writeNoteToSong();
+		
+		writeNoteToSong();
 		// game.unspawnNotes = [];
 		// PlayState.generateSong();
 		debugPrint("loaded " + game.unspawnNotes.length + " notes");
@@ -265,9 +267,12 @@ function writeNoteToSong() {
 		simpleNote[2] = note.sustainLength;
 		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : "";
 		if (PlayState.SONG.notes.length > Math.round((note.strumTime / section) - 0.5)) {
-			PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)].sectionNotes = [];
+			if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]!=null)
+				PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)].sectionNotes = [];
 		}
-		PlayState.SONG.notes[Math.round((note.strumTime / section) - 0.5)].sectionNotes.push(simpleNote);
+
+		if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]!=null)
+			PlayState.SONG.notes[Math.round((note.strumTime / section) - 0.5)].sectionNotes.push(simpleNote);
 		notes++;
 	}
 }

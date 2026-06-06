@@ -223,6 +223,15 @@ var clear = function() {
 	GL.enable(GL.ALPHA_TEST); 
 	//trace("hi");
 }
+
+function getSong(mod,song) {
+	var name = "mods/"+mod+"/mus/"+song+".ogg";
+	if (NativeFileSystem.exists(name))
+		return name;
+	else
+		return Paths.getPath("mus/"+song+".ogg");
+	
+}
 function onCreatePost() {
 	if (isMenuChart)
 		return;
@@ -234,8 +243,8 @@ function onCreatePost() {
 	// game.songSpeed = 1.1;//sos[3]/sos[2]
 	try {
 		//debugPrint("mods/"+moddir+"/mus/"+SONG.songMain+".ogg");
-		game.inst.loadEmbedded(CacheSystem.loadSound("mods/"+moddir+"/mus/"+SONG.songMain+".ogg",true,SONG.songMain+', PATH: mus'+moddir));
-		game.vocals.loadEmbedded(CacheSystem.loadSound("mods/"+moddir+"/mus/"+SONG.songPlay+".ogg",true,SONG.songPlay+', PATH: mus'+moddir));
+		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songMain),true,SONG.songMain));
+		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songPlay),true,SONG.songPlay));
 	} catch (e:Dynamic) {}
 
 	susiNoteCam = new FlxCamera(345, 40, 150, 400, 1);

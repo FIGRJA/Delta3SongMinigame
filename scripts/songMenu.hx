@@ -334,7 +334,7 @@ function onUpdate(e) {
 				//FlxG.sound.list.clear();
 				//debugPrint("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg");
 				//debugPrint(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",true,freeAction[curAction][2].songMain+', PATH: mus'+freeAction[curAction][0][2]));
-				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",false,freeAction[curAction][2].songMain+', PATH: mus'+freeAction[curAction][0][2]), true);
+				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",false,freeAction[curAction][2].songMain), true);
 				freePlay.volume = 0;
 				freePlay.play();
 				freePlay.fadeOut(2,0.7);
