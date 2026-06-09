@@ -26,6 +26,8 @@ var menu:FlxCamera = new FlxCamera(0, 0, 1280, 720, 1);
 var modInfoText:FlxText;
 var songScoreText:FlxText;
 
+var glitchAr = [];
+var limitD = 0;
 function onCreate() {
 	setVar("songMenu",this);
 	if (!isAllowed)
@@ -56,7 +58,7 @@ function onCreate() {
 	game.luaDebugGroup.cameras = [game.camOther, menu];
 	FlxG.cameras.add(menu, false);
 	try {
-        FlxG.sound.music.destroy();
+        //FlxG.sound.music.destroy();
         //FlxG.sound.list.clear();
 		// debugPrint(FlxG.sound.list);
 		if (FlxG.random.bool(5)){
@@ -71,6 +73,7 @@ function onCreate() {
 			//var bb2 = new FlxBackdrop();
 			//var bb3 = new FlxBackdrop();
 			var max = 100;	
+			glitchAr.push(backed);
 			backed.spacing.set(80*(Math.sqrt(max)-1),80*(Math.sqrt(max)-1));
 			for (i in 0...(max-1)){
 				var b = new FlxBackdrop();
@@ -87,9 +90,10 @@ function onCreate() {
 				b.y = 80*2*Std.int((i+1)/Math.sqrt(max));
 				b.color = FlxG.random.color(0x475A46,0x0C0C0C,255	);
 				//debugPrint(240*(i+1)%2);
+				glitchAr.push(b);
 				insert(0, b);
 			}}
-		else if (FlxG.random.bool(10)){	
+		else if (FlxG.random.bool(8)){	
 			inst.loadEmbedded(Paths.returnSound("church_lw_night", "mus"), true);
 			inst.pitch = 0.9;
 			backed.velocity.set(30, -30);
@@ -98,6 +102,7 @@ function onCreate() {
 			//var bb2 = new FlxBackdrop();
 			//var bb3 = new FlxBackdrop();
 			var max = 25;	
+			glitchAr.push(backed);
 			backed.spacing.set(80*(Math.sqrt(max)-1),80*(Math.sqrt(max)-1));
 			for (i in 0...(max-1)){
 				var b = new FlxBackdrop();
@@ -114,6 +119,7 @@ function onCreate() {
 				b.y = 240*Std.int((i+1)/Math.sqrt(max));
 				b.color = FlxG.random.color(0xFFFFFF,0x8A8989,255	);
 				//debugPrint(240*(i+1)%2);
+				glitchAr.push(b);
 				insert(0, b);
 			}
 			//bb1.x += 240;
@@ -127,10 +133,31 @@ function onCreate() {
 			//insert(2, bb2);
 			//insert(3, bb3);
 
-		}else if (FlxG.random.bool(20)){
+		}else if (FlxG.random.bool(15)){
 			inst.loadEmbedded(Paths.returnSound("tv_results_screen", "mus"), true);
 			inst.pitch = 0.3;
 			backed.velocity.set(-30, 30);
+			glitchAr.push(backed);
+			var max = 16;
+			backed.spacing.set(80*(Math.sqrt(max)-1),80*(Math.sqrt(max)-1));
+			for (i in 0...(max-1)){
+				var b = new FlxBackdrop();
+				b.antialiasing = false;
+				b.loadGraphic(Paths.image("anim/tv"));
+				b.frames = Paths.getSparrowAtlas("anim/tv");
+				b.velocity.set(-30, 30);			
+				b.spacing.set(80*(Math.sqrt(max)-1),80*(Math.sqrt(max)-1));
+				b.scale.set(3, 3);
+				b.animation.addByPrefix("pog", 'spr_dw_tv_starbgtile_', 16);
+				b.animation.play('pog', true);
+				b.camera = menu;
+				b.x = 240*(i+1)%Math.sqrt(max);	
+				b.y = 240*Std.int((i+1)/Math.sqrt(max));
+				//b.color = FlxG.random.color(0xFFFFFF,0x8A8989,255	);
+				//debugPrint(240*(i+1)%2);
+				glitchAr.push(b);
+				insert(0, b);
+			}
 		}else
 			inst.loadEmbedded(Paths.returnSound("greenroom_detune", "mus"), true);
 		inst.volume = 0;
@@ -173,6 +200,7 @@ function onCreate() {
 		debugPrint("bep");
 	};
 	game.skipCountdown = true;
+	limitD = glitchAr.length;
 }
 
 function formatIntToString(val:Int, count:Int) {
@@ -271,14 +299,31 @@ function onSongStart() {
 
 var diffAction:Array;
 var curDiffAction:Int = 0;
-
 function onUpdate(e) {
 	if (!isAllowed)
 		return;
+	timer -= e;
 	if (timer > 0) {
-		timer -= e;
 		return;
 	}
+	if (timer%(1000/limitD)<e){
+		if (FlxG.random.bool(limitD-glitchAr.length/limitD)&&glitchAr.length>0){
+			//debugPrint("coc");
+			var b = glitchAr[FlxG.random.int(0,glitchAr.length-	1)];
+			b.alpha = b.alpha -FlxG.random.float(0.001,0.025);
+			//debugPrint(b.alpha);
+			if (b.alpha<0.05*100/limitD)
+				glitchAr.remove(b);
+			if (glitchAr.length==0&&limitD>50){
+				var r = FlxG.random.int(0,freeAction.length-1);
+				PlayState.SONG.song = freeAction[r][2].name;
+				PlayState.SONG.format = freeAction[r][0][0].name + freeAction[r][0][1].dificulties[0].text;
+				MusicBeatState.resetState();
+
+			}
+		}
+	}
+
 	if (Control.BACK) {
 		if (diffAction != null) {
 			onCreatePost();
@@ -292,7 +337,7 @@ function onUpdate(e) {
 			freePlay.fadeOut(1, 0);
 			FlxG.sound.list.remove(freePlay);
 		} else {
-			CustomSubstate.closeCustomSubstate();
+			//CustomSubstate.closeCustomSubstate();
 			PlayState.deathCounter = 0;
 			PlayState.seenCutscene = false;
 

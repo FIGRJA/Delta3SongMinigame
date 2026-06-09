@@ -5,7 +5,7 @@ import openfl.display.Stage;
 import openfl.Lib;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLShader;
+//import lime.graphics.opengl.GLShader;
 
 var window = Application.current.window;
 var stage = Lib.current.stage;

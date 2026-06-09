@@ -11,7 +11,7 @@ import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 var curStepCrochet:Int;
 var DeltaRuneCode:HScript;
 var songTxt:FlxText;
-var StausLoad = []; // lead,drums,vocal,lyric
+var StausLoad = [true,true,true]; // lead,drums,vocal,lyric
 function onCreate() {
 	setVar("load_delta_notes", this);
 
