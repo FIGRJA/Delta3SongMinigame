@@ -825,10 +825,10 @@ function onEndSong() {
 		}
 	}
 
-	PlayState.SONG.song = "songChart";
 	//FlxG.sound.music.destroy();
 	//MusicBeatState.startTransition();
 	CustomSubstate.openCustomSubstate('END', true);
+	PlayState.SONG.song = "songChart";
 }
 var ShapeTM;
 function shareSprite(sp:FlxSprite,x) {

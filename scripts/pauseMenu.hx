@@ -32,6 +32,8 @@ function onUpdate(e) {
 		CustomSubstate.openCustomSubstate('DeltaPause', true);
 	if (Control.CHAR_SELECT && PlayState.SONG.song == "songChart")
 		MusicBeatState.resetState();
+	if (Control.FAVORITE && PlayState.SONG.song != "songChart")
+		CustomSubstate.openCustomSubstate('END', true);
 }
 
 function onCustomSubstateCreate(name) {
