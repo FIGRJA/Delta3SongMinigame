@@ -17,6 +17,7 @@ var susiNoteCam:FlxCamera;
 var krisNoteCam:FlxCamera;
 var ralseiNoteCam:FlxCamera;
 var bmpDistant:FlxBackdrop;
+var bmpDistant4:FlxBackdrop;
 var maskBG:FlxSprite = new ModchartSprite(4,-10);
 var krisMissBack:FlxSprite = new ModchartSprite(-190, 9800);
 var susiMissBack:FlxSprite = new ModchartSprite(-190, 9800);
@@ -182,7 +183,7 @@ for (mod in loadSongsLists()) for (song in mod[1].songs) {
 		} else{
 	//debugPrint(mod);
 			for (diff in mod[1].dificulties){
-				if (mod[0].name + diff.name == PlayState.SONG.format) {
+				if (mod[0].name +"^"+ diff.name == PlayState.SONG.format) {
 					path = "mods/"+mod[2]+"/"+diff.dir + diff.prefix + song.nameFile + ".txt";
 				}
 			}
@@ -417,7 +418,7 @@ function onCreatePost() {
 
 	//var distant = 60 / Conductor.bpm * 450;
 	var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed/game.playbackRate)*1;
-	bmpDistant = new FlxBackdrop(null, 0x10, 0, distant-10); // 0x10 = Y
+	bmpDistant = new FlxBackdrop(null, 0x10, 0, (distant*4)-10); // 0x10 = Y
 	// bmpDistant.y = 0;
 	bmpDistant.x = -200;
 	// bmpDistant.scale.y = 1;
@@ -428,6 +429,14 @@ function onCreatePost() {
 	// bmpDistant.velocity.y = distant/(60 / Conductor.bpm)*game.songSpeed ;
 	// 60/Conductor.bpm *game.songSpeed*1000;
 	insert(6, bmpDistant);
+
+	bmpDistant4 = new FlxBackdrop(null, 0x10, 0, distant-10); // 0x10 = Y
+	bmpDistant4.x = -200;
+	bmpDistant4.scale.x = 50;
+	bmpDistant4.loadGraphic(Paths.image("sp/spr_rhythmgame_note_2"));
+	bmpDistant4.cameras = [krisNoteCam, susiNoteCam, ralseiNoteCam];
+	bmpDistant4.alpha = 0.6;
+	insert(6, bmpDistant4);
 
 	krisMute.loadGraphic(Paths.image("sp/spr_rhythmgame_mute_0"));
 	// krisMute.color = 0xFF0000;
@@ -481,6 +490,22 @@ function onCreatePost() {
 		susiRofls = false;
 	game.boyfriend.idleSuffix = "-alt";
 	game.boyfriend.recalculateDanceIdle();
+
+	if (!statusLoad[0]&&FlxG.random.bool(42)){
+		game.boyfriend.visible = false;
+		krisNoteCam.visible = false;
+		L1.visible = false;
+	}
+	if (!statusLoad[1]&&!FlxG.random.bool(42)){
+		game.gf.visible = false;
+		susiNoteCam.visible = false;
+		L3.visible = false;
+	}
+	if (!statusLoad[2]&&FlxG.random.bool(42)){
+		game.dad.visible = false;
+		ralseiNoteCam.visible = false;
+		L2.visible = false;
+	}
 }
 
 
@@ -701,7 +726,8 @@ function onUpdate(e) {
 		}
 	}
 
-	bmpDistant.y = (0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + 5;
+	bmpDistant.y = (0.45 * ((Conductor.songPosition + (60 / Conductor.bpm * 1000)) % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) + 5;
+	bmpDistant4.y = (0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + 5;
 
 	if (susiRofls) {
 		game.gf.stunned = true;

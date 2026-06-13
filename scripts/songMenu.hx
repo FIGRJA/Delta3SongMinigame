@@ -41,7 +41,7 @@ function onCreate() {
 	//		game.startCountdown();
 	//};
 
-	PlayState.SONG.bpm = 0.1;
+	PlayState.SONG.bpm = 0.001;
 
 	backed = new FlxBackdrop();
 	backed.antialiasing = false;
@@ -58,7 +58,8 @@ function onCreate() {
 	game.luaDebugGroup.cameras = [game.camOther, menu];
 	FlxG.cameras.add(menu, false);
 	try {
-        //FlxG.sound.music.destroy();
+    	FlxG.sound.music.destroy();
+        //FlxG.sound.music.pause();
         //FlxG.sound.list.clear();
 		// debugPrint(FlxG.sound.list);
 		if (FlxG.random.bool(5)){
@@ -164,6 +165,7 @@ function onCreate() {
 		inst.play();
 		inst.fadeIn(2);
 		FlxG.sound.list.add(inst);
+		//game.inst = inst;	
 	} catch (e:Dynamic) {}
 
 
@@ -302,6 +304,8 @@ var curDiffAction:Int = 0;
 function onUpdate(e) {
 	if (!isAllowed)
 		return;
+	game.inst.pause();
+	game.vocals	.pause();
 	timer -= e;
 	if (timer > 0) {
 		return;
@@ -317,7 +321,7 @@ function onUpdate(e) {
 			if (glitchAr.length==0&&limitD>50){
 				var r = FlxG.random.int(0,freeAction.length-1);
 				PlayState.SONG.song = freeAction[r][2].name;
-				PlayState.SONG.format = freeAction[r][0][0].name + freeAction[r][0][1].dificulties[0].text;
+				PlayState.SONG.format = freeAction[r][0][0].name +"^"+ freeAction[r][0][1].dificulties[0].text;
 				MusicBeatState.resetState();
 
 			}
@@ -388,7 +392,7 @@ function onUpdate(e) {
 		} else {
 			inst.fadeOut(0.5);
 			PlayState.SONG.song = freeAction[curAction][2].name;
-			PlayState.SONG.format = freeAction[curAction][0][0].name + diffAction[curDiffAction].text;
+			PlayState.SONG.format = freeAction[curAction][0][0].name +"^"+ diffAction[curDiffAction].text;
 			MusicBeatState.resetState();
 		}
 		// switch(freeAction[curAction].text){
