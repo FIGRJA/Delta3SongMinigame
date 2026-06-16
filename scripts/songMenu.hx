@@ -321,8 +321,8 @@ function loadSongsLists() {
 				s = s+'	"name":"'+n.split(".neo").join("")+'",';
 				s = s+'	"nameFile":"'+n+'",';
 				s = s+'	"bpm":'+data.Note_speed+',';
-				s = s+'	"songMain":"../'+data.Music_file_no_guitar.split(".")[0]+'",';
-				s = s+'	"songPlay":"../'+data.Music_file.split(".")[0]+'",';
+				s = s+'	"songMain":"'+data.Music_file_no_guitar.split(".")[0]+'",';
+				s = s+'	"songPlay":"'+data.Music_file.split(".")[0]+'",';
 				s = s+'	"album":'+data.Album+',';
 				s = s+'	"index":"",';
 				s = s+'	"hxModule":null,';
@@ -333,7 +333,7 @@ function loadSongsLists() {
 		if (IsE){
 			s = s + "]}";
 			var list = TJSON.parse(s);
-			debugPrint(list);
+			//debugPrint(list);
 			var pack = TJSON.parse('{"name":"'+i+'"}');
 			result.push([pack, list,i]);
 		}

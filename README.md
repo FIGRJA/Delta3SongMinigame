@@ -24,7 +24,11 @@
     2. copy `SongCharts` and `mus` in folder
     3. in `SongCharts` needs `music_timing_customsong` files
     4. in `mus` needs `*.ogg` files without `CUSTOM_SONGS` folder
-2. ### self-charts
+2. ### NEO(Lightners Live Neo)
+    1. create mod folder in `mods` 
+    2. copy `.neo` files in folder 
+    3. copy `.ogg` files in `mus` folder
+3. ### self-charts
     1. create mod folder in `mods` for this
     2. copy and edit `songList.json`
     3. good luck to understand
