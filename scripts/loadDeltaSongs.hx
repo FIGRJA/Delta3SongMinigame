@@ -12,8 +12,8 @@ var curStepCrochet:Int;
 var DeltaRuneCode:HScript;
 var songTxt:FlxText;
 var StausLoad = [true,true,true]; // lead,drums,vocal,lyric
+setVar("load_delta_notes", this);
 function onCreate() {
-	setVar("load_delta_notes", this);
 
 	game.startHScriptsNamed('custom_events/' + "ill make lyric" + '.hx');
 }
@@ -28,7 +28,9 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 		if (file.lastIndexOf(".hx") == file.length - 3)
 			loadHXNotes(file, index, isFull);
 		else if (file.lastIndexOf(".txt") == file.length - 4)
-			load_all_posible_notes_txt(file, index, isFull);
+			load_all_posible_notes_txt(file, index);
+		else if (file.lastIndexOf(".neo") == file.length - 4)
+			load_all_posible_notes_neo(file);
 
 		game.unspawnNotes.sort(function(a, b) {
 			return a.strumTime - b.strumTime;
@@ -51,7 +53,29 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 	return [false,false,false];
 }
 
-function load_all_posible_notes_txt(file:String, postfix:String, ?isFull:Bool = false) {
+function load_all_posible_notes_neo(file:String) {
+
+	var d = File.getContent(file);
+	d = d.split("(/!\\ Chart saved below /!\\)")[1].split("\n\r\n");
+	var lid = ["lead","drum","vocal"];
+	for (i in 0...(Math.min(3,d.length))){
+		typeTample = lid[i];
+		//debugPrint(d.length);
+		for (m in d[i].split("\n")){
+			noteData = m.split(",");
+			scr_rhythmgame_addnote(noteData[0], noteData[1], noteData[2], noteData[3], noteData[4]);
+		}
+	}
+	if (d.length==4){
+		for (n in d[3].split("\n")){
+			noteData = n.split("|");
+			scr_rhythmgame_add_lyric(Std.int(noteData[0]), noteData[1], noteData[3] == null ? "null" : noteData[2]);
+		}
+	}
+	
+}
+
+function load_all_posible_notes_txt(file:String, postfix:String) {
 	game.unspawnNotes = [];
 	typeTample = "lead";
 	StausLoad[0] = loadTxtNotes(file.split(".")[0] + postfix + ".txt");

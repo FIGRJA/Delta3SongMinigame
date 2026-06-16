@@ -12,6 +12,14 @@ import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 import lime.graphics.opengl.GL;
 import tjson.TJSON;
 
+function setVF(Var,Fun) {
+	if (getVar(Var).exists(Fun))
+		this.set(Fun,getVar(Var).get(Fun));
+	
+}
+setVF("songMenu","loadSongsLists");
+setVF("load_delta_notes","loadSong");
+
 var isMenuChart:Bool = PlayState.SONG.song == "songChart";
 var susiNoteCam:FlxCamera;
 var krisNoteCam:FlxCamera;
@@ -104,72 +112,72 @@ function testShader(shaderName){
 //		}
 //		return new ShaderFilter(game.runtimeShaders.get(shaderName));
 //}
-
-function loadSongsLists() {
-	//return getVar("songMenu").call("loadSongsLists",[]);
-	var result:Array = [];
-	for (i in Mods.getModDirectories()) {
-		var path = "mods/" + i;
-		if (NativeFileSystem.exists(path + "/songList.json") && NativeFileSystem.exists(path + "/pack.json")) {
-			// debugPrint(path);
-			try {
-				var list = DialogueBoxPsych.parseDialogue(path + "/songList.json"); // dymmy haxe.Json
-				var pack = DialogueBoxPsych.parseDialogue(path + "/pack.json"); // dymmy haxe.Json
-				result.push([pack, list,i]);
-			} catch (e:Dynamic) {
-				debugPrint(e, FlxColor.RED);
-			}
-		}else if (NativeFileSystem.isDirectory(path + "/SongCharts")){
-			var dir = NativeFileSystem.readDirectory(path + "/SongCharts/");
-			var ok = false;
-			var s = '{
-				"dificulties":[
-					{
-						"name":"play ERS",
-						"prefix":"music_timing_customsong",
-						"postfix":"",
-						"dir":"SongCharts/"
-					}
-				],
-				"songs":[';
-			for (n in dir){
-				if (n.indexOf("music_timing_customsong_info")==0){
-					if (ok) s = s + ",";
-					ok = true;
-					var data:Array<String> = File.getContent(path + "/SongCharts/"+n).split("\n");
-					s = s+'{';
-					s = s+'	"name":"'+data[9]+'",';
-					s = s+'	"nameFile":"",';
-					s = s+'	"bpm":'+data[3]+',';
-					s = s+'	"speed":'+Std.int(data[4])+',';
-					s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
-					s = s+'	"songPlay":"'+data[1].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
-					s = s+'	"album":'+data[11]+',';
-					s = s+'	"index":"'+n.split("customsong_info")[1].split(".")[0]+'",';
-					s = s+'	"hxModule":null,';
-					s = s+'	"isFull":false';
-					s = s+'}';
-				}
-			}
-			if (!ok)continue;
-			s = s + "]}";
-			//debugPrint(s);
-			var list = TJSON.parse(s);
-			var pack = TJSON.parse('{"name":"'+i+'"}');
-			result.push([pack, list,i]);
-		}
-	}
-	return result;
-}
+//function loadSongsLists() {
+//	//return getVar("songMenu").call("loadSongsLists",[]);
+//	var result:Array = [];
+//	for (i in Mods.getModDirectories()) {
+//		var path = "mods/" + i;
+//		if (NativeFileSystem.exists(path + "/songList.json") && NativeFileSystem.exists(path + "/pack.json")) {
+//			// debugPrint(path);
+//			try {
+//				var list = DialogueBoxPsych.parseDialogue(path + "/songList.json"); // dymmy haxe.Json
+//				var pack = DialogueBoxPsych.parseDialogue(path + "/pack.json"); // dymmy haxe.Json
+//				result.push([pack, list,i]);
+//			} catch (e:Dynamic) {
+//				debugPrint(e, FlxColor.RED);
+//			}
+//		}else if (NativeFileSystem.isDirectory(path + "/SongCharts")){
+//			var dir = NativeFileSystem.readDirectory(path + "/SongCharts/");
+//			var ok = false;
+//			var s = '{
+//				"dificulties":[
+//					{
+//						"name":"play ERS",
+//						"prefix":"music_timing_customsong",
+//						"postfix":"",
+//						"dir":"SongCharts/"
+//					}
+//				],
+//				"songs":[';
+//			for (n in dir){
+//				if (n.indexOf("music_timing_customsong_info")==0){
+//					if (ok) s = s + ",";
+//					ok = true;
+//					var data:Array<String> = File.getContent(path + "/SongCharts/"+n).split("\n");
+//					s = s+'{';
+//					s = s+'	"name":"'+data[9]+'",';
+//					s = s+'	"nameFile":"",';
+//					s = s+'	"bpm":'+data[3]+',';
+//					s = s+'	"speed":'+Std.int(data[4])+',';
+//					s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
+//					s = s+'	"songPlay":"'+data[1].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
+//					s = s+'	"album":'+data[11]+',';
+//					s = s+'	"index":"'+n.split("customsong_info")[1].split(".")[0]+'",';
+//					s = s+'	"hxModule":null,';
+//					s = s+'	"isFull":false';
+//					s = s+'}';
+//				}
+//			}
+//			if (!ok)continue;
+//			s = s + "]}";
+//			//debugPrint(s);
+//			var list = TJSON.parse(s);
+//			var pack = TJSON.parse('{"name":"'+i+'"}');
+//			result.push([pack, list,i]);
+//		}
+//	}
+//	return result;
+//}
 
 var SONG:Dynamic;
 var acurateDrums = 1;
 var moddir = "";
 var shader_;
 var statusLoad;
+setVar("D3Main",this);
 function onCreate() // PlayState.SONG.bpm = 0.1;
 {
-	//setVar("D3Main",this);
+	//
 	if (isMenuChart)
 		return;
 
@@ -184,7 +192,7 @@ for (mod in loadSongsLists()) for (song in mod[1].songs) {
 	//debugPrint(mod);
 			for (diff in mod[1].dificulties){
 				if (mod[0].name +"^"+ diff.name == PlayState.SONG.format) {
-					path = "mods/"+mod[2]+"/"+diff.dir + diff.prefix + song.nameFile + ".txt";
+					path = "mods/"+mod[2]+"/"+diff.dir + diff.prefix + song.nameFile + diff.postfix;
 				}
 			}
 		}
@@ -198,7 +206,8 @@ for (mod in loadSongsLists()) for (song in mod[1].songs) {
 		//PlayState.SONG.speed = 1;
 		//game.songSpeed = 1.1;
 		moddir = mod[2];
-		statusLoad = getVar("load_delta_notes").call("loadSong", [path, index, song.isFull]).returnValue;
+		//statusLoad = getVar("load_delta_notes").call("loadSong", [path, index, song.isFull]).returnValue;
+		statusLoad = loadSong(path, index, song.isFull);
 		//debugPrint(statusLoad);
 		SONG = song;
 	}
@@ -244,8 +253,8 @@ function onCreatePost() {
 	// game.songSpeed = 1.1;//sos[3]/sos[2]
 	try {
 		//debugPrint("mods/"+moddir+"/mus/"+SONG.songMain+".ogg");
-		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songMain),true,SONG.songMain));
-		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songPlay),true,SONG.songPlay));
+		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songMain),true,Paths.formatToSongPath(SONG.songMain)+'/Inst, PATH: songs'));
+		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songPlay),true,Paths.formatToSongPath(SONG.songPlay)+'/Vocals, PATH: songs'));
 	} catch (e:Dynamic) {}
 
 	susiNoteCam = new FlxCamera(345, 40, 150, 400, 1);

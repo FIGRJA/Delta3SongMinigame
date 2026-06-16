@@ -111,7 +111,7 @@ function getTVRating(p) {
 function TW(a) {
 	if (a == 0) {
         var spD = PlayState.SONG.format.split("^");
-        var RB = genText(song+" : "+spD[1]+" \n"+ [for (i in 0...song.length) "  "].join("")+"("+spD[0]+")","left",540,0);
+        var RB = genText(song+" : "+spD[1]+" \n("+spD[0]+")","left",540,0);
         RB[0].alpha = 0;
         RB[1].alpha = 0;
         FlxTween.tween(RB[0], {alpha: 0.8}, 10 ,{

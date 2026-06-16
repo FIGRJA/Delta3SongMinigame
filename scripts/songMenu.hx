@@ -26,10 +26,18 @@ var menu:FlxCamera = new FlxCamera(0, 0, 1280, 720, 1);
 var modInfoText:FlxText;
 var songScoreText:FlxText;
 
+function setVF(Var,Fun) {
+	if (getVar(Var).exists(Fun))
+		this.set(Fun,getVar(Var).get(Fun));
+	
+}
+setVar("songMenu",this);
+//setVF("D3Main","loadSongsLists");
+
 var glitchAr = [];
 var limitD = 0;
 function onCreate() {
-	setVar("songMenu",this);
+	//setVar("songMenu",this);
 	if (!isAllowed)
 		return;
 
@@ -58,7 +66,7 @@ function onCreate() {
 	game.luaDebugGroup.cameras = [game.camOther, menu];
 	FlxG.cameras.add(menu, false);
 	try {
-    	FlxG.sound.music.destroy();
+    	//FlxG.sound.music.destroy();
         //FlxG.sound.music.pause();
         //FlxG.sound.list.clear();
 		// debugPrint(FlxG.sound.list);
@@ -217,6 +225,19 @@ function formatIntToString(val:Int, count:Int) {
 	return s;
 }
 
+function readNEOHead(_File) {
+	var d = File.getContent(_File);
+	d = d.split("(/!\\ Chart saved below /!\\)")[0].split("\n");
+	//debugPrint(d);
+	var s = "{";
+	for(i in d){
+		m = i.split(":");
+		s += '"'+m[0].split(" ").join("_")+'":'+m[1]+",";
+	}
+	s += "}";
+	return TJSON.parse(s);
+}
+
 function loadSongsLists() {
 	//return getVar("D3Main").call("loadSongsLists",[]);
 	var result:Array = [];
@@ -240,7 +261,7 @@ function loadSongsLists() {
 					{
 						"name":"play ERS",
 						"prefix":"music_timing_customsong",
-						"postfix":"",
+						"postfix":".txt",
 						"dir":"SongCharts/"
 					}
 				],
@@ -263,11 +284,56 @@ function loadSongsLists() {
 					s = s+'}';
 				}
 			}
-			if (!ok)continue;
+			if (ok){
+				s = s + "]}";
+				//debugPrint(s);
+				//debugPrint(i);
+				var list = TJSON.parse(s);
+				var pack = TJSON.parse('{"name":"'+i+'"}');
+				result.push([pack, list,i]);
+			}
+		}
+		var s = "";
+		var IsE = false; 
+		var h = ()->{
+			if (!IsE){
+				s = '{
+					"dificulties":[
+						{
+							"name":"play NEO",
+							"prefix":"",
+							"postfix":"",
+							"dir":""
+						}
+					],
+					"songs":[';
+				IsE = true;
+			}
+		}
+		for (n in NativeFileSystem.readDirectory(path)){
+			if (n.indexOf(".neo")>0){
+				if (IsE) s = s + ",";
+					
+				h();
+				var data = readNEOHead(path+"/"+n);
+				//debugPrint(data);
+				s = s+'{';
+				s = s+'	"name":"'+n.split(".neo").join("")+'",';
+				s = s+'	"nameFile":"'+n+'",';
+				s = s+'	"bpm":'+data.Note_speed+',';
+				s = s+'	"songMain":"../'+data.Music_file_no_guitar.split(".")[0]+'",';
+				s = s+'	"songPlay":"../'+data.Music_file.split(".")[0]+'",';
+				s = s+'	"album":'+data.Album+',';
+				s = s+'	"index":"",';
+				s = s+'	"hxModule":null,';
+				s = s+'	"isFull":false';
+				s = s+'}';
+			}
+		}
+		if (IsE){
 			s = s + "]}";
-			//debugPrint(s);
-			//debugPrint(i);
 			var list = TJSON.parse(s);
+			debugPrint(list);
 			var pack = TJSON.parse('{"name":"'+i+'"}');
 			result.push([pack, list,i]);
 		}
@@ -292,6 +358,8 @@ function onCreatePosts() {
 	}
 	modInfoText.text = freeAction[curAction][0][0].name;
 	game.startingSong = false;
+
+        FlxG.sound.music.pause();
 }
 
 function onSongStart() {
@@ -383,7 +451,9 @@ function onUpdate(e) {
 				//FlxG.sound.list.clear();
 				//debugPrint("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg");
 				//debugPrint(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",true,freeAction[curAction][2].songMain+', PATH: mus'+freeAction[curAction][0][2]));
-				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",false,freeAction[curAction][2].songMain), true);
+				//freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",false,freeAction[curAction][2].songMain), true);
+				//trace(Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: songs');
+				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",true,Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: songs'), true);
 				freePlay.volume = 0;
 				freePlay.play();
 				freePlay.fadeOut(2,0.7);
