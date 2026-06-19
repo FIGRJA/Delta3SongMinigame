@@ -71,7 +71,7 @@ function load_all_posible_notes_neo(file:String) {
 			noteData = n.split("|");
 			debugPrint(noteData);
 			if (noteData.length > 1)
-				scr_rhythmgame_add_lyric(Std.int(noteData[0]), noteData[1], noteData[2] == null ? "null" : (noteData[2].length>1?noteData[2]:"null"));
+				scr_rhythmgame_add_lyric(Std.int(noteData[0]), noteData[1], noteData[2]);
 		}
 	}
 	
@@ -98,6 +98,7 @@ function loadTxtNotes(file:String) {
 		var noteData:Array<Dynamic>;
 		for (note in data) {
 			noteData = note.split(",");
+			if (noteData.length > 1)
 				scr_rhythmgame_addnote(noteData[0], noteData[1], noteData[2], noteData[3], noteData[4]);
 			// trace(noteData);
 		}

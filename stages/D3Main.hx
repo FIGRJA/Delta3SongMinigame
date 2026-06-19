@@ -282,7 +282,7 @@ function onCreatePost() {
 	FlxG.camera.bgColor = 0x8EEE0000;
 	shader_ = getShader("grayT");
 	//shader_ = game.createRuntimeShader("wiggle");
-	trace(shader_);
+	//trace(shader_);
 	game.camGame.bgColor = 0x00;
 	game.camGame.filtersEnabled = true;
 	//game.camGame.filters = [ new ShaderFilter(shader_)];
@@ -298,7 +298,7 @@ function onCreatePost() {
 	//var gameSprite = cast FlxG.game;
 	//gameSprite.sahder = [shader_];
 	//FlxG.game.alpha = 0.5;
-	//Lib.application.window.opacity = 1;
+	Lib.application.window.opacity = 1;
 	//FlxG.signals.postDraw.add(clear);
 	//debugPrint(Lib.application.window.display.supportedModes );
 	//var a = Lib.application.window.displayMode;
@@ -334,29 +334,52 @@ function onCreatePost() {
 
 	var gog:Int = 0;
 	for (i in playerStrums) {
+		
+		//i.copyScale = false;
 		if (gog == 0 || gog == 3) {
 			i.camera = krisNoteCam;
+			i.cameras = [krisNoteCam,game.camHUD];
 			i.x = -48 + gog * 45;
-			if (gog == 0)
-				i.rgbShader.r = 0x4CFF9D;
-			if (gog == 3)
-				i.rgbShader.r = 0x07E2FF;
+			if (gog == 0){
+				i.x = -48;
+				i.color = 0x4CFF9D;
+			}
+			if (gog == 3){
+				i.x = 72;
+				i.color = 0x07E2FF;
+			}
 		} else if (gog == 1 || gog == 2) {
 			i.camera = susiNoteCam;
-			if (gog == 1)
+			if (gog == 1){
 				i.x = -48;
-			if (gog == 2)
-				i.x = 88;
+				i.color = 0xFF073D;
+			}
+			if (gog == 2){
+				i.x = 72;
+				i.color = 0xFF07A0;
+			}
 		}
-		i.y = 390;
-		i.alpha = 1;
+		i.y = 430;
+		i.visible = false;
 		gog += 1;
+		var fakeNS = new FlxSprite(i.x+40,i.y+10000);
+		//fakeNS.x = 0;
+		//fakeNS.y = 440;
+		fakeNS.loadGraphic(Paths.image("sp/spr_rhythmgame_button_4"));
+		fakeNS.scale.set(3,3);
+		//fakeNS.updateHitbox();
+		fakeNS.camera = i.camera;
+		//fakeNS.cameras = i.cameras;
+		//fakeNS.cameras = [krisNoteCam,game.camHUD];
+		fakeNS.color = i.color;
+		//i.add(fakeNS);
+		insert(1,fakeNS);
 	}
 	var gog:Int = 0;
 	for (i in opponentStrums) {
 		i.camera = ralseiNoteCam;
 		i.y = 390;
-		i.alpha = 1;
+		i.alpha = 0.1;
 		if (gog == 0)
 			i.x = -68 + 90 * 0;
 		if (gog == 2)
@@ -421,7 +444,7 @@ function onCreatePost() {
 
 	var blackbacknotes = new ModchartSprite(-85, 9780);
 	blackbacknotes.makeGraphic(350, 1000, FlxColor.BLACK);
-	blackbacknotes.alpha = 0.4;
+	blackbacknotes.alpha = 0.6;
 	blackbacknotes.cameras = [ralseiNoteCam, susiNoteCam, krisNoteCam];
 	insert(4, blackbacknotes);
 
@@ -595,10 +618,26 @@ var ralsClap = false;
 function onSpawnNote(daNote) {
 	daNote.noteSplashData.disabled = true;
 	daNote.lateHitMult = 1;
-	// daNote.rgbShader.enabled = true;
+	daNote.rgbShader.enabled = false;
 	// daNote.rgbShader.mult = 0.5;
 	// daNote.noteHoldSplash.alpha = 0;
 	rawType = daNote.noteData;
+
+	daNote.scale.set(3.5,3.5);
+	daNote.updateHitbox();
+	daNote.copyScale = false;
+	daNote.offsetY = -190;
+	daNote.offsetX = -150;
+	daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
+	
+	if (daNote.isSustainNote) {
+		daNote.scale.set(1.5,2.5);
+		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
+		daNote.angle = 90;
+		daNote.offsetX = -20;
+		daNote.offsetY = -100;
+		//daNote.scale.y = 0.5;
+	}
 	if (daNote.noteType == "lead") {
 		daNote.mustPress = true;
 		daNote.noteData = rawType * 3;
@@ -606,13 +645,14 @@ function onSpawnNote(daNote) {
 		// daNote.reloadNote();
 		// daNote.x = 0;
 		if (rawType == 0) {
-			daNote.rgbShader.r = 0x4CFF9D;
+			//daNote.rgbShader.r = 0x4CFF9D;
+			daNote.color = 0x4CFF9D;
 		}
 		if (rawType == 1) {
-			daNote.rgbShader.r = 0x07E2FF;
+			daNote.color = 0x07E2FF;
 		}
 		// if (krisMute.alpha == 1)daNote.ignoreNote = true;
-		// daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_2"));
+		//daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_2"));
 	} else if (daNote.noteType == "drum") {
 		daNote.mustPress = true;
 		daNote.noteData = rawType + 1;
@@ -630,12 +670,14 @@ function onSpawnNote(daNote) {
 		//	daNote.extraData.set("hit", 1000);
 		// daNote.reloadNote();
 		if (rawType == 0) {
-			daNote.rgbShader.r = 0xFF073D;
+			daNote.color = 0xFF073D;
 		}
 		if (rawType == 1) {
-			daNote.rgbShader.r = 0xFF07A0;
+			daNote.color = 0xFF07A0;
 		}
-		// daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_2"));
+		//daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_2"));
+		//daNote.scale.x *= 5;
+		daNote.width = 100;
 		// daNote.mustPress= false;
 		// daNote.hitByOpponent=true;
 	} else if (daNote.noteType == "vocal") {
@@ -643,15 +685,16 @@ function onSpawnNote(daNote) {
 		if (rawType == 0)
 			daNote.noteData = 0;
 		daNote.camera = ralseiNoteCam;
+		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_1"));
 		// daNote.reloadNote();
 		if (rawType == 0) {
-			daNote.rgbShader.r = 0x008F1F;
+			daNote.color = 0x008F1F;
 		}
 		if (rawType == 1) {
-			daNote.rgbShader.r = 0xD0FF00;
+			daNote.color = 0xD0FF00;
 		}
 		if (rawType == 2) {
-			daNote.rgbShader.r = 0x00FF37;
+			daNote.color = 0x00FF37;
 		}
 		if (daNote.sustainLength>0)
 			daNote.visible = false;
@@ -659,11 +702,8 @@ function onSpawnNote(daNote) {
 			//daNote.visible = ralsClap;
 			daNote.scale.x = daNote.scale.x*3;
 	}
-	if (!daNote.isSustainNote) {
-		daNote.scale.y = 0.5;
-	}
 	if (daNote.extraData.get("lolTag") != null)
-		daNote.rgbShader.r = 0x000000;
+		daNote.color = 0x000000;
 	//debugPrint(daNote.multSpeed);
 	// else { daNote.blockHit = true;}
 	// daNote.noteType = "";
@@ -672,6 +712,8 @@ function onSpawnNote(daNote) {
 
 var susiSkills = ["singDOWN-alt", "singUP", "singDOWN"];
 function onUpdate(e) {
+	if (isMenuChart)
+		return;
 	//shader_.setFloat("iTime",Conductor.songPosition);
 	//shader_.setFloat("pix",1);
 	//shader_.setFloat("hue",Math.sin(Conductor.songPosition/10000));
@@ -679,8 +721,6 @@ function onUpdate(e) {
 		light.y = Math.sin(Conductor.songPosition / 650) * 25 + 230;
 	}
 
-	if (isMenuChart)
-		return;
 	game.health = 2;
 	// debugPrint(ranSUMI);
 	var DadDead = true;
@@ -688,6 +728,16 @@ function onUpdate(e) {
 	//var tempClap = true;
 	var fn = 0;
 	for (i in notes) {
+		//debugPrint(i.y);
+		//if (i.isSustainNote){
+			//var swagRect:FlxRect = i.clipRect;
+			//debugPrint(i.width);
+			//if(swagRect != null) {
+			//	i.clipRect.height = swagRect.width;
+			//	i.clipRect.width = swagRect.height;
+			//}
+		//}
+		//i.width = 100;
 		if (i.strumTime + i.extraData.get("hit") <= Conductor.songPosition && i.canBeHit && i.noteType == "drum") {
 			// /debugPrint(i);
 			susiGoodHit(i);
@@ -735,7 +785,7 @@ function onUpdate(e) {
 		}
 	}
 
-	bmpDistant.y = (0.45 * ((Conductor.songPosition + (60 / Conductor.bpm * 1000)) % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) + 5;
+	bmpDistant.y = (0.45 * ((Conductor.songPosition + (60 / Conductor.bpm * 1000)) % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) + 15;
 	bmpDistant4.y = (0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + 5;
 
 	if (susiRofls) {

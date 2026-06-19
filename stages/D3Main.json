@@ -3,27 +3,31 @@
 		86,
 		-44
 	],
-	"preload": {
-		"images/smoke": 3,
-		"images/stagecurtains": 2,
-		"images/spotlight": 3,
-		"images/stagefront": 3,
-		"images/stageback": 3,
-		"images/stage_light": 2
-	},
 	"_editorMeta": {
 		"boyfriend": "kris",
-		"dad": "ralsei",
-		"gf": "susi"
+		"gf": "susi",
+		"dad": "ralsei"
 	},
+	"preload": {
+		"images/stagecurtains": 2,
+		"images/smoke": 3,
+		"images/spotlight": 3,
+		"images/stage_light": 2,
+		"images/stageback": 3,
+		"images/stagefront": 3
+	},
+	"girlfriend": [
+		114,
+		-129
+	],
+	"stageUI": "",
 	"boyfriend": [
 		310,
 		-115
 	],
-	"stageUI": "",
-	"girlfriend": [
-		115,
-		-130
+	"camera_girlfriend": [
+		151,
+		-148
 	],
 	"defaultZoom": 1.45,
 	"objects": [
@@ -191,19 +195,15 @@
 			"type": "dad"
 		}
 	],
-	"camera_girlfriend": [
-		151,
-		-148
-	],
-	"opponent": [
-		505,
-		-125
-	],
-	"directory": "",
 	"camera_speed": 1,
-	"hide_girlfriend": false,
+	"directory": "",
+	"opponent": [
+		504,
+		-122
+	],
 	"camera_opponent": [
 		-340,
 		-39
-	]
+	],
+	"hide_girlfriend": false
 }
