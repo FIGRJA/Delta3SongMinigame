@@ -134,7 +134,7 @@ function TW(a) {
         //MusicBeatState.startTransition();
     }
     if (a == 1){
-        new FlxTimer().start(0.5,()->{
+        new FlxTimer().start(0.05,()->{
         var RT = genText("MISSED NOTES","left",320,150);
         RT[1].color = 0xFF0000;
         RT = genText(game.songMisses,"right",920,150);

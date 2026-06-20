@@ -1,44 +1,44 @@
 {
 	"animations": [
 		{
+			"loop": false,
 			"offsets": [0, 0],
-			"loop": false,
-			"fps": 8,
 			"anim": "singLEFT",
-			"indices": [],
-			"name": "spr_kris_guitar_low_"
+			"fps": 8,
+			"name": "spr_kris_guitar_low_",
+			"indices": []
 		},
 		{
-			"offsets": [-4, 4],
 			"loop": false,
-			"fps": 8,
+			"offsets": [-2, 4],
 			"anim": "singRIGHT",
-			"indices": [],
-			"name": "spr_kris_guitar_high_"
-		},
-		{
-			"offsets": [-4, 8],
-			"loop": false,
 			"fps": 8,
-			"anim": "singRIGHT-alt",
-			"indices": [],
-			"name": "spr_kris_guitar_hold_"
+			"name": "spr_kris_guitar_high_",
+			"indices": []
 		},
 		{
 			"loop": false,
-			"offsets": [-1, 0],
-			"anim": "idle",
-			"fps": 1,
-			"name": "spr_kris_guitar_ready",
+			"offsets": [-2, 8],
+			"anim": "singRIGHT-alt",
+			"fps": 8,
+			"name": "spr_kris_guitar_hold_",
 			"indices": []
 		},
 		{
 			"offsets": [0, 0],
+			"loop": false,
+			"fps": 1,
+			"anim": "idle",
 			"indices": [],
-			"fps": 2,
-			"anim": "idle-alt",
+			"name": "spr_kris_guitar_ready"
+		},
+		{
 			"loop": true,
-			"name": "spr_kris_rock_2"
+			"offsets": [0, 0],
+			"anim": "idle-alt",
+			"fps": 2,
+			"name": "spr_kris_rock_2",
+			"indices": []
 		}
 	],
 	"vocals_file": "",

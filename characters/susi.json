@@ -1,68 +1,68 @@
 {
 	"animations": [
 		{
+			"offsets": [0, -1],
 			"loop": false,
-			"offsets": [0, 0],
+			"fps": 1,
 			"anim": "idle",
-			"fps": 1,
-			"name": "spr_susie_drum_0",
-			"indices": []
+			"indices": [],
+			"name": "spr_susie_drum_0"
 		},
 		{
+			"offsets": [0, -1],
 			"loop": false,
-			"offsets": [0, 0],
+			"fps": 18,
 			"anim": "singUP",
-			"fps": 18,
-			"name": "spr_susie_drum_right_",
-			"indices": [0,1]
+			"indices": [0, 1],
+			"name": "spr_susie_drum_right_"
 		},
 		{
+			"offsets": [0, -1],
 			"loop": false,
-			"offsets": [0, 0],
+			"fps": 18,
 			"anim": "singDOWN",
-			"fps": 18,
-			"name": "spr_susie_drum_mid_",
-			"indices": [0,1]
+			"indices": [0, 1],
+			"name": "spr_susie_drum_mid_"
 		},
 		{
+			"offsets": [0, -1],
 			"loop": false,
-			"offsets": [0, 0],
+			"fps": 18,
 			"anim": "singDOWN-alt",
-			"fps": 18,
-			"name": "spr_susie_drum_left_",
-			"indices": [0,1]
+			"indices": [0, 1],
+			"name": "spr_susie_drum_left_"
 		},
 		{
+			"offsets": [0, -1],
 			"loop": false,
-			"offsets": [0, 0],
+			"fps": 18,
 			"anim": "singUP-alt",
-			"fps": 18,
-			"name": "spr_susie_drum_mid_",
-			"indices": [0,1]
+			"indices": [0, 1],
+			"name": "spr_susie_drum_mid_"
 		},
 		{
+			"offsets": [0, 5],
 			"loop": false,
-			"offsets": [0, 6],
+			"fps": 8,
 			"anim": "clap",
-			"fps": 8,
-			"name": "spr_susie_drumsticks_",
-			"indices": []
+			"indices": [],
+			"name": "spr_susie_drumsticks_"
 		},
 		{
+			"offsets": [0, 5],
 			"loop": false,
-			"offsets": [0, 6],
+			"fps": 8,
 			"anim": "clap-alt",
-			"fps": 8,
-			"name": "spr_susie_drumsticks2_",
-			"indices": []
+			"indices": [],
+			"name": "spr_susie_drumsticks2_"
 		},
 		{
+			"offsets": [0, -1],
 			"loop": false,
-			"offsets": [0, 0],
-			"anim": "ready",
 			"fps": 1,
-			"name": "spr_susie_drum_ready_",
-			"indices": []
+			"anim": "ready",
+			"indices": [],
+			"name": "spr_susie_drum_ready_"
 		}
 	],
 	"vocals_file": "",
@@ -75,5 +75,5 @@
 	"camera_position": [0, 0],
 	"sing_duration": 4,
 	"scale": 2,
-	"_editor_isPlayer": true
+	"_editor_isPlayer": false
 }

@@ -15,6 +15,15 @@ import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 
 import tjson.TJSON;
 var isAllowed:Bool = PlayState.SONG.song == "songChart";
+var practicN = "practice"+"deltarun 3 MiniGame"+"play";
+//debugPrint(Highscore.songScores.get(practicN));
+if ((!Highscore.songScores.exists(practicN)||Highscore.songScores.get(practicN)<1)&&isAllowed){
+	PlayState.SONG.song = "practice";//song name
+	PlayState.SONG.format = "deltarun 3 MiniGame" +"^"+ "play";// mod name + dificult
+	game.songName = "practice";
+	isAllowed = false;
+	//MusicBeatState.resetState();
+}
 var Control = Controls.instance;
 var backed:FlxBackdrop;
 var inst:FlxSound = new FlxSound();
@@ -388,8 +397,8 @@ function onUpdate(e) {
 				glitchAr.remove(b);
 			if (glitchAr.length==0&&limitD>50){
 				var r = FlxG.random.int(0,freeAction.length-1);
-				PlayState.SONG.song = freeAction[r][2].name;
-				PlayState.SONG.format = freeAction[r][0][0].name +"^"+ freeAction[r][0][1].dificulties[0].text;
+				PlayState.SONG.song = freeAction[r][2].name;//song name
+				PlayState.SONG.format = freeAction[r][0][0].name +"^"+ freeAction[r][0][1].dificulties[0].text;// mod name + dificult
 				MusicBeatState.resetState();
 
 			}
@@ -487,6 +496,9 @@ function onUpdate(e) {
 			curDiffAction += 1;
 		timer = 0.15;
 	}
+	if (Control.NOTE_RIGHT){
+		//resetSong();
+	}
 	curAction = Math.abs(freeAction.length + curAction) % freeAction.length;
 	if (diffAction != null)
 		curDiffAction = Math.abs(diffAction.length + curDiffAction) % diffAction.length;
@@ -513,10 +525,17 @@ function onUpdate(e) {
 function getTmpScore() {
 	var path = freeAction[curAction][2].name + freeAction[curAction][0][0].name + freeAction[curAction][0][1].dificulties[curDiffAction].name;
 	// debugPrint(Highscore.songScores.exists(path));
-	// trace(path);
+	//debugPrint(path);
 	if (Highscore.songScores.exists(path))
 		return Highscore.songScores.get(path);
 	return 0;
+}
+
+function resetSong(?path) {
+	if (path == null ) path =freeAction[curAction][2].name + freeAction[curAction][0][0].name + freeAction[curAction][0][1].dificulties[curDiffAction].name;
+	//debugPrint(path);
+	Highscore.setScore(path,0);
+	Highscore.setRating(path,0);
 }
 
 function onDestroy() {

@@ -17,48 +17,22 @@
 		"images/stagefront": 3
 	},
 	"girlfriend": [
-		114,
-		-129
+		119,
+		-135
 	],
 	"stageUI": "",
 	"boyfriend": [
-		310,
-		-115
-	],
-	"camera_girlfriend": [
-		151,
-		-148
+		313,
+		-120
 	],
 	"defaultZoom": 1.45,
 	"objects": [
 		{
-			"x": 4,
-			"y": -10,
+			"x": 14,
+			"y": -6,
 			"scale": [
-				1.03,
-				1.03
-			],
-			"image": "bg/spr_rhythmgame_bg_1",
-			"flipX": false,
-			"filters": 3,
-			"color": "FFFFFF",
-			"angle": 0,
-			"name": "bgLight",
-			"antialiasing": false,
-			"flipY": false,
-			"scroll": [
 				1,
 				1
-			],
-			"alpha": 1,
-			"type": "sprite"
-		},
-		{
-			"x": 4,
-			"y": -10,
-			"scale": [
-				1.03,
-				1.03
 			],
 			"image": "bg/spr_rhythmgame_bg_0",
 			"flipX": false,
@@ -76,8 +50,30 @@
 			"type": "sprite"
 		},
 		{
-			"x": -1,
-			"y": -1,
+			"x": 13,
+			"y": -6,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_bg_1",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "bgLight",
+			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
+			"x": 14,
+			"y": -7,
 			"scale": [
 				1,
 				1
@@ -94,14 +90,14 @@
 				1,
 				1
 			],
-			"alpha": 0,
+			"alpha": 1,
 			"type": "sprite"
 		},
 		{
-			"x": 241,
-			"y": 254,
+			"x": 238,
+			"y": 244,
 			"scale": [
-				0.55,
+				0.6,
 				0.5
 			],
 			"image": "bg/spr_tenna_enemy_bg_parts_2",
@@ -121,9 +117,9 @@
 		},
 		{
 			"x": 425,
-			"y": 255,
+			"y": 245,
 			"scale": [
-				0.5,
+				0.6,
 				0.5
 			],
 			"image": "bg/spr_tenna_enemy_bg_parts_2",
@@ -142,10 +138,10 @@
 			"type": "sprite"
 		},
 		{
-			"x": 67,
-			"y": 254,
+			"x": 47,
+			"y": 244,
 			"scale": [
-				0.5,
+				0.6,
 				0.5
 			],
 			"image": "bg/spr_tenna_enemy_bg_parts_2",
@@ -164,8 +160,8 @@
 			"type": "sprite"
 		},
 		{
-			"x": 4,
-			"y": -10,
+			"x": -1,
+			"y": -15,
 			"scale": [
 				1.03,
 				1.03
@@ -182,7 +178,7 @@
 				1,
 				1
 			],
-			"alpha": 0.3,
+			"alpha": 0.6,
 			"type": "sprite"
 		},
 		{
@@ -193,13 +189,61 @@
 		},
 		{
 			"type": "dad"
+		},
+		{
+			"x": -153,
+			"y": -1013,
+			"scale": [
+				3.05,
+				3.05
+			],
+			"image": "bg/spr_rhythmgame_catwalks_0",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "sprite2",
+			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				1.7
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
+			"x": -151,
+			"y": -1340,
+			"scale": [
+				3.05,
+				3.05
+			],
+			"image": "bg/spr_rhythmgame_catwalks_1",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "sprite3",
+			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				2.55
+			],
+			"alpha": 1,
+			"type": "sprite"
 		}
+	],
+	"camera_girlfriend": [
+		151,
+		-148
 	],
 	"camera_speed": 1,
 	"directory": "",
 	"opponent": [
-		504,
-		-122
+		499,
+		-127
 	],
 	"camera_opponent": [
 		-340,

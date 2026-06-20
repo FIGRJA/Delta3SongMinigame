@@ -1,92 +1,92 @@
 {
 	"animations": [
 		{
+			"offsets": [-11, 2],
 			"loop": false,
-			"offsets": [-9, 3],
+			"fps": 1,
 			"anim": "ready",
-			"fps": 1,
-			"name": "spr_ralsei_rock_blush_",
-			"indices": []
+			"indices": [],
+			"name": "spr_ralsei_rock_blush_"
 		},
 		{
+			"offsets": [-1, 0],
 			"loop": false,
-			"offsets": [0, 0],
+			"fps": 1,
 			"anim": "oi",
-			"fps": 1,
-			"name": "spr_ralsei_sing_cuss_",
+			"indices": [],
+			"name": "spr_ralsei_sing_cuss_"
+		},
+		{
+			"loop": true,
+			"offsets": [0, 0],
+			"anim": "idle",
+			"fps": 2,
+			"name": "spr_ralsei_sing_polite_",
+			"indices": [2, 3]
+		},
+		{
+			"loop": false,
+			"offsets": [-1, 0],
+			"anim": "idle-alt",
+			"fps": 4,
+			"name": "spr_ralsei_sing_clap",
 			"indices": []
 		},
 		{
-			"offsets": [0, 0],
 			"loop": true,
-			"fps": 2,
-			"anim": "idle",
-			"indices": [2, 3],
-			"name": "spr_ralsei_sing_polite_"
-		},
-		{
-			"offsets": [2, 2],
-			"loop": false,
-			"fps": 4,
-			"anim": "idle-alt",
-			"indices": [],
-			"name": "spr_ralsei_sing_clap"
-		},
-		{
-			"offsets": [20, -5],
-			"loop": true,
-			"fps": 8,
+			"offsets": [13, -8],
 			"anim": "singRIGHT-alt",
-			"indices": [],
-			"name": "spr_ralsei_sing_rude_"
+			"fps": 8,
+			"name": "spr_ralsei_sing_rude_",
+			"indices": []
 		},
 		{
-			"offsets": [0, 0],
 			"loop": false,
-			"fps": 12,
+			"offsets": [-1, 0],
 			"anim": "singLEFT",
-			"indices": [2,0,2],
-			"name": "spr_ralsei_sing_polite_"
+			"fps": 12,
+			"name": "spr_ralsei_sing_polite_",
+			"indices": [2, 0, 2]
 		},
 		{
-			"offsets": [0, 0],
 			"loop": false,
-			"fps": 12,
+			"offsets": [-1, 0],
 			"anim": "singUP",
-			"indices": [2,0,2],
-			"name": "spr_ralsei_sing_polite_"
-		},
-		{
-			"offsets": [0, 0],
-			"loop": false,
 			"fps": 12,
+			"name": "spr_ralsei_sing_polite_",
+			"indices": [2, 0, 2]
+		},
+		{
+			"loop": false,
+			"offsets": [-1, 0],
 			"anim": "singRIGHT",
-			"indices": [2,0,2],
-			"name": "spr_ralsei_sing_polite_"
+			"fps": 12,
+			"name": "spr_ralsei_sing_polite_",
+			"indices": [2, 0, 2]
 		},
 		{
-			"offsets": [0, 0],
 			"loop": false,
-			"fps": 8,
+			"offsets": [-1, 0],
 			"anim": "singLEFT-hold",
-			"indices": [0,1],
-			"name": "spr_ralsei_sing_polite_"
+			"fps": 8,
+			"name": "spr_ralsei_sing_polite_",
+			"indices": [0, 1]
 		},
 		{
-			"offsets": [0, 0],
 			"loop": false,
-			"fps": 8,
+			"offsets": [-1, 0],
 			"anim": "singUP-hold",
-			"indices": [0,1],
-			"name": "spr_ralsei_sing_polite_"
+			"fps": 8,
+			"name": "spr_ralsei_sing_polite_",
+			"indices": [0, 1]
 		},
 		{
-			"offsets": [0, 0],
 			"loop": false,
-			"fps": 8,
+			"offsets": [-1, 0],
 			"anim": "singRIGHT-hold",
-			"indices": [0,1],
-			"name": "spr_ralsei_sing_polite_"
+			"fps": 8,
+			"name": "spr_ralsei_sing_polite_",
+			"indices": [0, 1]
 		}
 	],
 	"vocals_file": "",

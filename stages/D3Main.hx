@@ -27,14 +27,14 @@ var ralseiNoteCam:FlxCamera;
 var bmpDistant:FlxBackdrop;
 var bmpDistant4:FlxBackdrop;
 var maskBG:FlxSprite = new ModchartSprite(4,-10);
-var krisMissBack:FlxSprite = new ModchartSprite(-190, 9800);
-var susiMissBack:FlxSprite = new ModchartSprite(-190, 9800);
-var krisMute:FlxSprite = new ModchartSprite(-85, 9780);
-var susiMute:FlxSprite = new ModchartSprite(-85, 9780);
-var susiCombo:FlxText = new FlxText(-90, 10080, 350, "0", 250, true);
-var krisCombo:FlxText = new FlxText(-90, 10080, 350, "0", 250, true);
-var ralsCombo:FlxText = new FlxText(-90, 10080, 350, "0", 250, true);
-var wordCombo:FlxText = new FlxText(-95, 10280, 350, "COMBO", 120, true);
+var krisMissBack:FlxSprite = new ModchartSprite(-190, -200);
+var susiMissBack:FlxSprite = new ModchartSprite(-190, -200);
+var krisMute:FlxSprite = new ModchartSprite(-85, -220);
+var susiMute:FlxSprite = new ModchartSprite(-85, -220);
+var susiCombo:FlxText = new FlxText(-110, 80, 350, "0", 240, true);
+var krisCombo:FlxText = new FlxText(-110, 80, 350, "0", 240, true);
+var ralsCombo:FlxText = new FlxText(-110, 80, 350, "0", 240, true);
+var wordCombo:FlxText = new FlxText(-115, 265, 350, "COMBO", 90, true);
 var maxCombo:FlxText = new FlxText(960, 647, 0, "000000", 60, true);
 var maxComboText:FlxText = new FlxText(857, 675, 0, "MAX COMBO", 25, true);
 var SCORE:FlxText = new FlxText(180, 647, 0, "000000", 60, true);
@@ -70,24 +70,6 @@ var susiRofls:Bool = false;
 //
 // ];
 
-//function testShader(shaderName){
-//	var shader = Paths.getPath("shaders/"+shaderName);
-//	if (NativeFileSystem.exists(shader))
-//		return shader;
-//	return null;
-//}
-//
-//function getShader(shaderName){
-//	var vert = testShader(shaderName+".vert");
-//	var frag = testShader(shaderName+".frag");
-//	trace(vert);
-//	trace(frag);
-//	if (!game.runtimeShaders.exists(shaderName))
-//		game.runtimeShaders.set(shaderName,[frag,vert]);
-//	return new FlxRuntimeShader([frag,vert]);
-//
-//}
-
 function getShader(shaderName){
 	var vert = testShader(shaderName+".vert");
 	var frag = testShader(shaderName+".frag");
@@ -105,69 +87,7 @@ function testShader(shaderName){
 	return null;
 }
 
-//function getShader(shaderName){
-//	if(!game.runtimeShaders.exists(shaderName) &&! game.initLuaShader(shaderName))
-//		{
-//			return null;
-//		}
-//		return new ShaderFilter(game.runtimeShaders.get(shaderName));
-//}
-//function loadSongsLists() {
-//	//return getVar("songMenu").call("loadSongsLists",[]);
-//	var result:Array = [];
-//	for (i in Mods.getModDirectories()) {
-//		var path = "mods/" + i;
-//		if (NativeFileSystem.exists(path + "/songList.json") && NativeFileSystem.exists(path + "/pack.json")) {
-//			// debugPrint(path);
-//			try {
-//				var list = DialogueBoxPsych.parseDialogue(path + "/songList.json"); // dymmy haxe.Json
-//				var pack = DialogueBoxPsych.parseDialogue(path + "/pack.json"); // dymmy haxe.Json
-//				result.push([pack, list,i]);
-//			} catch (e:Dynamic) {
-//				debugPrint(e, FlxColor.RED);
-//			}
-//		}else if (NativeFileSystem.isDirectory(path + "/SongCharts")){
-//			var dir = NativeFileSystem.readDirectory(path + "/SongCharts/");
-//			var ok = false;
-//			var s = '{
-//				"dificulties":[
-//					{
-//						"name":"play ERS",
-//						"prefix":"music_timing_customsong",
-//						"postfix":"",
-//						"dir":"SongCharts/"
-//					}
-//				],
-//				"songs":[';
-//			for (n in dir){
-//				if (n.indexOf("music_timing_customsong_info")==0){
-//					if (ok) s = s + ",";
-//					ok = true;
-//					var data:Array<String> = File.getContent(path + "/SongCharts/"+n).split("\n");
-//					s = s+'{';
-//					s = s+'	"name":"'+data[9]+'",';
-//					s = s+'	"nameFile":"",';
-//					s = s+'	"bpm":'+data[3]+',';
-//					s = s+'	"speed":'+Std.int(data[4])+',';
-//					s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
-//					s = s+'	"songPlay":"'+data[1].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
-//					s = s+'	"album":'+data[11]+',';
-//					s = s+'	"index":"'+n.split("customsong_info")[1].split(".")[0]+'",';
-//					s = s+'	"hxModule":null,';
-//					s = s+'	"isFull":false';
-//					s = s+'}';
-//				}
-//			}
-//			if (!ok)continue;
-//			s = s + "]}";
-//			//debugPrint(s);
-//			var list = TJSON.parse(s);
-//			var pack = TJSON.parse('{"name":"'+i+'"}');
-//			result.push([pack, list,i]);
-//		}
-//	}
-//	return result;
-//}
+
 
 var SONG:Dynamic;
 var acurateDrums = 1;
@@ -245,6 +165,9 @@ function getSong(mod,song) {
 function onCreatePost() {
 	if (isMenuChart)
 		return;
+
+	//game.moveCamera(false);
+	//game.camFollow.y = 0;
 	game.noteKillOffset = 120;
 	// getVar("load_delta_notes").call("loadSong",["scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",2]);
 	// PlayState.SONG.bpm = 148;
@@ -257,24 +180,39 @@ function onCreatePost() {
 		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songPlay),true,Paths.formatToSongPath(SONG.songPlay)+'/Vocals, PATH: songs'));
 	} catch (e:Dynamic) {}
 
-	susiNoteCam = new FlxCamera(345, 40, 150, 400, 1);
-	krisNoteCam = new FlxCamera(570, 40, 150, 400, 1);
-	ralseiNoteCam = new FlxCamera(790, 40, 150, 400, 1);
+	susiNoteCam = new FlxCamera(361, 55, 120, 390, 1);
+	krisNoteCam = new FlxCamera(578, 55, 120, 390, 1);
+	ralseiNoteCam = new FlxCamera(796, 55, 120, 390, 1);
 
 	FlxG.cameras.insert(susiNoteCam, 1, false);
 	FlxG.cameras.insert(krisNoteCam, 2, false);
 	FlxG.cameras.insert(ralseiNoteCam, 3, false);
+	
 	susiNoteCam.zoom = 0.5;
 	susiNoteCam.bgColor = 0x00;
-	susiNoteCam.scroll.y = 10000;
+	//susiNoteCam.visible = false;
+	//var sp1 = susiNoteCam.canvas;
+	//sp1.camera = game.camGame;
+	//add(sp1);
+	//susiNoteCam.scroll.y = 10000;
+	
 	krisNoteCam.zoom = 0.5;
 	krisNoteCam.bgColor = 0x00;
-	krisNoteCam.scroll.y = 10000;
+	//krisNoteCam.visible = false;
+	//var sp2 = krisNoteCam.canvas;
+	//sp2.camera = game.camGame;
+	//add(sp2);
+	//krisNoteCam.scroll.y = 10000;
+	
 	ralseiNoteCam.zoom = 0.5;
 	ralseiNoteCam.bgColor = 0x00;
-	ralseiNoteCam.scroll.y = 10000;
+	//ralseiNoteCam.visible = false;
+	//var sp3 = ralseiNoteCam.canvas;
+	//sp3.camera = game.camGame;
+	//add(sp3);
+	//ralseiNoteCam.scroll.y = 10000;
 
-	FlxG.stage.alpha = 1;
+	//FlxG.stage.alpha = 1;
 	FlxG.stage.color = 0x00000000;
 	//FlxG.stage.background = 0x00000000;
 	//debugPrint(FlxG.stage.application.window.__attributes);
@@ -336,37 +274,35 @@ function onCreatePost() {
 	for (i in playerStrums) {
 		
 		//i.copyScale = false;
+		if (gog<2)
+			i.x = -62;
+		else
+			i.x = 53;
+
 		if (gog == 0 || gog == 3) {
 			i.camera = krisNoteCam;
-			i.cameras = [krisNoteCam,game.camHUD];
-			i.x = -48 + gog * 45;
-			if (gog == 0){
-				i.x = -48;
+			//i.cameras = [krisNoteCam,game.camHUD];
+			//i.x = -48 + gog * 45;
+			if (gog == 0)
 				i.color = 0x4CFF9D;
-			}
-			if (gog == 3){
-				i.x = 72;
+			if (gog == 3)
 				i.color = 0x07E2FF;
-			}
 		} else if (gog == 1 || gog == 2) {
 			i.camera = susiNoteCam;
-			if (gog == 1){
-				i.x = -48;
+			if (gog == 1)
 				i.color = 0xFF073D;
-			}
-			if (gog == 2){
-				i.x = 72;
+			if (gog == 2)
 				i.color = 0xFF07A0;
-			}
 		}
-		i.y = 430;
+		i.y = 428
+		;
 		i.visible = false;
 		gog += 1;
-		var fakeNS = new FlxSprite(i.x+40,i.y+10000);
+		var fakeNS = new FlxSprite(i.x+40,i.y);
 		//fakeNS.x = 0;
 		//fakeNS.y = 440;
 		fakeNS.loadGraphic(Paths.image("sp/spr_rhythmgame_button_4"));
-		fakeNS.scale.set(3,3);
+		fakeNS.scale.set(2.9,3);
 		//fakeNS.updateHitbox();
 		fakeNS.camera = i.camera;
 		//fakeNS.cameras = i.cameras;
@@ -381,13 +317,14 @@ function onCreatePost() {
 		i.y = 390;
 		i.alpha = 0.1;
 		if (gog == 0)
-			i.x = -68 + 90 * 0;
+			i.x = -90 + 90 * 0;
 		if (gog == 2)
-			i.x = -68 + 90 * 1;
+			i.x = -90 + 90 * 1;
 		if (gog == 3)
-			i.x = -68 + 90 * 2;
+			i.x = -90 + 90 * 2;
 		if (gog == 1)
-			i.x = -400;
+			i.visible = false;
+			//i.x = -400;
 		gog += 1;
 	}
 
@@ -436,13 +373,16 @@ function onCreatePost() {
 	ralsCombo.visible = statusLoad[2];
 
 	wordCombo.font = Paths.getPath("fronts/fnt_main.ttf");
-	wordCombo.cameras = [statusLoad[2]?ralseiNoteCam:camGame, statusLoad[1]?susiNoteCam:camGame,statusLoad[0]?krisNoteCam:camGame];
+	wordCombo.cameras = [];
+	if (statusLoad[0]) wordCombo.cameras.push(krisNoteCam);
+	if (statusLoad[1]) wordCombo.cameras.push(susiNoteCam);
+	if (statusLoad[2]) wordCombo.cameras.push(ralseiNoteCam);
 	// ralsCombo.scale.y = 4;
 	wordCombo.antialiasing = false;
 	wordCombo.alignment = "center";
 	insert(0, wordCombo);
 
-	var blackbacknotes = new ModchartSprite(-85, 9780);
+	var blackbacknotes = new ModchartSprite(-85, -220);
 	blackbacknotes.makeGraphic(350, 1000, FlxColor.BLACK);
 	blackbacknotes.alpha = 0.6;
 	blackbacknotes.cameras = [ralseiNoteCam, susiNoteCam, krisNoteCam];
@@ -518,8 +458,11 @@ function onCreatePost() {
 	//    PreSpawnNote(no);
 	// }
 	susiRofls = FlxG.random.bool(10);
-	if (game.songName == "practice")
+	debugPrint(game.songName);
+	if (game.songName == "practice"){
 		susiRofls = false;
+		game.camGame.scroll.y = game.camFollow.y-2500;
+	}
 	game.boyfriend.idleSuffix = "-alt";
 	game.boyfriend.recalculateDanceIdle();
 
@@ -623,18 +566,18 @@ function onSpawnNote(daNote) {
 	// daNote.noteHoldSplash.alpha = 0;
 	rawType = daNote.noteData;
 
-	daNote.scale.set(3.5,3.5);
+	daNote.scale.set(2.9,3.5);
 	daNote.updateHitbox();
 	daNote.copyScale = false;
-	daNote.offsetY = -190;
-	daNote.offsetX = -150;
+	daNote.offsetY = -200;
+	daNote.offsetX = -105;
 	daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 	
 	if (daNote.isSustainNote) {
 		daNote.scale.set(1.5,2.5);
 		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 		daNote.angle = 90;
-		daNote.offsetX = -20;
+		daNote.offsetX = -5;
 		daNote.offsetY = -100;
 		//daNote.scale.y = 0.5;
 	}
@@ -686,6 +629,8 @@ function onSpawnNote(daNote) {
 			daNote.noteData = 0;
 		daNote.camera = ralseiNoteCam;
 		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_1"));
+		daNote.scale.set(1.2,2.8);
+		daNote.alpha = 1;
 		// daNote.reloadNote();
 		if (rawType == 0) {
 			daNote.color = 0x008F1F;
@@ -700,7 +645,8 @@ function onSpawnNote(daNote) {
 			daNote.visible = false;
 		if (!daNote.isSustainNote)
 			//daNote.visible = ralsClap;
-			daNote.scale.x = daNote.scale.x*3;
+			daNote.scale.x = daNote.scale.x*8;
+			daNote.scale.y = daNote.scale.y/2;
 	}
 	if (daNote.extraData.get("lolTag") != null)
 		daNote.color = 0x000000;
@@ -714,6 +660,8 @@ var susiSkills = ["singDOWN-alt", "singUP", "singDOWN"];
 function onUpdate(e) {
 	if (isMenuChart)
 		return;
+
+	//debugPrint(ralseiNoteCam.canvas.graphics);
 	//shader_.setFloat("iTime",Conductor.songPosition);
 	//shader_.setFloat("pix",1);
 	//shader_.setFloat("hue",Math.sin(Conductor.songPosition/10000));
@@ -814,6 +762,10 @@ function onUpdatePost(e){
 function opponentNoteHit(daNote) {
 	if (!daNote.isSustainNote) {
 		ralsCombo.text = Std.int(ralsCombo.text) + 1;
+		for (note in daNote.tail){
+			note.color = 0xFBAE1F;
+			note.alpha = 1;
+		}
 	}
 	if (ralsClap){
 		game.dad.stunned = true;
@@ -856,6 +808,10 @@ function goodNoteHit(daNote) {
 		daNote.parent.visible = true;
 		daNote.parent.alpha = 1;
 	}
+	for (note in daNote.tail){
+		note.color = 0xFBAE1F;
+		note.alpha = 1;
+	}
 }
 
 function susiGoodHit(daNote) {
@@ -891,7 +847,7 @@ function onEndSong() {
 	if (game.chartingMode)
 		return;
 	if (!ClientPrefs.getGameplaySetting('practice') && !ClientPrefs.getGameplaySetting('botplay')) {
-		var daSong = PlayState.SONG.song + PlayState.SONG.format;
+		var daSong = PlayState.SONG.song + PlayState.SONG.format.split("^").join();
 		// trace(daSong);
 		if (Highscore.songScores.exists(daSong)) {
 			// trace("false");
@@ -908,12 +864,12 @@ function onEndSong() {
 			Highscore.setFC(daSong, game.songMisses == 0);
 			Highscore.setRating(daSong, game.percent);
 		}
+		CustomSubstate.openCustomSubstate('END', true);
+		PlayState.SONG.song = "songChart";
 	}
 
 	//FlxG.sound.music.destroy();
 	//MusicBeatState.startTransition();
-	CustomSubstate.openCustomSubstate('END', true);
-	PlayState.SONG.song = "songChart";
 }
 var ShapeTM;
 function shareSprite(sp:FlxSprite,x) {
