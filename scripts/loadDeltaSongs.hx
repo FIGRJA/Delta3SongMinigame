@@ -42,7 +42,7 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 		//	Conductor.bpm = foundBPM;
 		// }
 		
-		writeNoteToSong();
+		//writeNoteToSong();
 		// game.unspawnNotes = [];
 		// PlayState.generateSong();
 		debugPrint("loaded " + game.unspawnNotes.length + " notes");
@@ -102,10 +102,10 @@ function loadTxtNotes(file:String) {
 				scr_rhythmgame_addnote(noteData[0], noteData[1], noteData[2], noteData[3], noteData[4]);
 			// trace(noteData);
 		}
-		debugPrint("loaded " + file);
+		//debugPrint("loaded " + file);
 		return true;
 	} else {
-		debugPrint("not loaded " + file);
+		//debugPrint("not loaded " + file);
 		return false;
 	}
 }
@@ -122,7 +122,7 @@ function loadTxtLyrics(file:String) {
 				scr_rhythmgame_add_lyric(Std.int(noteData[0]), noteData[1], noteData[3] == null ? "null" : noteData[2]);
 			}
 		}
-		debugPrint("loaded " + file);
+		//debugPrint("loaded " + file);
 	} else {
 		debugPrint("not loaded " + file);
 	}
@@ -280,8 +280,11 @@ function scr_rhythmgame_add_lyric(timming, str1 = "", ?str2 = "") {
 }
 
 function writeNoteToSong() {
+	trace("start write");
 	PlayState.SONG.notes[0].sectionNotes = [];
-	var notes:Int = 0;
+	var emty = PlayState.SONG.notes[0];
+	debugPrint(emty);
+	//var notes:Int = 0;
 	var section:Int = 1 / PlayState.SONG.bpm * 60 * 1000 * 4;
 	for (i in 0...game.unspawnNotes.length) {
 		var note = game.unspawnNotes[i];
@@ -292,15 +295,16 @@ function writeNoteToSong() {
 		simpleNote[1] = note.noteData + (note.mustPress ? 0 : 4);
 		simpleNote[2] = note.sustainLength;
 		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : "";
-		if (PlayState.SONG.notes.length > Math.round((note.strumTime / section) - 0.5)) {
-			if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]!=null)
-				PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)].sectionNotes = [];
-		}
 
-		if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]!=null)
-			PlayState.SONG.notes[Math.round((note.strumTime / section) - 0.5)].sectionNotes.push(simpleNote);
-		notes++;
+		if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]==null)
+			PlayState.SONG.notes.push(emty);
+		//if (PlayState.SONG.notes.length > Math.round((note.strumTime / section) + 1.5)) {
+		//	PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)] = emty;
+		//}
+		PlayState.SONG.notes[Math.round((note.strumTime / section) - 0.5)].sectionNotes.push(simpleNote);
+		//notes++;
 	}
+	trace("end write");
 }
 
 function findClapRals() {

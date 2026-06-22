@@ -1,14 +1,16 @@
 import openfl.Lib;
+import openfl.display.BitmapData;
+import flixel.math.FlxMatrix;
 import flixel.util.FlxTimer;
 import flixel.addons.display.FlxBackdrop;
 import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Json;
+import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 import backend.MusicBeatState;
 import backend.Mods;
 import backend.Highscore;
 import backend.ClientPrefs;
 import backend.CacheSystem;
 import psychlua.ModchartSprite;
-import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 import lime.graphics.opengl.GL;
 import tjson.TJSON;
 
@@ -29,8 +31,8 @@ var bmpDistant4:FlxBackdrop;
 var maskBG:FlxSprite = new ModchartSprite(4,-10);
 var krisMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var susiMissBack:FlxSprite = new ModchartSprite(-190, -200);
-var krisMute:FlxSprite = new ModchartSprite(-85, -220);
-var susiMute:FlxSprite = new ModchartSprite(-85, -220);
+var krisMute:FlxSprite = new ModchartSprite(-55, -195);
+var susiMute:FlxSprite = new ModchartSprite(-55, -195);
 var susiCombo:FlxText = new FlxText(-110, 80, 350, "0", 240, true);
 var krisCombo:FlxText = new FlxText(-110, 80, 350, "0", 240, true);
 var ralsCombo:FlxText = new FlxText(-110, 80, 350, "0", 240, true);
@@ -43,6 +45,8 @@ var L1 = MusicBeatState.getVariables().get("L1");
 var L2 = MusicBeatState.getVariables().get("L2");
 var L3 = MusicBeatState.getVariables().get("L3");
 var susiRofls:Bool = false;
+var songScore = 0;
+var SPcameras = [];
 
 /*
 	0- ch3_karaoke
@@ -130,6 +134,7 @@ for (mod in loadSongsLists()) for (song in mod[1].songs) {
 		statusLoad = loadSong(path, index, song.isFull);
 		//debugPrint(statusLoad);
 		SONG = song;
+		setVar("SONG",SONG);
 	}
 	// for (sos in songsList){
 	//    if (game.songName == sos[1]){
@@ -162,6 +167,7 @@ function getSong(mod,song) {
 		return Paths.getPath("mus/"+song+".ogg");
 	
 }
+
 function onCreatePost() {
 	if (isMenuChart)
 		return;
@@ -188,6 +194,23 @@ function onCreatePost() {
 	FlxG.cameras.insert(krisNoteCam, 2, false);
 	FlxG.cameras.insert(ralseiNoteCam, 3, false);
 	
+	var createCamSP = (camera:FlxCamera)->{
+		var bitmapData:BitmapData = new BitmapData(camera.width*2, camera.height*2, true, 0x00FFFFFF);
+		//bitmapData.draw(camera.canvas);
+		bitmapData.scroll(-camera.width,-camera.height);
+		var SPCam = new FlxSprite(0,-87,bitmapData);
+		SPCam.scale.set(0.35,0.35);
+		SPCam.updateHitbox();
+		SPCam.camera = game.camGame;
+		var matrix = new FlxMatrix();
+		matrix.translate(camera.width/2, camera.height/2);
+		///camera.visible = false;
+		camera.y = 1000;
+		add(SPCam);
+		//debugPrint(SPCam);
+		return [bitmapData,SPCam,camera,matrix];
+	}
+
 	susiNoteCam.zoom = 0.5;
 	susiNoteCam.bgColor = 0x00;
 	//susiNoteCam.visible = false;
@@ -195,6 +218,9 @@ function onCreatePost() {
 	//sp1.camera = game.camGame;
 	//add(sp1);
 	//susiNoteCam.scroll.y = 10000;
+	var cams = createCamSP(susiNoteCam);
+	cams[1].x =145;
+	SPcameras.push(cams);
 	
 	krisNoteCam.zoom = 0.5;
 	krisNoteCam.bgColor = 0x00;
@@ -203,6 +229,9 @@ function onCreatePost() {
 	//sp2.camera = game.camGame;
 	//add(sp2);
 	//krisNoteCam.scroll.y = 10000;
+	var cams = createCamSP(krisNoteCam);
+	cams[1].x =295;
+	SPcameras.push(cams);
 	
 	ralseiNoteCam.zoom = 0.5;
 	ralseiNoteCam.bgColor = 0x00;
@@ -211,6 +240,9 @@ function onCreatePost() {
 	//sp3.camera = game.camGame;
 	//add(sp3);
 	//ralseiNoteCam.scroll.y = 10000;
+	var cams = createCamSP(ralseiNoteCam);
+	cams[1].x =445;
+	SPcameras.push(cams);
 
 	//FlxG.stage.alpha = 1;
 	FlxG.stage.color = 0x00000000;
@@ -236,7 +268,7 @@ function onCreatePost() {
 	//var gameSprite = cast FlxG.game;
 	//gameSprite.sahder = [shader_];
 	//FlxG.game.alpha = 0.5;
-	Lib.application.window.opacity = 1;
+	//Lib.application.window.opacity = 0.5;
 	//FlxG.signals.postDraw.add(clear);
 	//debugPrint(Lib.application.window.display.supportedModes );
 	//var a = Lib.application.window.displayMode;
@@ -275,9 +307,9 @@ function onCreatePost() {
 		
 		//i.copyScale = false;
 		if (gog<2)
-			i.x = -62;
+			i.x = -57;
 		else
-			i.x = 53;
+			i.x = 60;
 
 		if (gog == 0 || gog == 3) {
 			i.camera = krisNoteCam;
@@ -315,7 +347,7 @@ function onCreatePost() {
 	for (i in opponentStrums) {
 		i.camera = ralseiNoteCam;
 		i.y = 390;
-		i.alpha = 0.1;
+		//i.alpha = 0.1;
 		if (gog == 0)
 			i.x = -90 + 90 * 0;
 		if (gog == 2)
@@ -412,8 +444,8 @@ function onCreatePost() {
 
 	krisMute.loadGraphic(Paths.image("sp/spr_rhythmgame_mute_0"));
 	// krisMute.color = 0xFF0000;
-	krisMute.scale.x = 4.2;
-	krisMute.scale.y = 3.4;
+	krisMute.scale.x = 3.15;
+	krisMute.scale.y = 3.2;
 	krisMute.antialiasing = false;
 	krisMute.alpha = 0;
 	krisMute.cameras = [krisNoteCam];
@@ -421,8 +453,8 @@ function onCreatePost() {
 	add(krisMute);
 	susiMute.loadGraphic(Paths.image("sp/spr_rhythmgame_mute_0"));
 	// susiMute.color = 0xFF0000;
-	susiMute.scale.x = 4.2; // #42
-	susiMute.scale.y = 3.4;
+	susiMute.scale.x = 3.15; // #42
+	susiMute.scale.y = 3.2;
 	susiMute.antialiasing = false;
 	susiMute.alpha = 0;
 	susiMute.cameras = [susiNoteCam];
@@ -461,7 +493,6 @@ function onCreatePost() {
 	debugPrint(game.songName);
 	if (game.songName == "practice"){
 		susiRofls = false;
-		game.camGame.scroll.y = game.camFollow.y-2500;
 	}
 	game.boyfriend.idleSuffix = "-alt";
 	game.boyfriend.recalculateDanceIdle();
@@ -733,8 +764,8 @@ function onUpdate(e) {
 		}
 	}
 
-	bmpDistant.y = (0.45 * ((Conductor.songPosition + (60 / Conductor.bpm * 1000)) % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) + 15;
-	bmpDistant4.y = (0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + 5;
+	bmpDistant.y = (0.45 * ((Conductor.songPosition + (60 / Conductor.bpm * 1000)) % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) + 30;
+	bmpDistant4.y = (0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + 30;
 
 	if (susiRofls) {
 		game.gf.stunned = true;
@@ -745,10 +776,16 @@ function onUpdate(e) {
 		}
 	}
 
-	SCORE.text = formatIntToString(game.songScore, 6);
+	SCORE.text = formatIntToString(songScore, 6);
 	if (susiMute.alpha == 1)
 		susiRofls = true;
 
+	for (m in SPcameras){
+		m[0].scroll(-m[2].width,-m[2].height);
+		m[0].disposeImage();
+		m[0].fillRect(m[0].rect,0x00000000);
+		m[0].draw(m[2].canvas,m[3]);
+	}
 	
 }
 
@@ -797,6 +834,9 @@ function goodNoteHit(daNote) {
 				maxCombo.text = formatIntToString(Std.int(krisCombo.text), 6);
 				game.maxCombo = Std.int(krisCombo.text);
 			}
+			//debugPrint(((Std.int(Std.int(krisCombo.text)/32)/10)+1));
+			if (daNote.rating=="sick") songScore += 100+10*(Std.int(Std.int(krisCombo.text)/32));
+			else if (daNote.rating=="good") songScore += 50+10*(Std.int(Std.int(krisCombo.text)/32));
 		} else {
 			susiCombo.text = Std.int(susiCombo.text) + 1;
 			tmpMissSusi = 0;
@@ -821,7 +861,8 @@ function susiGoodHit(daNote) {
 	acurateDrums = Math.min(acurateDrums,100);
 	var bob:Int = game.vocals.volume;
 	var comboB:Int = game.combo;
-	var scoreB:Int = game.songScore;
+	var rating = game.totalNotesHit;
+	//var scoreB:Int = game.songScore;
 	// game.showRating = !game.showRating;
 	// game.showComboNum = !game.showComboNum;
 	game.goodNoteHit(daNote);
@@ -829,8 +870,8 @@ function susiGoodHit(daNote) {
 	// game.showComboNum = !game.showComboNum;
 	game.vocals.volume = bob;
 	game.combo = comboB;
-	game.songScore = scoreB;
-	game.totalNotesHit -= daNote.ratingMod;
+	//game.songScore = scoreB;
+	game.totalNotesHit = rating;
 }
 
 function onKeyPress(key:Int) {
@@ -846,6 +887,7 @@ function onKeyPress(key:Int) {
 function onEndSong() {
 	if (game.chartingMode)
 		return;
+	game.songScore = songScore;
 	if (!ClientPrefs.getGameplaySetting('practice') && !ClientPrefs.getGameplaySetting('botplay')) {
 		var daSong = PlayState.SONG.song + PlayState.SONG.format.split("^").join();
 		// trace(daSong);

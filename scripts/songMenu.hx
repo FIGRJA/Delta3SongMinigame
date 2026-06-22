@@ -497,7 +497,7 @@ function onUpdate(e) {
 		timer = 0.15;
 	}
 	if (Control.NOTE_RIGHT){
-		//resetSong();
+		resetSong();
 	}
 	curAction = Math.abs(freeAction.length + curAction) % freeAction.length;
 	if (diffAction != null)
