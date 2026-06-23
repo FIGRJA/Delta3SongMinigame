@@ -38,11 +38,47 @@
        
         },{
             "name":"knockyoudown",
-            "bpm":200,
+            "bpm":195,
             "songMain":"rhythm_knockdown_no_guit",
             "songPlay":"rhythm_knockdown_combined",
             "album":null,
             "index":10,
+            "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
+            "isFull":false
+        },{
+            "name":"tutorialus",
+            "bpm":195,
+            "songMain":"ch3_tvtime",
+            "songPlay":"ch3_tvtime_guitar",
+            "album":null,
+            "index":3,
+            "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
+            "isFull":false
+        },{
+            "name":"Spam...",
+            "bpm":195,
+            "songMain":"board4_rhythm",
+            "songPlay":"board4_rhythm",
+            "album":null,
+            "index":4,
+            "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
+            "isFull":false
+        },{
+            "name":"test(5)",
+            "bpm":195,
+            "songMain":"battle",
+            "songPlay":"battle",
+            "album":null,
+            "index":5,
+            "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
+            "isFull":false
+        },{
+            "name":"test(6)",
+            "bpm":195,
+            "songMain":"battle_vapor",
+            "songPlay":"battle_vapor",
+            "album":null,
+            "index":6,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
             "isFull":false
         }

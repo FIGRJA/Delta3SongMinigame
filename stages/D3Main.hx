@@ -29,6 +29,8 @@ var ralseiNoteCam:FlxCamera;
 var bmpDistant:FlxBackdrop;
 var bmpDistant4:FlxBackdrop;
 var maskBG:FlxSprite = new ModchartSprite(4,-10);
+var plSplashKris:Array = [[new FlxSprite(-37,185),new FlxSprite(-18,315)],[new FlxSprite(80,185),new FlxSprite(99,315)]];
+var plSplashSusi:Array = [[new FlxSprite(-37,185),new FlxSprite(-18,315)],[new FlxSprite(80,185),new FlxSprite(99,315)]];
 var krisMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var susiMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var krisMute:FlxSprite = new ModchartSprite(-55, -195);
@@ -174,6 +176,7 @@ function onCreatePost() {
 
 	//game.moveCamera(false);
 	//game.camFollow.y = 0;
+	//game.camHUD.scroll.x += 100;
 	game.noteKillOffset = 120;
 	// getVar("load_delta_notes").call("loadSong",["scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",2]);
 	// PlayState.SONG.bpm = 148;
@@ -360,7 +363,34 @@ function onCreatePost() {
 		gog += 1;
 	}
 
-
+	plSplashKris[0][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
+	plSplashKris[0][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
+	plSplashKris[1][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
+	plSplashKris[1][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
+	plSplashKris[0][0].camera = krisNoteCam;
+	plSplashKris[0][1].camera = krisNoteCam;
+	plSplashKris[1][0].camera = krisNoteCam;
+	plSplashKris[1][1].camera = krisNoteCam;
+	insert(members.indexOf(game.noteGroup),plSplashKris[0][0]);
+	insert(members.indexOf(game.noteGroup),plSplashKris[0][1]);
+	insert(members.indexOf(game.noteGroup),plSplashKris[1][0]);
+	insert(members.indexOf(game.noteGroup),plSplashKris[1][1]);
+	noteSplash(0);
+	noteSplash(1);
+	plSplashSusi[0][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
+	plSplashSusi[0][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
+	plSplashSusi[1][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
+	plSplashSusi[1][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
+	plSplashSusi[0][0].camera = susiNoteCam;
+	plSplashSusi[0][1].camera = susiNoteCam;
+	plSplashSusi[1][0].camera = susiNoteCam;
+	plSplashSusi[1][1].camera = susiNoteCam;
+	insert(members.indexOf(game.noteGroup),plSplashSusi[0][0]);
+	insert(members.indexOf(game.noteGroup),plSplashSusi[0][1]);
+	insert(members.indexOf(game.noteGroup),plSplashSusi[1][0]);
+	insert(members.indexOf(game.noteGroup),plSplashSusi[1][1]);
+	susiPressed(0,0x000000);
+	susiPressed(1,0x000000);
 	
 	krisMissBack.loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
 	krisMissBack.color = 0xFF0000;
@@ -512,6 +542,9 @@ function onCreatePost() {
 		ralseiNoteCam.visible = false;
 		L2.visible = false;
 	}
+
+	Conductor.songPosition = -3000;
+	//game.grpHoldSplashes.visible =false;
 }
 
 
@@ -631,8 +664,9 @@ function onSpawnNote(daNote) {
 		daNote.mustPress = true;
 		daNote.noteData = rawType + 1;
 		if (daNote.noteData > 2) {
-			daNote.destroy();
-			return;
+			daNote.noteData = 2;
+		//	//daNote.destroy();
+		//	//return;
 		}
 		daNote.camera = susiNoteCam;
 		daNote.gfNote = true;
@@ -646,12 +680,19 @@ function onSpawnNote(daNote) {
 		if (rawType == 0) {
 			daNote.color = 0xFF073D;
 		}
-		if (rawType == 1) {
+		else if (rawType == 1) {
 			daNote.color = 0xFF07A0;
+		}
+		else if (rawType == 2) {
+			daNote.color = 0x833B00;
+			daNote.alpha = 0.1;
+			daNote.animSuffix = "-alt";
+			daNote.scale.x = daNote.scale.x*6;
+			daNote.scale.y = daNote.scale.y/2;
 		}
 		//daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_2"));
 		//daNote.scale.x *= 5;
-		daNote.width = 100;
+		//daNote.width = 100;
 		// daNote.mustPress= false;
 		// daNote.hitByOpponent=true;
 	} else if (daNote.noteType == "vocal") {
@@ -674,10 +715,13 @@ function onSpawnNote(daNote) {
 		}
 		if (daNote.sustainLength>0)
 			daNote.visible = false;
-		if (!daNote.isSustainNote)
+		if (!daNote.isSustainNote){
 			//daNote.visible = ralsClap;
-			daNote.scale.x = daNote.scale.x*8;
+
+			daNote.offsetY = -160;
+			daNote.scale.x = daNote.scale.x*6;
 			daNote.scale.y = daNote.scale.y/2;
+		}
 	}
 	if (daNote.extraData.get("lolTag") != null)
 		daNote.color = 0x000000;
@@ -686,7 +730,6 @@ function onSpawnNote(daNote) {
 	// daNote.noteType = "";
 	// daNote.animation.play("purpleholdend",true);
 }
-
 var susiSkills = ["singDOWN-alt", "singUP", "singDOWN"];
 function onUpdate(e) {
 	if (isMenuChart)
@@ -728,13 +771,15 @@ function onUpdate(e) {
 			BFDead = false;
 		}
 		if (i.noteType =="vocal"){
-			if(i.noteData ==2&&!i.isSustainNote){
-				fn += 1;
-			}else{
-				//debugPrint(note.noteData);
-				DadDead = false;
-				fn = 0;
-			}
+			//if (i.strumTime+500 >= Conductor.songPosition)
+				DadDead = i.sustainLength<0;
+			//if(i.noteData ==2&&!i.isSustainNote){
+			//	fn += 1;
+			//}else{
+			//	//debugPrint(note.noteData);
+			//	DadDead = false;
+			//	fn = 0;
+			//}
 		}
 		//else if (fn==3){
 		//	tempClap = true;
@@ -764,8 +809,8 @@ function onUpdate(e) {
 		}
 	}
 
-	bmpDistant.y = (0.45 * ((Conductor.songPosition + (60 / Conductor.bpm * 1000)) % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) + 30;
-	bmpDistant4.y = (0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + 30;
+	bmpDistant.y = (0.45 * ((Conductor.songPosition + (60 / Conductor.bpm * 1000)) % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) - 25;
+	bmpDistant4.y = (0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) - 25;
 
 	if (susiRofls) {
 		game.gf.stunned = true;
@@ -773,10 +818,12 @@ function onUpdate(e) {
 			var anim = susiSkills[FlxG.random.int(0, 2)];
 			// debugPrint(anim);
 			game.gf.animation.play(anim, true);
+
+			susiPressed(anim=="singUP",0xFF5757);
 		}
 	}
 
-	SCORE.text = formatIntToString(songScore, 6);
+	SCORE.text = formatIntToString(Std.int(songScore), 6);
 	if (susiMute.alpha == 1)
 		susiRofls = true;
 
@@ -808,6 +855,7 @@ function opponentNoteHit(daNote) {
 		game.dad.stunned = true;
 		game.dad.playAnim("idle-alt", true);
 	}
+	//trace(daNote.strumTime+" "+daNote.isSustainNote);
 }
 function opponentNoteHitPost(daNote) {
 	
@@ -835,8 +883,26 @@ function goodNoteHit(daNote) {
 				game.maxCombo = Std.int(krisCombo.text);
 			}
 			//debugPrint(((Std.int(Std.int(krisCombo.text)/32)/10)+1));
-			if (daNote.rating=="sick") songScore += 100+10*(Std.int(Std.int(krisCombo.text)/32));
-			else if (daNote.rating=="good") songScore += 50+10*(Std.int(Std.int(krisCombo.text)/32));
+			var color ;
+			var color2 ;
+			if (daNote.rating=="sick"){
+				songScore += 100;
+				color = 0xFBAE1F;
+				color2 = 0xEDF100;
+			}
+			else if (daNote.rating=="good"){
+				songScore += 50;
+				color = 0xE8E8E8;
+				color2 = 0xE8E8E8;
+			}
+			//songScore += Std.int(krisCombo.text)>=32?10:0;
+			noteSplash(daNote.noteData==3);
+			plSplashKris[daNote.noteData==3][0].color = color2;
+			plSplashKris[daNote.noteData==3][0].alpha = 1;
+			for (note in daNote.tail){
+				note.color = color;
+				note.alpha = 1;
+			}
 		} else {
 			susiCombo.text = Std.int(susiCombo.text) + 1;
 			tmpMissSusi = 0;
@@ -844,13 +910,16 @@ function goodNoteHit(daNote) {
 	} else if (daNote.nextNote == null) {
 		daNote.parent.visible = false;
 		daNote.parent.alpha = 0;
+		var co = 10-(songScore-0.99)%10;
+		songScore +=co+20;
 	} else {
+		noteSplash(daNote.noteData==3,true);
+		plSplashKris[daNote.noteData==3][0].color =  0xEDF100;
+		plSplashKris[daNote.noteData==3][0].alpha = 1;
+		//songScore += 60 / PlayState.SONG.bpm *10 / 4.0;
+		songScore += 0.5;
 		daNote.parent.visible = true;
 		daNote.parent.alpha = 1;
-	}
-	for (note in daNote.tail){
-		note.color = 0xFBAE1F;
-		note.alpha = 1;
 	}
 }
 
@@ -866,12 +935,39 @@ function susiGoodHit(daNote) {
 	// game.showRating = !game.showRating;
 	// game.showComboNum = !game.showComboNum;
 	game.goodNoteHit(daNote);
+	susiPressed(daNote.noteData-1,0xF5F5F5);
 	// game.showRating = !game.showRating;
 	// game.showComboNum = !game.showComboNum;
 	game.vocals.volume = bob;
 	game.combo = comboB;
 	//game.songScore = scoreB;
 	game.totalNotesHit = rating;
+}
+
+function susiPressed(key:Int,color) {
+	plSplashSusi[key][0].color = color;
+	plSplashSusi[key][0].scale.x = 1.3;
+	plSplashSusi[key][1].scale.x = 1.3*2;
+	FlxTween.cancelTweensOf(plSplashSusi[key][0]);
+	FlxTween.tween(plSplashSusi[key][0], {"scale.x": 0}, 0.18
+	 ,{
+		onUpdate:()->{plSplashSusi[key][1].scale.x=plSplashSusi[key][0].scale.x*2;},   
+		onComplete:()->{plSplashSusi[key][1].scale.x=plSplashSusi[key][0].scale.x;}   
+	});
+}
+var tw = [false,false];
+function noteSplash(key:Int,?mini=false) {
+		plSplashKris[key][0].color = 0xFFFFFF;
+		plSplashKris[key][0].alpha = 0.3;
+		plSplashKris[key][0].scale.x = mini?0.5:1.3;
+		plSplashKris[key][1].scale.x = (mini?0.5:1.3)*2;
+		if (tw[key]==mini||!mini)FlxTween.cancelTweensOf(plSplashKris[key][0]);
+		tw[key] = mini;
+		var t = FlxTween.tween(plSplashKris[key][0], {"scale.x": 0}, 0.18 ,{
+            onUpdate:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x*2;},   
+            onComplete:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x;}   
+        });
+		//debugPrint(t);
 }
 
 function onKeyPress(key:Int) {
@@ -881,6 +977,7 @@ function onKeyPress(key:Int) {
 	if (key==3){
 		game.boyfriend.playAnim("singRIGHT");
 	}
+	//noteSplash(key==3,false);
 	
 }
 
@@ -906,9 +1003,9 @@ function onEndSong() {
 			Highscore.setFC(daSong, game.songMisses == 0);
 			Highscore.setRating(daSong, game.percent);
 		}
+	}
 		CustomSubstate.openCustomSubstate('END', true);
 		PlayState.SONG.song = "songChart";
-	}
 
 	//FlxG.sound.music.destroy();
 	//MusicBeatState.startTransition();

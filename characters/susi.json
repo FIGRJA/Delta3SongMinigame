@@ -1,68 +1,68 @@
 {
 	"animations": [
 		{
-			"offsets": [0, -1],
 			"loop": false,
-			"fps": 1,
+			"offsets": [0, -1],
 			"anim": "idle",
-			"indices": [],
-			"name": "spr_susie_drum_0"
-		},
-		{
-			"offsets": [0, -1],
-			"loop": false,
-			"fps": 18,
-			"anim": "singUP",
-			"indices": [0, 1],
-			"name": "spr_susie_drum_right_"
-		},
-		{
-			"offsets": [0, -1],
-			"loop": false,
-			"fps": 18,
-			"anim": "singDOWN",
-			"indices": [0, 1],
-			"name": "spr_susie_drum_mid_"
-		},
-		{
-			"offsets": [0, -1],
-			"loop": false,
-			"fps": 18,
-			"anim": "singDOWN-alt",
-			"indices": [0, 1],
-			"name": "spr_susie_drum_left_"
-		},
-		{
-			"offsets": [0, -1],
-			"loop": false,
-			"fps": 18,
-			"anim": "singUP-alt",
-			"indices": [0, 1],
-			"name": "spr_susie_drum_mid_"
-		},
-		{
-			"offsets": [0, 5],
-			"loop": false,
-			"fps": 8,
-			"anim": "clap",
-			"indices": [],
-			"name": "spr_susie_drumsticks_"
-		},
-		{
-			"offsets": [0, 5],
-			"loop": false,
-			"fps": 8,
-			"anim": "clap-alt",
-			"indices": [],
-			"name": "spr_susie_drumsticks2_"
-		},
-		{
-			"offsets": [0, -1],
-			"loop": false,
 			"fps": 1,
+			"name": "spr_susie_drum_0",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [0, -1],
+			"anim": "singUP",
+			"fps": 18,
+			"name": "spr_susie_drum_right_",
+			"indices": [0, 1]
+		},
+		{
+			"loop": false,
+			"offsets": [0, -1],
+			"anim": "singDOWN",
+			"fps": 18,
+			"name": "spr_susie_drum_mid_",
+			"indices": [0, 1]
+		},
+		{
+			"loop": false,
+			"offsets": [0, -1],
+			"anim": "singDOWN-alt",
+			"fps": 18,
+			"name": "spr_susie_drum_left_",
+			"indices": [0, 1]
+		},
+		{
+			"loop": false,
+			"offsets": [0, 5],
+			"anim": "clap",
+			"fps": 8,
+			"name": "spr_susie_drumsticks_",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [0, 5],
+			"anim": "clap-alt",
+			"fps": 8,
+			"name": "spr_susie_drumsticks2_",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [0, -1],
 			"anim": "ready",
+			"fps": 1,
+			"name": "spr_susie_drum_ready_",
+			"indices": []
+		},
+		{
+			"offsets": [0, 5],
 			"indices": [],
-			"name": "spr_susie_drum_ready_"
+			"fps": 8,
+			"anim": "singUP-alt",
+			"loop": false,
+			"name": "spr_susie_drumsticks2_"
 		}
 	],
 	"vocals_file": "",
@@ -73,7 +73,7 @@
 	"flip_x": false,
 	"healthbar_colors": [49, 176, 209],
 	"camera_position": [0, 0],
-	"sing_duration": 4,
+	"sing_duration": 8,
 	"scale": 2,
 	"_editor_isPlayer": false
 }

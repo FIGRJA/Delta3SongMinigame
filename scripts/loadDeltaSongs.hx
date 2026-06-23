@@ -21,7 +21,8 @@ function onCreate() {
 function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 	// PlayState.instance.clearNotesBefore(0);
 	// PlayState.instance.setSongTime(0);
-	curStepCrochet = 60 / PlayState.SONG.bpm * 1000 / 4.0;
+	//curStepCrochet = 60 / PlayState.SONG.bpm * 1000 / 4.0;
+	curStepCrochet = 50;
 	// var file:String = getVar("load_delta_notes");
 	// var index = getVar("load_delta_notes_index");
 	if (file != null) {
@@ -41,7 +42,24 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 		//	PlayState.SONG.bpm = foundBPM;
 		//	Conductor.bpm = foundBPM;
 		// }
-		
+		//var i:Int = 1;
+		//while (i < game.unspawnNotes.length)
+		//{
+		//	var current = game.unspawnNotes[i];
+		//	var previous = game.unspawnNotes[i - 1]; // Проверяем только предыдущую ноту
+//
+		//	if (current.noteData == previous.noteData && 
+		//		current.noteType == previous.noteType && 
+		//		current.strumTime == previous.strumTime&&
+		//		current.tail.length==0&&!current.isSustainNote) 
+		//	{
+		//		current.destroy();
+		//		game.unspawnNotes.splice(i, 1);
+		//	} else {
+		//		i+=1;
+		//	}
+		//	//trace("helpMe "+i+" "+game.unspawnNotes.length);
+		//}
 		//writeNoteToSong();
 		// game.unspawnNotes = [];
 		// PlayState.generateSong();
@@ -185,15 +203,22 @@ function scr_rhythmgame_addnote_range(timming, type, sus, ?spec = 0) {
 	scr_rhythmgame_addnote(timming, type, sus, spec);
 }
 
+function addFastNote(time,type,sus,spec,who) {
+	typeTample = who;
+	scr_rhythmgame_addnote(time,type,sus,spec);
+}
+
 var oldNote:Note;
 
 function scr_rhythmgame_addnote(timming, types, sus, ?spec = 0, ?lolTag) {
+	    //trace("Добавляю ноту: время=" + timming + ", тип=" + typeTample + ", длинна=" + sus);
 	// typeTample = getVar("typeTample");
 	sus = sus * 1000;
 	timming = timming * 1000;
 	if (sus > 0) {
 		sus = sus - timming;
 	}
+	//if (oldNote!=null&&Math.abs(oldNote.strumTime - timming)<=100.0&&oldNote.noteData==types)return;
 	// var mustPress = typeTample != "vocal";
 	// var typeNote:Int =3;
 	// if (typeTample=="vocal"){
@@ -286,7 +311,7 @@ function writeNoteToSong() {
 	debugPrint(emty);
 	//var notes:Int = 0;
 	var section:Int = 1 / PlayState.SONG.bpm * 60 * 1000 * 4;
-	for (i in 0...game.unspawnNotes.length) {
+	for (i in 1...game.unspawnNotes.length) {
 		var note = game.unspawnNotes[i];
 		if (note.isSustainNote)
 			continue;
