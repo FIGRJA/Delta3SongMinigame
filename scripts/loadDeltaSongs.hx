@@ -267,7 +267,7 @@ function scr_rhythmgame_addnote(timming, types, sus, ?spec = 0, ?lolTag) {
 			//}
 			
 
-			sustainNote.correctionOffset = ClientPrefs.data.downScroll?0:daNote.height / 2;
+			//sustainNote.correctionOffset = ClientPrefs.data.downScroll?0:daNote.height / 2;
 			boOld = sustainNote;
 			game.unspawnNotes.push(sustainNote);
 			daNote.tail.push(sustainNote);

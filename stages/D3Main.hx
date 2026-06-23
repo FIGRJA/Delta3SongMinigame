@@ -307,7 +307,7 @@ function onCreatePost() {
 
 	var gog:Int = 0;
 	for (i in playerStrums) {
-		
+		//i.downScroll = true;
 		//i.copyScale = false;
 		if (gog<2)
 			i.x = -57;
@@ -329,8 +329,8 @@ function onCreatePost() {
 			if (gog == 2)
 				i.color = 0xFF07A0;
 		}
-		i.y = 428
-		;
+		i.y = ClientPrefs.data.downScroll?428:-100;
+		
 		i.visible = false;
 		gog += 1;
 		var fakeNS = new FlxSprite(i.x+40,i.y);
@@ -348,9 +348,11 @@ function onCreatePost() {
 	}
 	var gog:Int = 0;
 	for (i in opponentStrums) {
+		//i.downScroll = true;
 		i.camera = ralseiNoteCam;
-		i.y = 390;
+		i.y = ClientPrefs.data.downScroll?390:-140;
 		//i.alpha = 0.1;
+		i.visible = false;
 		if (gog == 0)
 			i.x = -90 + 90 * 0;
 		if (gog == 2)
@@ -371,6 +373,14 @@ function onCreatePost() {
 	plSplashKris[0][1].camera = krisNoteCam;
 	plSplashKris[1][0].camera = krisNoteCam;
 	plSplashKris[1][1].camera = krisNoteCam;
+	plSplashKris[0][0].flipY = !ClientPrefs.data.downScroll;
+	plSplashKris[0][1].flipY = !ClientPrefs.data.downScroll;
+	plSplashKris[1][0].flipY = !ClientPrefs.data.downScroll;
+	plSplashKris[1][1].flipY = !ClientPrefs.data.downScroll;
+	plSplashKris[0][0].y += ClientPrefs.data.downScroll?0:-280;
+	plSplashKris[0][1].y += ClientPrefs.data.downScroll?0:-410;
+	plSplashKris[1][0].y += ClientPrefs.data.downScroll?0:-280;
+	plSplashKris[1][1].y += ClientPrefs.data.downScroll?0:-410;
 	insert(members.indexOf(game.noteGroup),plSplashKris[0][0]);
 	insert(members.indexOf(game.noteGroup),plSplashKris[0][1]);
 	insert(members.indexOf(game.noteGroup),plSplashKris[1][0]);
@@ -385,6 +395,14 @@ function onCreatePost() {
 	plSplashSusi[0][1].camera = susiNoteCam;
 	plSplashSusi[1][0].camera = susiNoteCam;
 	plSplashSusi[1][1].camera = susiNoteCam;
+	plSplashSusi[0][0].flipY = !ClientPrefs.data.downScroll;
+	plSplashSusi[0][1].flipY = !ClientPrefs.data.downScroll;
+	plSplashSusi[1][0].flipY = !ClientPrefs.data.downScroll;
+	plSplashSusi[1][1].flipY = !ClientPrefs.data.downScroll;
+	plSplashSusi[0][0].y += ClientPrefs.data.downScroll?0:-280;
+	plSplashSusi[0][1].y += ClientPrefs.data.downScroll?0:-410;
+	plSplashSusi[1][0].y += ClientPrefs.data.downScroll?0:-280;
+	plSplashSusi[1][1].y += ClientPrefs.data.downScroll?0:-410;
 	insert(members.indexOf(game.noteGroup),plSplashSusi[0][0]);
 	insert(members.indexOf(game.noteGroup),plSplashSusi[0][1]);
 	insert(members.indexOf(game.noteGroup),plSplashSusi[1][0]);
@@ -638,9 +656,9 @@ function onSpawnNote(daNote) {
 	daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 	
 	if (daNote.isSustainNote) {
-		daNote.scale.set(1.5,2.5);
+		daNote.scale.set(0.6,3);
 		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
-		daNote.angle = 90;
+		//daNote.angle = 90;
 		daNote.offsetX = -5;
 		daNote.offsetY = -100;
 		//daNote.scale.y = 0.5;
@@ -701,8 +719,9 @@ function onSpawnNote(daNote) {
 			daNote.noteData = 0;
 		daNote.camera = ralseiNoteCam;
 		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_1"));
-		daNote.scale.set(1.2,2.8);
+		daNote.scale.set(0.6,2.8);
 		daNote.alpha = 1;
+		daNote.offsetY = -80;
 		// daNote.reloadNote();
 		if (rawType == 0) {
 			daNote.color = 0x008F1F;
@@ -719,12 +738,18 @@ function onSpawnNote(daNote) {
 			//daNote.visible = ralsClap;
 
 			daNote.offsetY = -160;
-			daNote.scale.x = daNote.scale.x*6;
+			daNote.scale.x = daNote.scale.x*10;
 			daNote.scale.y = daNote.scale.y/2;
 		}
 	}
 	if (daNote.extraData.get("lolTag") != null)
 		daNote.color = 0x000000;
+	if (daNote.isSustainNote)
+		daNote.color = daNote.prevNote.color;
+	if (daNote.nextNote == null){
+
+		daNote.offsetY += -20;
+	}
 	//debugPrint(daNote.multSpeed);
 	// else { daNote.blockHit = true;}
 	// daNote.noteType = "";
@@ -772,7 +797,7 @@ function onUpdate(e) {
 		}
 		if (i.noteType =="vocal"){
 			//if (i.strumTime+500 >= Conductor.songPosition)
-				DadDead = i.sustainLength<0;
+				DadDead = !i.isSustainNote;
 			//if(i.noteData ==2&&!i.isSustainNote){
 			//	fn += 1;
 			//}else{
@@ -809,8 +834,8 @@ function onUpdate(e) {
 		}
 	}
 
-	bmpDistant.y = (0.45 * ((Conductor.songPosition + (60 / Conductor.bpm * 1000)) % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) - 25;
-	bmpDistant4.y = (0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) - 25;
+	bmpDistant.y = (ClientPrefs.data.downScroll?1:-1)*(0.45 * ((Conductor.songPosition + (60 / Conductor.bpm * 1000)) % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) - 25;
+	bmpDistant4.y = (ClientPrefs.data.downScroll?1:-1)*(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) - 25;
 
 	if (susiRofls) {
 		game.gf.stunned = true;
