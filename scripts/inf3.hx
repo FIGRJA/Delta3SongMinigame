@@ -1,6 +1,6 @@
 //package scripts;
 
-var isAllowed:Bool = game.songName == "test(3)";
+var isAllowed:Bool = game.songName == "tutorialus";
 
 
 function setVF(Var,Fun) {
@@ -9,34 +9,54 @@ function setVF(Var,Fun) {
 	
 }
 
+var notes =[];
 function onCreatePost() {
     if (!isAllowed)
 		return;
-    game.startCallback = onStart;
+    setVF("load_delta_notes","addFastNote");
+    var maxTime = 32842;
+    debugPrint("hi test 3 "+maxTime);
+    notes = game.unspawnNotes.copy();
+    game.unspawnNotes = [];
+    for (n in notes){
+        if (n.strumTime<2000)
+            addFastNote((n.strumTime+maxTime)/1000,n.noteData,(n.sustainLength+n.strumTime+maxTime)/1000,n.animSuffix == '-alt',n.noteType);
+
+    }
+    notes = notes.concat(game.unspawnNotes);
+    game.unspawnNotes = [];
+    for (n in notes){
+        //if (n.strumTime<3000)
+        if (!n.isSustainNote)
+            addFastNote((n.strumTime)/1000,n.noteData,(n.sustainLength+n.strumTime)/1000,n.animSuffix == '-alt',n.noteType);
+            //notes.push(n);
+        //}
+    }
+    game.unspawnNotes.sort(function(a, b) {
+			return a.strumTime - b.strumTime;
+		});
+        //debugPrint(notes.length);
+    //onStartCountdown();
 //setVF("songMenu","loadSongsLists");
 }
-var notes ;
-function onStart() {
-setVF("load_delta_notes","addFastNote");
+function onStartCountdowns() {
+    if (!isAllowed)
+		return;
 setVF("D3Main","onCreate");
-    var maxTime = game.inst.length;
+    //var maxTime = game.inst.length;
     debugPrint(game.unspawnNotes.length);
     notes = game.unspawnNotes.copy();
-    for (n in notes){
-        if (n.strumTime<3000){
-            addFastNote((n.strumTime+maxTime)/1000,n.noteData,(n.sustainLength+n.strumTime)/1000,n.noteType,n.animSuffix == '-alt');
-            //notes.push(n);
-        }
-    }
-    notes = game.unspawnNotes.copy();
-    game.endCallback = onEndSong;
+    //notes = game.unspawnNotes.copy();
+    //game.endCallback = onEndSong;
+    FlxG.sound.music.onComplete = onEndSong;
     game.startCountdown();
-    Conductor.songPosition = -1000;
+    Conductor.songPosition = -3000;
 }
 function onUpdate(e) {
     if (!isAllowed)
 		return;
-    if (FlxG.sound.music.time +10000> game.inst.length)
+    //debugPrint( game.inst.length);
+    if (FlxG.sound.music.time +(e*1000)> game.inst.length)
         onEndSong();
 }
 function onEndSong() {
@@ -47,6 +67,21 @@ function onEndSong() {
         //FlxG.sound.music.stop();
         FlxG.sound.music.time = 0;
         FlxG.sound.music.play();
+        game.vocals.time = 0;
+        game.vocals.play();
+        debugPrint(notes.length);
+
+        game.unspawnNotes = [];
+        for (n in notes){
+            //if (n.strumTime<3000){
+            if (!n.isSustainNote)
+                addFastNote((n.strumTime)/1000,n.noteData,(n.sustainLength+n.strumTime)/1000,n.animSuffix == '-alt',n.noteType);
+                //notes.push(n);
+            //}
+        }
+        game.unspawnNotes.sort(function(a, b) {
+			return a.strumTime - b.strumTime;
+		});
         //game.unspawnNotes = notes.copy();
-        onCreate();
+        //onCreate();
 }

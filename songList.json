@@ -47,7 +47,7 @@
             "isFull":false
         },{
             "name":"tutorialus",
-            "bpm":195,
+            "bpm":190,
             "songMain":"ch3_tvtime",
             "songPlay":"ch3_tvtime_guitar",
             "album":null,

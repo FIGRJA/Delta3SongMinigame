@@ -19,14 +19,23 @@ var unspawnNotes ;
 
 function writeNoteToSong() {
 	trace("start write");
-	PlayState.SONG.notes[0].sectionNotes = [];
-	PlayState.SONG.notes[0].bpm = PlayState.SONG.bpm;
-	var emty = PlayState.SONG.notes[0];
-	trace(emty);
+	//PlayState.SONG.notes[0].sectionNotes = [];
+	//PlayState.SONG.notes[0].bpm = PlayState.SONG.bpm;
+	//var emty = 
+    PlayState.SONG.notes = [];
+	//trace(emty);
 	//var notes:Int = 0;
 	var section:Int = 1 / PlayState.SONG.bpm * 60 * 1000 * 4;
-    for (i in 0...1000)
-        PlayState.SONG.notes.push(emty);
+    for (i in 0...Math.round((FlxG.state.maxTime / section) + 0.5))
+        PlayState.SONG.notes[i] = {
+            sectionNotes: [],
+            bpm: PlayState.SONG.bpm,
+            mustHitSection: true,
+            gfSection: false,
+            altAnim: false,
+            changeBPM: false,
+            sectionBeats: 4
+        };
 	for (i in 0...unspawnNotes.length) {
 		var note = unspawnNotes[i];
         trace(Math.round((note.strumTime / section) - 0.5));
@@ -34,22 +43,22 @@ function writeNoteToSong() {
 			continue;
 		var simpleNote:Arry<Dynamic> = [0.0, 0, 0.0];
 		simpleNote[0] = note.strumTime;
-		simpleNote[1] = note.noteData + (note.mustPress ? 4 : 0) + (note.noteType == "drum" ? 2 : 0);
+		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 4 : 0) + (note.noteType == "drum" ? 0 : 4);
 		simpleNote[2] = note.sustainLength;
-		//simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : null;
-        trace(simpleNote);
+		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : null;
+        //trace(simpleNote);
 
 		//if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]==null)
 		//	PlayState.SONG.notes.push(emty);
-		//if (PlayState.SONG.notes.length > Math.round((note.strumTime / section) + 1.5)) {
+		//if (PlayState.SONG.notes.length > Math.round((note.strumTime / section) + 0.5)!=null) {
 		//	PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)] = emty;
 		//}
-		PlayState.SONG.notes[Math.round((note.strumTime / section) - 0.5)].sectionNotes.push(simpleNote);
+		PlayState.SONG.notes[Math.round((note.strumTime / section))].sectionNotes.push(simpleNote);
 		//notes++;
 	}
     //trace(PlayState.SONG.notes);
     //trace(PlayState.SONG.notes.length);
-	trace("end write");
+	//trace("end write");
 }
 
 function onCreatePost() {
@@ -78,27 +87,31 @@ Helper = ()->{
             if (FlxG.sound.music.length<1000){
                 var state =  FlxG.state;
                 trace(getSong("mus/"+songI+".ogg"));
+                FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+songI+".ogg"),true,"nice Try"));
+                state.maxTime = FlxG.sound.music.length;
+			    state.prevEndInput.max = FlxMath.roundDecimal(state.maxTime/1000,2);
+                state._cacheSections();
                 if (!songEx){
-                    writeNoteToSong();
                     //state.reloadNotes();
                     //state.destroy();
                     //trace("h1");
                     //FlxG.state = new ChartingState();
-                    songEx = true;
+                writeNoteToSong();
+                    //songEx = true;
                     //FlxG.resetState();
                     //state =  FlxG.state;
                     //trace("h2");
                     //state.create();
                 }
-                FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+songI+".ogg"),true,"nice Try"));
-                state.maxTime = FlxG.sound.music.length;
-			    state.prevEndInput.max = FlxMath.roundDecimal(state.maxTime/1000,2);
                 //trace("h3");
                 state.vocals.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+songV+".ogg"),true,"nice Try"));
                 state.updateAudioVolume();
                 state.setPitch();
-                state._cacheSections();
-
+            
+                // ВАЖНО: Перезагружаем ноты в UI
+                state.reloadNotes();
+                state.loadSection();
+                state.updateGridVisibility();
                 for (secNum in 0...PlayState.SONG.notes.length){
                     var section = PlayState.SONG.notes[secNum];
                     for (note in section.sectionNotes)

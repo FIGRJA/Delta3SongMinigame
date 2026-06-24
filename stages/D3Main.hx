@@ -382,9 +382,9 @@ function onCreatePost() {
 	plSplashKris[1][0].y += ClientPrefs.data.downScroll?0:-280;
 	plSplashKris[1][1].y += ClientPrefs.data.downScroll?0:-410;
 	insert(members.indexOf(game.noteGroup),plSplashKris[0][0]);
-	insert(members.indexOf(game.noteGroup),plSplashKris[0][1]);
+	insert(members.indexOf(game.noteGroup)+1,plSplashKris[0][1]);
 	insert(members.indexOf(game.noteGroup),plSplashKris[1][0]);
-	insert(members.indexOf(game.noteGroup),plSplashKris[1][1]);
+	insert(members.indexOf(game.noteGroup)+1,plSplashKris[1][1]);
 	noteSplash(0);
 	noteSplash(1);
 	plSplashSusi[0][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
@@ -404,9 +404,9 @@ function onCreatePost() {
 	plSplashSusi[1][0].y += ClientPrefs.data.downScroll?0:-280;
 	plSplashSusi[1][1].y += ClientPrefs.data.downScroll?0:-410;
 	insert(members.indexOf(game.noteGroup),plSplashSusi[0][0]);
-	insert(members.indexOf(game.noteGroup),plSplashSusi[0][1]);
+	insert(members.indexOf(game.noteGroup)+1,plSplashSusi[0][1]);
 	insert(members.indexOf(game.noteGroup),plSplashSusi[1][0]);
-	insert(members.indexOf(game.noteGroup),plSplashSusi[1][1]);
+	insert(members.indexOf(game.noteGroup)+1,plSplashSusi[1][1]);
 	susiPressed(0,0x000000);
 	susiPressed(1,0x000000);
 	
@@ -942,7 +942,7 @@ function goodNoteHit(daNote) {
 		plSplashKris[daNote.noteData==3][0].color =  0xEDF100;
 		plSplashKris[daNote.noteData==3][0].alpha = 1;
 		//songScore += 60 / PlayState.SONG.bpm *10 / 4.0;
-		songScore += 0.5;
+		songScore += 1.5;
 		daNote.parent.visible = true;
 		daNote.parent.alpha = 1;
 	}
@@ -1056,7 +1056,7 @@ function onStepHit() {
 	if (game.songName == "practice") {
 		if (curStep == 72)
 			susiRofls = true;
-		if (curStep == 110)
+		if (curStep == 111)
 			susiRofls = false;
 	} else if (game.songName == "tenna") {
 		if (curStep == 1570) {}
