@@ -38,21 +38,29 @@ function writeNoteToSong() {
         };
 	for (i in 0...unspawnNotes.length) {
 		var note = unspawnNotes[i];
-        trace(Math.round((note.strumTime / section) - 0.5));
+        //trace(Math.round((note.strumTime / section)));
 		if (note.isSustainNote)
 			continue;
 		var simpleNote:Arry<Dynamic> = [0.0, 0, 0.0];
 		simpleNote[0] = note.strumTime;
-		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 4 : 0) + (note.noteType == "drum" ? 0 : 4);
+		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 8 : 0) + (note.noteType == "drum" ? 4 : 0);
 		simpleNote[2] = note.sustainLength;
 		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : null;
         //trace(simpleNote);
 
 		//if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]==null)
 		//	PlayState.SONG.notes.push(emty);
-		//if (PlayState.SONG.notes.length > Math.round((note.strumTime / section) + 0.5)!=null) {
-		//	PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)] = emty;
-		//}
+		if (PlayState.SONG.notes[Math.round((note.strumTime / section))]==null) {
+			PlayState.SONG.notes[Math.round((note.strumTime / section))] = {
+                sectionNotes: [],
+                bpm: PlayState.SONG.bpm,
+                mustHitSection: true,
+                gfSection: false,
+                altAnim: false,
+                changeBPM: false,
+                sectionBeats: 4
+            };
+		}
 		PlayState.SONG.notes[Math.round((note.strumTime / section))].sectionNotes.push(simpleNote);
 		//notes++;
 	}
@@ -65,7 +73,7 @@ function onCreatePost() {
 //setVF("load_delta_notes","writeNoteToSong");
     songI = getVar("SONG").songMain;
     songV = getVar("SONG").songPlay;
-    unspawnNotes = game.unspawnNotes;
+    unspawnNotes = game.unspawnNotes.copy();
 }
 
 function getSong(song) {
