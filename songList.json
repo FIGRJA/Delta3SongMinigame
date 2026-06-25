@@ -11,94 +11,104 @@
         {
             "name":"practice",
             "bpm":75,
+            "speed":90,
             "songMain":"ch3-practice_song_noguit",
             "songPlay":"ch3-practice_song_combined",
             "album":null,
             "index":1,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
-            "isFull":false
+            "dynamic_solo":false
         },{
             "name":"rase up you'r bat",
             "bpm":230,
+            "speed":150,
             "songMain":"ch3_karaoke_no_guitar",
             "songPlay":"ch3_karaoke_full",
             "album":null,
             "index":0,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
-            "isFull":true
+            "dynamic_solo":true
         },{
             "name":"tenna",
             "bpm":148,
+            "speed":120,
             "songMain":"tenna_battle",
             "songPlay":"tenna_battle_guitar",
             "album":null,
             "index":2,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
-            "isFull":false
+            "dynamic_solo":false
        
         },{
             "name":"knockyoudown",
             "bpm":195,
+            "speed":120,
             "songMain":"rhythm_knockdown_no_guit",
             "songPlay":"rhythm_knockdown_combined",
             "album":null,
             "index":10,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
-            "isFull":false
+            "dynamic_solo":false
         },{
-            "name":"tutorialus",
+            "name":"tutorialus    (infinity)",
             "bpm":190,
+            "speed":150,
             "songMain":"ch3_tvtime",
             "songPlay":"ch3_tvtime_guitar",
             "album":null,
             "index":3,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
-            "isFull":false
+            "dynamic_solo":false
         },{
-            "name":"Spam...",
-            "bpm":195,
+            "name":"Spam...         (bad)",
+            "bpm":60,
+            "speed":30,
             "songMain":"board4_rhythm",
             "songPlay":"board4_rhythm",
             "album":null,
             "index":4,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
-            "isFull":false
+            "dynamic_solo":false
         },{
-            "name":"test(5)ch4",
-            "bpm":195,
+            "name":"Time to get FUNKY         (bad)",
+            "bpm":140,
+            "speed":150,
             "songMain":"battle",
             "songPlay":"battle",
             "album":null,
             "index":5,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
-            "isFull":false
+            "dynamic_solo":false
         },{
-            "name":"test(6)ch4",
-            "bpm":195,
+            "name":"battle_vapor         (bad)",
+            "bpm":200,
+            "speed":150,
             "songMain":"battle_vapor",
             "songPlay":"battle_vapor",
             "album":null,
             "index":6,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
-            "isFull":false
+            "dynamic_solo":false
         },{
-            "name":"test(11)ch5-",
-            "bpm":195,
-            "songMain":"battle_vapor",
-            "songPlay":"battle_vapor",
+            "name":"Third Sanctuary         (bad)",
+            "bpm":170,
+            "speed":120,
+            "songMain":"rhythm_3rd_sanctuary_noguit",
+            "songPlay":"rhythm_3rd_sanctuary_guit",
             "album":null,
             "index":11,
             "hxModule":"scripts/deltaCode/gml_ch5_scr_rhythmgame_notechart.hx",
-            "isFull":false
+            "dynamic_solo":false
         },{
-            "name":"test(15)ch5-",
-            "bpm":195,
-            "songMain":"battle_vapor",
-            "songPlay":"battle_vapor",
+            "name":"4rd Sanctuary",
+            "bpm":200,
+            "speed":120,
+            "songMain":"4rd_sanctuary_noguit",
+            "songPlay":"4rd_sanctuary",
             "album":null,
             "index":15,
             "hxModule":"scripts/deltaCode/gml_ch5_scr_rhythmgame_notechart.hx",
-            "isFull":false
+            "dynamic_solo":false
         }
     ]
 

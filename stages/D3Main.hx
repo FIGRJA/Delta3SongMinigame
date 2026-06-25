@@ -132,8 +132,8 @@ for (mod in loadSongsLists()) for (song in mod[1].songs) {
 		//PlayState.SONG.speed = 1;
 		//game.songSpeed = 1.1;
 		moddir = mod[2];
-		//statusLoad = getVar("load_delta_notes").call("loadSong", [path, index, song.isFull]).returnValue;
-		statusLoad = loadSong(path, index, song.isFull);
+		//statusLoad = getVar("load_delta_notes").call("loadSong", [path, index, song.dynamic_solo/**isFull**/]).returnValue;
+		statusLoad = loadSong(path, index, song.dynamic_solo);
 		//debugPrint(statusLoad);
 		SONG = song;
 		setVar("SONG",SONG);

@@ -2,7 +2,42 @@
 //{
 //    script_execute("scr_rhythmgame_notechart_" + arg0, arg1);
 //}
+/*
+index   // bpm - notespeed - t1 / t2                                            (debupPrint)                            // scr_rhythmgame_song_select - arg0
+0       // 230  - 150 - ch3_karaoke_no_guitar / ch3_karaoke_full                ( Loading main song )                   // idSelect - 3
+1       // 75   - 90  - practice_song_noguit / practice_song_combined           ( Loading practice song )               //
+2       // 148  - 120 - tenna_battle / tenna_battle_guitar                      ( Loading tenna_battle )                // idSelect - 4
+3       // 190  - 150 - ch3_tvtime / ch3_tvtime_guitar                          ( Tutorial time! )                      //
+4       // 60   - 30  - board4_rhythm / board4_rhythm                           ( Loading very good board 4 song )      //
+5       // 140  - 150 - rudebuster_boss / rudebuster_boss                       ( Time to get FUNKY )                   // idSelect - 5
+6       // 200  - 150 - battle_vapor / battle_vapor                             ( Loading battle_vapor )                //
+7       // 148  - 120 - tenna_battle_old / tenna_battle_old                     ( Loading tenna_battle_old )            //
+8       // 140  - 120 - battle / battle                                         ( Loading Rude Buster )                 // idSelect - 0
+9       // 125  - 120 - field_of_hopes / field_of_hopes                         ( Loading Field of Hopes and Dreams )   // idSelect - 1
+10      // 195  - 120 - rhythm_knockdown_no_guit / rhythm_knockdown_combined    ( Loading Knock You Down!! )            // idSelect - 2
+11      // 170  - 120 - rhythm_3rd_sanctuary_noguit / rhythm_3rd_sanctuary_guit ( Loading Third Sanctuary )             //
+12      // 160  - 120 - Flowerman_Arrangement / Flowerman_Arrangement           ( Loading Flower Man )                  // idSelect - 7
+13      // 150  - 120 - pumpkin_boss / pumpkin_boss                             ( Loading A DARK ZOAN... )              // idSelect - 6
+14                                                                              none                                    // idSelect - 8
+15      // 200  - 120 - 4rd_sanctuary_noguit/4rd_sanctuary                      ( Loading 4rd Sanctuary )               // idSelect - 9
 
+ranks
+0 [14500, 18000, 22000, 25000, 28000];
+2 [33500, 37000, 41000, 44000, 47000];
+10 [32500, 36000, 40000, 43000, 45000];
+11 [28000, 32000, 36500, 38500, 41000];
+15 [15500, 18500, 21000, 22500, 24000];
+
+//что за xyйHя
+if (arg1 > 0)
+    {
+        for (var i = 0; i < 5; i++)
+        {
+            _rank_scores[i] = (_rank_scores[i] * 1.1) - 1200;
+        }
+    }
+//Hаxyя ^
+*/
 function scr_rhythmgame_notechart_drums(arg0 = 0)
 {
     //if (i_ex(obj_rhythmgame))

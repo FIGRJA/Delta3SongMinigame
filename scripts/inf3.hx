@@ -1,6 +1,6 @@
 //package scripts;
 
-var isAllowed:Bool = game.songName == "tutorialus";
+var isAllowed:Bool = game.songName == "tutorialus----(infinity)";
 
 
 function setVF(Var,Fun) {
