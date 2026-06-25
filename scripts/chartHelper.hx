@@ -79,6 +79,8 @@ function onCreatePost() {
     statusLoad = getVar("statusLoad");
     ChartingState.GRID_PLAYERS = 2;
     ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
+    this.set("Reflect",Type.resolveClass("Reflect"));
+   // this.fixScriptName("chartHelper");
     //debugPrint(Std.int(statusLoad[0])+Std.int(statusLoad[1])+Std.int(statusLoad[2]));
 }
 
@@ -123,18 +125,27 @@ Helper = ()->{
                 state.reloadNotes();
                 state.loadSection();
                 state.updateGridVisibility();
+                //state.waveformSprite.x = state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
                 //trace(ChartingState.GRID_PLAYERS);
-                for (i in 0...ChartingState.GRID_PLAYERS){
-                    state.icons[i].changeIcon(icons[i]);
+                var i = 0;
+                for (m in 0...3){
+                    if (!statusLoad[m]) continue;
+                    state.icons[i].changeIcon(icons[m]);
+                    Reflect.setProperty(state.characterData,'iconP'+(i+1),icons[m]);
                     state.icons[i].scale.set(2,2);
                     state.icons[i].updateHitbox();
+                    state.icons[i].antialiasing=false;
+                    i += 1;
                 }
                 //FlxG.sound.play();
             }
             if (FlxG.state.curSec!=section){
                 section = FlxG.state.curSec;
-                for (i in 0...ChartingState.GRID_PLAYERS)
-                    FlxG.state.icons[i].changeIcon(icons[i]);
+                FlxG.state.waveformSprite.x = FlxG.state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
+                for (i in 0...ChartingState.GRID_PLAYERS){
+                    //FlxG.state.icons[i].changeIcon(icons[i]);
+                    FlxG.state.icons[i].antialiasing=false;
+                }
             }
         }
     }catch (e:Dynamic) {trace(e);FlxG.signals.preUpdate.remove(Helper);}

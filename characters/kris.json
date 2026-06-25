@@ -45,7 +45,7 @@
 	"no_antialiasing": true,
 	"image": "characters/kris",
 	"position": [0, 350],
-	"healthicon": "bf",
+	"healthicon": "kris",
 	"flip_x": true,
 	"healthbar_colors": [49, 176, 209],
 	"camera_position": [0, 0],
