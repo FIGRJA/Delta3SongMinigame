@@ -286,10 +286,12 @@ function loadSongsLists() {
 					s = s+'	"bpm":'+data[4]+',';
 					s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
 					s = s+'	"songPlay":"'+data[1].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
+					s = s+'	"prew":"'+data[6].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
+					s = s+'	"prewCh":"'+data[7].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
 					s = s+'	"album":'+data[11]+',';
 					s = s+'	"index":"'+n.split("customsong_info")[1].split(".")[0]+'",';
 					s = s+'	"hxModule":null,';
-					s = s+'	"isFull":false';
+					s = s+'	"dynamic_solo":false';
 					s = s+'}';
 				}
 			}
@@ -332,10 +334,12 @@ function loadSongsLists() {
 				s = s+'	"bpm":'+data.Note_speed+',';
 				s = s+'	"songMain":"'+data.Music_file_no_guitar.split(".")[0]+'",';
 				s = s+'	"songPlay":"'+data.Music_file.split(".")[0]+'",';
+				s = s+'	"prew":"'+data.Menu_preview.split(".")[0]+'",';
+				s = s+'	"prewCh":"'+data.Menu_preview.split(".")[0]+'",';
 				s = s+'	"album":'+data.Album+',';
 				s = s+'	"index":"",';
 				s = s+'	"hxModule":null,';
-				s = s+'	"isFull":false';
+				s = s+'	"dynamic_solo":false';
 				s = s+'}';
 			}
 		}
@@ -462,10 +466,11 @@ function onUpdate(e) {
 				//debugPrint(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",true,freeAction[curAction][2].songMain+', PATH: mus'+freeAction[curAction][0][2]));
 				//freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",false,freeAction[curAction][2].songMain), true);
 				//trace(Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: mus');
-				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",true,Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: mus'), true);
+				//debugPrint(getTmpScore()>0?(freeAction[curAction][2].prew==null?freeAction[curAction][2].songMain:freeAction[curAction][2].prew):(freeAction[curAction][2].prewCh==null?freeAction[curAction][2].songPlay:freeAction[curAction][2].prewCh));
+				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+(getTmpScore()>0?((freeAction[curAction][2].prew==null||freeAction[curAction][2].prew="NONE")?freeAction[curAction][2].songMain:freeAction[curAction][2].prew):((freeAction[curAction][2].prewCh==null||freeAction[curAction][2].prewCh=="NONE")?freeAction[curAction][2].songPlay:freeAction[curAction][2].prewCh))+".ogg",true,Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: mus'), true);
 				freePlay.volume = 0;
 				freePlay.play();
-				freePlay.fadeOut(2,0.7);
+				freePlay.fadeOut(2,1);
 				FlxG.sound.list.add(freePlay);
 			} catch (e:Dynamic) {}
 		} else {
