@@ -461,8 +461,8 @@ function onUpdate(e) {
 				//debugPrint("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg");
 				//debugPrint(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",true,freeAction[curAction][2].songMain+', PATH: mus'+freeAction[curAction][0][2]));
 				//freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",false,freeAction[curAction][2].songMain), true);
-				//trace(Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: songs');
-				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",true,Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: songs'), true);
+				//trace(Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: mus');
+				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",true,Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: mus'), true);
 				freePlay.volume = 0;
 				freePlay.play();
 				freePlay.fadeOut(2,0.7);

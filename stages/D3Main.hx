@@ -186,8 +186,8 @@ function onCreatePost() {
 	// game.songSpeed = 1.1;//sos[3]/sos[2]
 	try {
 		//debugPrint("mods/"+moddir+"/mus/"+SONG.songMain+".ogg");
-		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songMain),true,Paths.formatToSongPath(SONG.songMain)+'/Inst, PATH: songs'));
-		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songPlay),true,Paths.formatToSongPath(SONG.songPlay)+'/Vocals, PATH: songs'));
+		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songMain),true,Paths.formatToSongPath(SONG.songMain)+'/Inst, PATH: mus'));
+		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songPlay),true,Paths.formatToSongPath(SONG.songPlay)+'/Vocals, PATH: mus'));
 	} catch (e:Dynamic) {}
 
 	susiNoteCam = new FlxCamera(361, 55, 120, 390, 1);
@@ -198,7 +198,7 @@ function onCreatePost() {
 	FlxG.cameras.insert(krisNoteCam, 2, false);
 	FlxG.cameras.insert(ralseiNoteCam, 3, false);
 	
-	var createCamSP = (camera:FlxCamera)->{
+	var createCamSP = (camera:FlxCamera,inZ:Int)->{
 		var bitmapData:BitmapData = new BitmapData(camera.width*2, camera.height*2, true, 0x00FFFFFF);
 		//bitmapData.draw(camera.canvas);
 		bitmapData.scroll(-camera.width,-camera.height);
@@ -210,7 +210,7 @@ function onCreatePost() {
 		matrix.translate(camera.width/2, camera.height/2);
 		///camera.visible = false;
 		camera.y = 1000;
-		add(SPCam);
+		insert(inZ,SPCam);
 		//debugPrint(SPCam);
 		return [bitmapData,SPCam,camera,matrix];
 	}
@@ -222,7 +222,7 @@ function onCreatePost() {
 	//sp1.camera = game.camGame;
 	//add(sp1);
 	//susiNoteCam.scroll.y = 10000;
-	var cams = createCamSP(susiNoteCam);
+	var cams = createCamSP(susiNoteCam,members.indexOf(game.gfGroup));
 	cams[1].x =145;
 	SPcameras.push(cams);
 	
@@ -233,7 +233,7 @@ function onCreatePost() {
 	//sp2.camera = game.camGame;
 	//add(sp2);
 	//krisNoteCam.scroll.y = 10000;
-	var cams = createCamSP(krisNoteCam);
+	var cams = createCamSP(krisNoteCam,members.indexOf(game.boyfriendGroup));
 	cams[1].x =295;
 	SPcameras.push(cams);
 	
@@ -244,7 +244,7 @@ function onCreatePost() {
 	//sp3.camera = game.camGame;
 	//add(sp3);
 	//ralseiNoteCam.scroll.y = 10000;
-	var cams = createCamSP(ralseiNoteCam);
+	var cams = createCamSP(ralseiNoteCam,members.indexOf(game.dadGroup));
 	cams[1].x =445;
 	SPcameras.push(cams);
 
@@ -561,9 +561,14 @@ function onCreatePost() {
 		ralseiNoteCam.visible = false;
 		L2.visible = false;
 	}
-
-	Conductor.songPosition = -3000;
+	//debugPrint(-4000/PlayState.SONG.bpm);
+	Conductor.songPosition = (-4*1000*60)/PlayState.SONG.bpm + (-1000);
 	//game.grpHoldSplashes.visible =false;
+
+	if (ClientPrefs.getGameplaySetting('botplay')){
+		getVar("bgLight").alpha = 0;
+		getVar("bgDark").alpha = 1;
+	}
 }
 
 
@@ -835,8 +840,8 @@ function onUpdate(e) {
 		}
 	}
 
-	bmpDistant.y = (ClientPrefs.data.downScroll?1:-1)*(0.45 * ((Conductor.songPosition + (60 / Conductor.bpm * 1000)) % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) - 25;
-	bmpDistant4.y = (ClientPrefs.data.downScroll?1:-1)*(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) - 25;
+	bmpDistant.y =  (ClientPrefs.data.downScroll?1:-1)*(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) + (ClientPrefs.data.downScroll?428:-100) ;
+	bmpDistant4.y = (ClientPrefs.data.downScroll?1:-1)*(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + (ClientPrefs.data.downScroll?428:-100) ;
 
 	if (susiRofls) {
 		game.gf.stunned = true;

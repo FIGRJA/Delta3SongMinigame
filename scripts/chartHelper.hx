@@ -47,7 +47,7 @@ function writeNoteToSong() {
 		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 3+((statusLoad[1]?3:0)) : 0) + (note.noteType == "drum" ? 3 : 0);
 		simpleNote[2] = note.sustainLength;
 		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : null;
-        //trace(simpleNote);
+        //trace(simpleNote+note.noteType);
 
 		//if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]==null)
 		//	PlayState.SONG.notes.push(emty);
