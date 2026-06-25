@@ -19,6 +19,7 @@ function onCreate() {
 }
 
 function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
+	PlayState.SONG.notes = [];
 	// PlayState.instance.clearNotesBefore(0);
 	// PlayState.instance.setSongTime(0);
 	//curStepCrochet = 60 / PlayState.SONG.bpm * 1000 / 4.0;

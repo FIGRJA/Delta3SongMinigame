@@ -137,6 +137,7 @@ for (mod in loadSongsLists()) for (song in mod[1].songs) {
 		//debugPrint(statusLoad);
 		SONG = song;
 		setVar("SONG",SONG);
+		setVar("statusLoad",statusLoad);
 	}
 	// for (sos in songsList){
 	//    if (game.songName == sos[1]){

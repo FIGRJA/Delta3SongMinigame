@@ -16,6 +16,7 @@ function setVF(Var,Fun) {
 var songI ;
 var songV ;
 var unspawnNotes ;
+var statusLoad;
 
 function writeNoteToSong() {
 	trace("start write");
@@ -43,7 +44,7 @@ function writeNoteToSong() {
 			continue;
 		var simpleNote:Arry<Dynamic> = [0.0, 0, 0.0];
 		simpleNote[0] = note.strumTime;
-		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 8 : 0) + (note.noteType == "drum" ? 4 : 0);
+		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 3+((statusLoad[1]?3:0)) : 0) + (note.noteType == "drum" ? 3 : 0);
 		simpleNote[2] = note.sustainLength;
 		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : null;
         //trace(simpleNote);
@@ -74,6 +75,11 @@ function onCreatePost() {
     songI = getVar("SONG").songMain;
     songV = getVar("SONG").songPlay;
     unspawnNotes = game.unspawnNotes.copy();
+    PlayState.SONG.notes = [];
+    statusLoad = getVar("statusLoad");
+    ChartingState.GRID_PLAYERS = 2;
+    ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
+    //debugPrint(Std.int(statusLoad[0])+Std.int(statusLoad[1])+Std.int(statusLoad[2]));
 }
 
 function getSong(song) {
@@ -87,10 +93,15 @@ function getSong(song) {
 }
 var songEx = false;
 var Helper ;
+var icons = ["kris","susi","ralsei"];
+var section = 0;
 Helper = ()->{
     try{
         //trace("hi");
         setVar("chartHelper",Helper);
+
+        ChartingState.GRID_PLAYERS = Std.int(statusLoad[0])+Std.int(statusLoad[1])+Std.int(statusLoad[2]);
+        ChartingState.GRID_COLUMNS_PER_PLAYER = Math.max((statusLoad[0]?2:0),Math.max((statusLoad[1]?3:0),(statusLoad[2]?3:0)));
         if (Type.getClassName(Type.getClass(FlxG.state))=="states.editors.ChartingState"){
             if (FlxG.sound.music.length<1000){
                 var state =  FlxG.state;
@@ -99,42 +110,40 @@ Helper = ()->{
                 state.maxTime = FlxG.sound.music.length;
 			    state.prevEndInput.max = FlxMath.roundDecimal(state.maxTime/1000,2);
                 state._cacheSections();
-                if (!songEx){
-                    //state.reloadNotes();
-                    //state.destroy();
-                    //trace("h1");
-                    //FlxG.state = new ChartingState();
+                //if (!songEx){
                 writeNoteToSong();
                     //songEx = true;
-                    //FlxG.resetState();
-                    //state =  FlxG.state;
-                    //trace("h2");
-                    //state.create();
-                }
+                //}
                 //trace("h3");
                 state.vocals.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+songV+".ogg"),true,"nice Try"));
                 state.updateAudioVolume();
                 state.setPitch();
             
-                // ВАЖНО: Перезагружаем ноты в UI
+                // ВАЖНО: Перезагружаем ноты в UI//deepseak
                 state.reloadNotes();
                 state.loadSection();
                 state.updateGridVisibility();
-                for (secNum in 0...PlayState.SONG.notes.length){
-                    var section = PlayState.SONG.notes[secNum];
-                    for (note in section.sectionNotes)
-                        if(note != null)
-                            state.notes.push(state.createNote(note, secNum));}
+                //trace(ChartingState.GRID_PLAYERS);
+                for (i in 0...ChartingState.GRID_PLAYERS){
+                    state.icons[i].changeIcon(icons[i]);
+                    state.icons[i].scale.set(2,2);
+                    state.icons[i].updateHitbox();
+                }
                 //FlxG.sound.play();
+            }
+            if (FlxG.state.curSec!=section){
+                section = FlxG.state.curSec;
+                for (i in 0...ChartingState.GRID_PLAYERS)
+                    FlxG.state.icons[i].changeIcon(icons[i]);
             }
         }
     }catch (e:Dynamic) {trace(e);FlxG.signals.preUpdate.remove(Helper);}
 }
 
-var ema = -1;
+var ema = 0;
 function onUpdate(e) {
     ema += e;
-    if (ema>0&&ema<200){
+    if (ema>(e*10)&&ema<(e*12)){
         songEx = false;
         //writeNoteToSong();
         if (getVar("chartHelper")==null){
@@ -146,11 +155,16 @@ function onUpdate(e) {
             if (game.songName=="songchart"){
                 trace("removed");
                 FlxG.signals.preUpdate.remove(getVar("chartHelper"));
+                setVar("chartHelper",null);
             }
             
         }
         //trace(game.songName);
-        ema = 1000;
+        ema += e;
     }
 }
-
+function onDestroy() {
+    if (getVar("chartHelper")!=null) return;
+    ChartingState.GRID_PLAYERS = 2;
+    ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
+}
