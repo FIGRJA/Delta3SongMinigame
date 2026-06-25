@@ -64,7 +64,7 @@
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
             "isFull":false
         },{
-            "name":"test(5)",
+            "name":"test(5)ch4",
             "bpm":195,
             "songMain":"battle",
             "songPlay":"battle",
@@ -73,13 +73,31 @@
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
             "isFull":false
         },{
-            "name":"test(6)",
+            "name":"test(6)ch4",
             "bpm":195,
             "songMain":"battle_vapor",
             "songPlay":"battle_vapor",
             "album":null,
             "index":6,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
+            "isFull":false
+        },{
+            "name":"test(11)ch5-",
+            "bpm":195,
+            "songMain":"battle_vapor",
+            "songPlay":"battle_vapor",
+            "album":null,
+            "index":11,
+            "hxModule":"scripts/deltaCode/gml_ch5_scr_rhythmgame_notechart.hx",
+            "isFull":false
+        },{
+            "name":"test(15)ch5-",
+            "bpm":195,
+            "songMain":"battle_vapor",
+            "songPlay":"battle_vapor",
+            "album":null,
+            "index":15,
+            "hxModule":"scripts/deltaCode/gml_ch5_scr_rhythmgame_notechart.hx",
             "isFull":false
         }
     ]

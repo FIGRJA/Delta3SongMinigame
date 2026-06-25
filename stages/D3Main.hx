@@ -943,7 +943,7 @@ function goodNoteHit(daNote) {
 		plSplashKris[daNote.noteData==3][0].color =  0xEDF100;
 		plSplashKris[daNote.noteData==3][0].alpha = 1;
 		//songScore += 60 / PlayState.SONG.bpm *10 / 4.0;
-		songScore += 1.5;
+		songScore += 0.5;
 		daNote.parent.visible = true;
 		daNote.parent.alpha = 1;
 	}
