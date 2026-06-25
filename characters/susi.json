@@ -68,11 +68,11 @@
 	"vocals_file": "",
 	"no_antialiasing": true,
 	"image": "characters/susi",
-	"position": [0, 350],
+	"position": [-10, 340],
 	"healthicon": "susi",
 	"flip_x": false,
 	"healthbar_colors": [49, 176, 209],
-	"camera_position": [0, 0],
+	"camera_position": [40, 40],
 	"sing_duration": 8,
 	"scale": 2,
 	"_editor_isPlayer": false
