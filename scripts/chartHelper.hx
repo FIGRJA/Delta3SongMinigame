@@ -13,13 +13,14 @@ function setVF(Var,Fun) {
 	
 }
 
-var songI ;
-var songV ;
+//var songI ;
+//var songV ;
 var unspawnNotes ;
-var statusLoad;
+var statusLoad = [true,true,true];
 
 function writeNoteToSong() {
 	trace("start write");
+    if (PlayState.SONG.format == "psych_v1_convert") return;
 	//PlayState.SONG.notes[0].sectionNotes = [];
 	//PlayState.SONG.notes[0].bpm = PlayState.SONG.bpm;
 	//var emty = 
@@ -72,14 +73,17 @@ function writeNoteToSong() {
 
 function onCreatePost() {
 //setVF("load_delta_notes","writeNoteToSong");
-    songI = getVar("SONG").songMain;
-    songV = getVar("SONG").songPlay;
+    //songI = getVar("SONG").songMain;
+    //songV = getVar("SONG").songPlay;
     unspawnNotes = game.unspawnNotes.copy();
-    PlayState.SONG.notes = [];
-    statusLoad = getVar("statusLoad");
+    //PlayState.SONG.notes = [];
     ChartingState.GRID_PLAYERS = 2;
     ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
     this.set("Reflect",Type.resolveClass("Reflect"));
+    if ( getVar("statusLoad")!=null)
+        statusLoad = getVar("statusLoad");
+
+        //writeNoteToSong();
    // this.fixScriptName("chartHelper");
     //debugPrint(Std.int(statusLoad[0])+Std.int(statusLoad[1])+Std.int(statusLoad[2]));
 }
@@ -107,8 +111,8 @@ Helper = ()->{
         if (Type.getClassName(Type.getClass(FlxG.state))=="states.editors.ChartingState"){
             if (FlxG.sound.music.length<1000){
                 var state =  FlxG.state;
-                trace(getSong("mus/"+songI+".ogg"));
-                FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+songI+".ogg"),true,"nice Try"));
+                //trace(getSong("mus/"+songI+".ogg"));
+                FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+PlayState.SONG.gameOverLoop+".ogg"),true,"nice Try"));
                 state.maxTime = FlxG.sound.music.length;
 			    state.prevEndInput.max = FlxMath.roundDecimal(state.maxTime/1000,2);
                 state._cacheSections();
@@ -117,7 +121,7 @@ Helper = ()->{
                     //songEx = true;
                 //}
                 //trace("h3");
-                state.vocals.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+songV+".ogg"),true,"nice Try"));
+                state.vocals.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+PlayState.SONG.gameOverEnd+".ogg"),true,"nice Try"));
                 state.updateAudioVolume();
                 state.setPitch();
             
@@ -125,7 +129,7 @@ Helper = ()->{
                 state.reloadNotes();
                 state.loadSection();
                 state.updateGridVisibility();
-                //state.waveformSprite.x = state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
+                state.waveformSprite.x = state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
                 //trace(ChartingState.GRID_PLAYERS);
                 var i = 0;
                 for (m in 0...3){
@@ -148,6 +152,13 @@ Helper = ()->{
                 }
             }
         }
+        try{
+            if (PlayState.SONG.stage!="D3Main"){
+                FlxG.signals.preUpdate.remove(Helper);
+                ChartingState.GRID_PLAYERS = 2;
+                ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
+            }
+        }catch (e:Dynamic){}
     }catch (e:Dynamic) {trace(e);FlxG.signals.preUpdate.remove(Helper);}
 }
 
@@ -156,7 +167,6 @@ function onUpdate(e) {
     ema += e;
     if (ema>(e*10)&&ema<(e*12)){
         songEx = false;
-        //writeNoteToSong();
         if (getVar("chartHelper")==null){
             if (game.songName!="songchart"){
                 trace("added");

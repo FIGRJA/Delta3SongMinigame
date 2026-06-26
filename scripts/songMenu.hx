@@ -283,7 +283,8 @@ function loadSongsLists() {
 					s = s+'{';
 					s = s+'	"name":"'+data[9]+'",';
 					s = s+'	"nameFile":"",';
-					s = s+'	"bpm":'+data[4]+',';
+					s = s+'	"bpm":'+data[3]+',';
+					s = s+'	"speed":'+data[4]+',';
 					s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
 					s = s+'	"songPlay":"'+data[1].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
 					s = s+'	"prew":"'+data[6].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
@@ -331,7 +332,8 @@ function loadSongsLists() {
 				s = s+'{';
 				s = s+'	"name":"'+n.split(".neo").join("")+'",';
 				s = s+'	"nameFile":"'+n+'",';
-				s = s+'	"bpm":'+data.Note_speed+',';
+				s = s+'	"bpm":'+data.BPM+',';
+				s = s+'	"speed":'+data.Note_speed+',';
 				s = s+'	"songMain":"'+data.Music_file_no_guitar.split(".")[0]+'",';
 				s = s+'	"songPlay":"'+data.Music_file.split(".")[0]+'",';
 				s = s+'	"prew":"'+data.Menu_preview.split(".")[0]+'",';

@@ -107,38 +107,46 @@ function onCreate() // PlayState.SONG.bpm = 0.1;
 	if (isMenuChart)
 		return;
 
-for (mod in loadSongsLists()) for (song in mod[1].songs) {
-	if (PlayState.SONG.song == song.name) {
-		// Conductor.safeZoneOffset = game.ratingsData[0].hitWindow+game.ratingsData[1].hitWindow;
-		var path:String = "";
-		var index:Dynamic= song.index;
-		if (song.hxModule != null) {
-			path = song.hxModule;
-		} else{
-	//debugPrint(mod);
-			for (diff in mod[1].dificulties){
-				if (mod[0].name +"^"+ diff.name == PlayState.SONG.format) {
-					path = "mods/"+mod[2]+"/"+diff.dir + diff.prefix + song.nameFile + diff.postfix;
+if (PlayState.SONG.format != "psych_v1_convert")
+	for (mod in loadSongsLists()) for (song in mod[1].songs) {
+		if (PlayState.SONG.song == song.name) {
+			// Conductor.safeZoneOffset = game.ratingsData[0].hitWindow+game.ratingsData[1].hitWindow;
+			var path:String = "";
+			var index:Dynamic= song.index;
+			if (song.hxModule != null) {
+				path = song.hxModule;
+			} else{
+		//debugPrint(mod);
+				for (diff in mod[1].dificulties){
+					if (mod[0].name +"^"+ diff.name == PlayState.SONG.format) {
+						path = "mods/"+mod[2]+"/"+diff.dir + diff.prefix + song.nameFile + diff.postfix;
+					}
 				}
 			}
+			// PlayState.SONG.format = "DELTA-ponos";
+			if (index == null)
+				continue;
+			PlayState.SONG.bpm = song.bpm;
+			Conductor.bpm = song.bpm;
+			//PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
+			PlayState.SONG.speed = song.speed!=null?song.speed/(450/4.2):1.1;
+
+			PlayState.SONG.gameOverLoop = song.songMain;
+			PlayState.SONG.gameOverEnd  = song.songPlay;
+			//debugPrint(song.speed);*
+			//PlayState.SONG.speed = 1;
+			//game.songSpeed = 1.1;
+			moddir = mod[2];
+			//statusLoad = getVar("load_delta_notes").call("loadSong", [path, index, song.dynamic_solo/**isFull**/]).returnValue;
+				statusLoad = loadSong(path, index, song.dynamic_solo);
+			//debugPrint(statusLoad);
+			SONG = song;
+			//setVar("SONG",SONG);
+			setVar("statusLoad",statusLoad);
 		}
-		// PlayState.SONG.format = "DELTA-ponos";
-		if (index == null)
-			continue;
-		PlayState.SONG.bpm = song.bpm;
-		Conductor.bpm = song.bpm;
-		PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
-		//debugPrint(song.speed);*
-		//PlayState.SONG.speed = 1;
-		//game.songSpeed = 1.1;
-		moddir = mod[2];
-		//statusLoad = getVar("load_delta_notes").call("loadSong", [path, index, song.dynamic_solo/**isFull**/]).returnValue;
-		statusLoad = loadSong(path, index, song.dynamic_solo);
-		//debugPrint(statusLoad);
-		SONG = song;
-		setVar("SONG",SONG);
-		setVar("statusLoad",statusLoad);
 	}
+else
+	statusLoad = [true,true,true];
 	// for (sos in songsList){
 	//    if (game.songName == sos[1]){
 	//        PlayState.SONG.bpm = sos[2];
@@ -152,9 +160,12 @@ for (mod in loadSongsLists()) for (song in mod[1].songs) {
 	//        //setVar("load_delta_notes_index",sos[0]);
 	//    }
 	// }
+	//else 
+	//	for (note in game.unspawnNotes){
+	//		
+	//	}
 	game.showRating = false;
 	game.showComboNum = false;
-}
 }
 var clear = function() {
 	GL.clearColor(0, 0, 0, 0); 
@@ -175,6 +186,17 @@ function onCreatePost() {
 	if (isMenuChart)
 		return;
 
+	//if (PlayState.SONG.format == "psych_v1_convert"){
+	//	for (note in game.unspawnNotes){
+	//		if (!note.mustPress) note.noteType+=3;
+	//		note.mustPress = true;
+	//		note.noteType = note.noteData>5?"vocal": note.noteData>2?"drum":"lead";
+	//		if (note.noteType == "vocal")
+	//			note.noteData += -6;
+	//		if (note.noteType == "drum")
+	//			note.noteData += -3;
+	//	}
+	//}
 	//game.moveCamera(false);
 	//game.camFollow.y = 0;
 	//game.camHUD.scroll.x += 100;
@@ -186,8 +208,8 @@ function onCreatePost() {
 	// game.songSpeed = 1.1;//sos[3]/sos[2]
 	try {
 		//debugPrint("mods/"+moddir+"/mus/"+SONG.songMain+".ogg");
-		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songMain),true,Paths.formatToSongPath(SONG.songMain)+'/Inst, PATH: mus'));
-		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,SONG.songPlay),true,Paths.formatToSongPath(SONG.songPlay)+'/Vocals, PATH: mus'));
+		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,PlayState.SONG.gameOverLoop),true,Paths.formatToSongPath(PlayState.SONG.gameOverLoop)+'/Inst, PATH: mus'));
+		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,PlayState.SONG.gameOverEnd),true,Paths.formatToSongPath(PlayState.SONG.gameOverEnd)+'/Vocals, PATH: mus'));
 	} catch (e:Dynamic) {}
 
 	susiNoteCam = new FlxCamera(361, 55, 120, 390, 1);
@@ -272,7 +294,7 @@ function onCreatePost() {
 	//var gameSprite = cast FlxG.game;
 	//gameSprite.sahder = [shader_];
 	//FlxG.game.alpha = 0.5;
-	//Lib.application.window.opacity = 0.5;
+	//Lib.application.window.opacity = 1;
 	//FlxG.signals.postDraw.add(clear);
 	//debugPrint(Lib.application.window.display.supportedModes );
 	//var a = Lib.application.window.displayMode;
@@ -470,7 +492,7 @@ function onCreatePost() {
 	insert(4, blackbacknotes);
 
 	//var distant = 60 / Conductor.bpm * 450;
-	var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed/game.playbackRate)*1;
+	var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
 	bmpDistant = new FlxBackdrop(null, 0x10, 0, (distant*4)-10); // 0x10 = Y
 	// bmpDistant.y = 0;
 	bmpDistant.x = -200;
@@ -646,7 +668,18 @@ function noteMiss(daNote) {
 }
 
 var ralsClap = false;
+game.totalColumns = 9;
 function onSpawnNote(daNote) {
+	//debugPrint(daNote.noteData);
+	if (PlayState.SONG.format == "psych_v1_convert"){
+		//if (!daNote.mustPress) daNote.noteType+=4;
+		daNote.mustPress = false;
+		daNote.noteType = daNote.noteData>=6?"vocal": daNote.noteData>=3?"drum":"lead";
+		if (daNote.noteType == "vocal")
+			daNote.noteData += -6;
+		if (daNote.noteType == "drum")
+			daNote.noteData += -3;
+	}
 	daNote.noteSplashData.disabled = true;
 	daNote.lateHitMult = 1;
 	daNote.rgbShader.enabled = false;

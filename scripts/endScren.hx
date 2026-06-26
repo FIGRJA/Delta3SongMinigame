@@ -54,11 +54,15 @@ function onCustomSubstateCreatePost(n) {
 var COOLText = null;
 var Rating ;
 var a = 0;
+var isEnd = false;
 function onCustomSubstateUpdate(n, e) {
 	if (!isThis)
 		return;
     if (Control.CHAR_SELECT )
 		MusicBeatState.resetState();
+    if (Control.ACCEPT &&isEnd)
+        TW(8);
+		//MusicBeatState.resetState();
     if (COOLText!=null){
         a += e*Rating[1];
         COOLText.angle = Math.sin(a)*30*Rating[1];
@@ -193,7 +197,8 @@ function TW(a) {
             COOLText.camera= camEnd;
             COOLText.antialiasing = false;
             COOLText.alignment = a;
-            customSubstate.add(COOLText);                   
+            customSubstate.add(COOLText);  
+            isEnd = true;                 
             new FlxTimer().start(15,()->{TW(8);});
         });
 
