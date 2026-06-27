@@ -18,18 +18,18 @@ function setVF(Var,Fun) {
 var unspawnNotes ;
 var statusLoad = [true,true,true];
 
-function writeNoteToSong() {
+function writeNoteToSong(maxTime:Int) {
 	trace("start write");
-    if (PlayState.SONG.format == "psych_v1_convert") return;
+    //if (PlayState.SONG.format == "psych_v1_convert") return;
 	//PlayState.SONG.notes[0].sectionNotes = [];
 	//PlayState.SONG.notes[0].bpm = PlayState.SONG.bpm;
 	//var emty = 
-    PlayState.SONG.notes = [];
+    var SuperSimpleNotes = [];
 	//trace(emty);
 	//var notes:Int = 0;
 	var section:Int = 1 / PlayState.SONG.bpm * 60 * 1000 * 4;
-    for (i in 0...Math.round((FlxG.state.maxTime / section) + 0.5))
-        PlayState.SONG.notes[i] = {
+    for (i in 0...Math.round((maxTime / section) + 0.5))
+        SuperSimpleNotes[i] = {
             sectionNotes: [],
             bpm: PlayState.SONG.bpm,
             mustHitSection: true,
@@ -38,8 +38,8 @@ function writeNoteToSong() {
             changeBPM: false,
             sectionBeats: 4
         };
-	for (i in 0...unspawnNotes.length) {
-		var note = unspawnNotes[i];
+	for (i in 0...game.unspawnNotes.length) {
+		var note = game.unspawnNotes[i];
         //trace(Math.round((note.strumTime / section)));
 		if (note.isSustainNote)
 			continue;
@@ -52,8 +52,8 @@ function writeNoteToSong() {
 
 		//if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]==null)
 		//	PlayState.SONG.notes.push(emty);
-		if (PlayState.SONG.notes[Math.round((note.strumTime / section))]==null) {
-			PlayState.SONG.notes[Math.round((note.strumTime / section))] = {
+		if (SuperSimpleNotes[Math.round((note.strumTime / section))]==null) {
+			SuperSimpleNotes[Math.round((note.strumTime / section))] = {
                 sectionNotes: [],
                 bpm: PlayState.SONG.bpm,
                 mustHitSection: true,
@@ -63,19 +63,20 @@ function writeNoteToSong() {
                 sectionBeats: 4
             };
 		}
-		PlayState.SONG.notes[Math.round((note.strumTime / section))].sectionNotes.push(simpleNote);
+		SuperSimpleNotes[Math.round((note.strumTime / section))].sectionNotes.push(simpleNote);
 		//notes++;
 	}
     //trace(PlayState.SONG.notes);
     //trace(PlayState.SONG.notes.length);
 	//trace("end write");
+    return SuperSimpleNotes;
 }
 
 function onCreatePost() {
 //setVF("load_delta_notes","writeNoteToSong");
     //songI = getVar("SONG").songMain;
     //songV = getVar("SONG").songPlay;
-    unspawnNotes = game.unspawnNotes.copy();
+    unspawnNotes = writeNoteToSong(FlxG.sound.music.length);
     //PlayState.SONG.notes = [];
     ChartingState.GRID_PLAYERS = 2;
     ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
@@ -117,7 +118,7 @@ Helper = ()->{
 			    state.prevEndInput.max = FlxMath.roundDecimal(state.maxTime/1000,2);
                 state._cacheSections();
                 //if (!songEx){
-                writeNoteToSong();
+                PlayState.SONG.notes = unspawnNotes.copy();
                     //songEx = true;
                 //}
                 //trace("h3");
@@ -167,18 +168,15 @@ function onUpdate(e) {
     ema += e;
     if (ema>(e*10)&&ema<(e*12)){
         songEx = false;
-        if (getVar("chartHelper")==null){
-            if (game.songName!="songchart"){
-                trace("added");
-                FlxG.signals.preUpdate.add(Helper);
-            }
-        }else{
-            if (game.songName=="songchart"){
-                trace("removed");
-                FlxG.signals.preUpdate.remove(getVar("chartHelper"));
-                setVar("chartHelper",null);
-            }
+        if ((game.songName=="songchart"||game.chartingMode)&&getVar("chartHelper")!=null){
+            trace("removed");
+            FlxG.signals.preUpdate.remove(getVar("chartHelper"));
+            setVar("chartHelper",null);
             
+        }
+        if (getVar("chartHelper")==null&&game.songName!="songchart"){
+            trace("added");
+            FlxG.signals.preUpdate.add(Helper);
         }
         //trace(game.songName);
         ema += e;

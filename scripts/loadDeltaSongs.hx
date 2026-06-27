@@ -61,7 +61,7 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 		//	}
 		//	//trace("helpMe "+i+" "+game.unspawnNotes.length);
 		//}
-		//writeNoteToSong();
+		///writeNoteToSong();
 		// game.unspawnNotes = [];
 		// PlayState.generateSong();
 		debugPrint("loaded " + game.unspawnNotes.length + " notes");
@@ -305,34 +305,58 @@ function scr_rhythmgame_add_lyric(timming, str1 = "", ?str2 = "") {
 	// ];
 }
 
-function writeNoteToSong() {
+function writeNoteToSong(maxTime:Int) {
 	trace("start write");
-	PlayState.SONG.notes[0].sectionNotes = [];
-	var emty = PlayState.SONG.notes[0];
-	debugPrint(emty);
+    if (PlayState.SONG.format == "psych_v1_convert") return;
+	//PlayState.SONG.notes[0].sectionNotes = [];
+	//PlayState.SONG.notes[0].bpm = PlayState.SONG.bpm;
+	//var emty = 
+    PlayState.SONG.notes = [];
+	//trace(emty);
 	//var notes:Int = 0;
 	var section:Int = 1 / PlayState.SONG.bpm * 60 * 1000 * 4;
-	for (i in 1...game.unspawnNotes.length) {
+    for (i in 0...Math.round((maxTime / section) + 0.5))
+        PlayState.SONG.notes[i] = {
+            sectionNotes: [],
+            bpm: PlayState.SONG.bpm,
+            mustHitSection: true,
+            gfSection: false,
+            altAnim: false,
+            changeBPM: false,
+            sectionBeats: 4
+        };
+	for (i in 0...game.unspawnNotes.length) {
 		var note = game.unspawnNotes[i];
+        //trace(Math.round((note.strumTime / section)));
 		if (note.isSustainNote)
 			continue;
-		var simpleNote:Arry<Dynamic> = [0.0, 0, 0.0, ""];
+		var simpleNote:Arry<Dynamic> = [0.0, 0, 0.0];
 		simpleNote[0] = note.strumTime;
-		simpleNote[1] = note.noteData + (note.mustPress ? 0 : 4);
+		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 3+((statusLoad[1]?3:0)) : 0) + (note.noteType == "drum" ? 3 : 0);
 		simpleNote[2] = note.sustainLength;
-		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : "";
+		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : null;
+        //trace(simpleNote+note.noteType);
 
-		if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]==null)
-			PlayState.SONG.notes.push(emty);
-		//if (PlayState.SONG.notes.length > Math.round((note.strumTime / section) + 1.5)) {
-		//	PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)] = emty;
-		//}
-		PlayState.SONG.notes[Math.round((note.strumTime / section) - 0.5)].sectionNotes.push(simpleNote);
+		//if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]==null)
+		//	PlayState.SONG.notes.push(emty);
+		if (PlayState.SONG.notes[Math.round((note.strumTime / section))]==null) {
+			PlayState.SONG.notes[Math.round((note.strumTime / section))] = {
+                sectionNotes: [],
+                bpm: PlayState.SONG.bpm,
+                mustHitSection: true,
+                gfSection: false,
+                altAnim: false,
+                changeBPM: false,
+                sectionBeats: 4
+            };
+		}
+		PlayState.SONG.notes[Math.round((note.strumTime / section))].sectionNotes.push(simpleNote);
 		//notes++;
 	}
-	trace("end write");
+    //trace(PlayState.SONG.notes);
+    //trace(PlayState.SONG.notes.length);
+	//trace("end write");
 }
-
 function findClapRals() {
 	var bpm = -1;
 	var fn = [];

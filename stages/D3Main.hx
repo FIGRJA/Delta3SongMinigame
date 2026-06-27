@@ -21,6 +21,7 @@ function setVF(Var,Fun) {
 }
 setVF("songMenu","loadSongsLists");
 setVF("load_delta_notes","loadSong");
+setVF("load_delta_notes","writeNoteToSong");
 
 var isMenuChart:Bool = PlayState.SONG.song == "songChart";
 var susiNoteCam:FlxCamera;
@@ -210,6 +211,7 @@ function onCreatePost() {
 		//debugPrint("mods/"+moddir+"/mus/"+SONG.songMain+".ogg");
 		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,PlayState.SONG.gameOverLoop),true,Paths.formatToSongPath(PlayState.SONG.gameOverLoop)+'/Inst, PATH: mus'));
 		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,PlayState.SONG.gameOverEnd),true,Paths.formatToSongPath(PlayState.SONG.gameOverEnd)+'/Vocals, PATH: mus'));
+		//writeNoteToSong(game.inst.length);
 	} catch (e:Dynamic) {}
 
 	susiNoteCam = new FlxCamera(361, 55, 120, 390, 1);
@@ -326,6 +328,8 @@ function onCreatePost() {
 	game.iconP1.visible = false;
 	game.iconP2.visible = false;
 	game.scoreTxt.visible = false;
+	
+if (PlayState.SONG.format != "psych_v1_convert")
 	game.endCallback = onEndSong;
 
 	var gog:Int = 0;
@@ -1046,7 +1050,7 @@ function onKeyPress(key:Int) {
 }
 
 function onEndSong() {
-	if (game.chartingMode)
+	if (game.chartingMode||PlayState.SONG.format == "psych_v1_convert")
 		return;
 	game.songScore = songScore;
 	if (!ClientPrefs.getGameplaySetting('practice') && !ClientPrefs.getGameplaySetting('botplay')) {

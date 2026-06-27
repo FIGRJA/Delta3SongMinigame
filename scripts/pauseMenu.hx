@@ -66,7 +66,7 @@ function onCustomSubstateCreate(name) {
 	backed.camera = pauseBG;
 	customSubstate.add(backed);
 
-	for (act in ["restart", "toMenu", "exit"]) {
+	for (act in ["restart", PlayState.SONG.format != "psych_v1_convert"?"toMenu":"!⚠custom⚠!", "exit"]) {
 		var action = new FlxText(0, 0, 500, act, 130, true);
 		action.font = Paths.getPath("fronts/fnt_main.ttf");
 		action.cameras = [pauseBG];
