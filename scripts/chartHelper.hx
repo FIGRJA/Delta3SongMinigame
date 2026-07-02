@@ -3,6 +3,7 @@
 import flixel.FlxG;
 import backend.CacheSystem;
 import Type;
+import Reflect;
 import backend.Mods;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 import states.editors.ChartingState;
@@ -16,7 +17,29 @@ function setVF(Var,Fun) {
 //var songI ;
 //var songV ;
 var unspawnNotes ;
+var eventNotes ;
 var statusLoad = [true,true,true];
+
+function writeEvents() {
+    var eventsL = [];
+    for (event in game.eventNotes){
+        var Finded = false;
+        var i = 0;
+        //trace(event);
+        while (i<eventsL.length&&!Finded){
+            var e = eventsL[i];
+            if (e[0]==event.strumTime){
+                e[1].push([event.event,event.value1,event.value2]);
+                Finded=true;
+            }
+            i += 1;
+        }
+        if (!Finded){
+            eventsL.push([event.strumTime,[[event.event,event.value1,event.value2]]]);
+        }
+    }
+    return eventsL;
+}
 
 function writeNoteToSong(maxTime:Int) {
 	trace("start write");
@@ -77,10 +100,11 @@ function onCreatePost() {
     //songI = getVar("SONG").songMain;
     //songV = getVar("SONG").songPlay;
     unspawnNotes = writeNoteToSong(FlxG.sound.music.length);
+    eventNotes = writeEvents();
     //PlayState.SONG.notes = [];
     ChartingState.GRID_PLAYERS = 2;
     ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
-    this.set("Reflect",Type.resolveClass("Reflect"));
+    //this.set("Reflect",Type.resolveClass("Reflect"));
     if ( getVar("statusLoad")!=null)
         statusLoad = getVar("statusLoad");
 
@@ -102,8 +126,10 @@ var songEx = false;
 var Helper ;
 var icons = ["kris","susi","ralsei"];
 var section = 0;
+var e = 0;
 Helper = ()->{
     try{
+        //e += _;
         //trace("hi");
         setVar("chartHelper",Helper);
 
@@ -119,6 +145,7 @@ Helper = ()->{
                 state._cacheSections();
                 //if (!songEx){
                 PlayState.SONG.notes = unspawnNotes.copy();
+                PlayState.SONG.events = eventNotes.copy();
                     //songEx = true;
                 //}
                 //trace("h3");
@@ -131,7 +158,8 @@ Helper = ()->{
                 state.loadSection();
                 state.updateGridVisibility();
                 state.waveformSprite.x = state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
-                //trace(ChartingState.GRID_PLAYERS);
+                //state.waveformSprite.x = FlxG.height/2-(ChartingState.GRID_PLAYERS*ChartingState.GRID_SIZE/2);
+                trace(state.waveformSprite.x);
                 var i = 0;
                 for (m in 0...3){
                     if (!statusLoad[m]) continue;
@@ -146,7 +174,7 @@ Helper = ()->{
             }
             if (FlxG.state.curSec!=section){
                 section = FlxG.state.curSec;
-                FlxG.state.waveformSprite.x = FlxG.state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
+                //FlxG.state.waveformSprite.x = FlxG.state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
                 for (i in 0...ChartingState.GRID_PLAYERS){
                     //FlxG.state.icons[i].changeIcon(icons[i]);
                     FlxG.state.icons[i].antialiasing=false;
@@ -154,11 +182,16 @@ Helper = ()->{
             }
         }
         try{
-            if (PlayState.SONG.stage!="D3Main"){
-                FlxG.signals.preUpdate.remove(Helper);
-                ChartingState.GRID_PLAYERS = 2;
-                ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
-            }
+            //for (i in FlxG.game.filters)
+            //    if (i.shader != null && i.shader.data.time != null)
+            //        i.shader.data.time.value = FlxG.elapsed/1;
+
+        //FlxG.game.filters[0].shader.setFloat("time",FlxG.elapsed);
+            //if (PlayState.SONG.stage!="D3Main"){
+            //    FlxG.signals.preUpdate.remove(Helper);
+            //    ChartingState.GRID_PLAYERS = 2;
+            //    ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
+            //}
         }catch (e:Dynamic){}
     }catch (e:Dynamic) {trace(e);FlxG.signals.preUpdate.remove(Helper);}
 }

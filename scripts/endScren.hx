@@ -3,13 +3,46 @@ import flixel.text.FlxTextBorderStyle;
 import flixel.group.FlxTypedGroup;
 import backend.Controls;
 import backend.MusicBeatState;
+import flash.media.SoundTransform;
+import Reflect;
 
 var Control = Controls.instance;
 var camEnd:FlxCamera = new FlxCamera(0, 0, 1280, 720, 1);
 var backed;
 var song = PlayState.SONG.song.split("\n").join().split("\r").join();
-
+var isThis = false;
+var songs = {
+    "bump":                 [0.5,Paths.sound("snd_bump")],
+    "closet_impact":        [0.3,Paths.sound("snd_closet_impact")],
+    "coin":                 [0.3,Paths.sound("snd_coin")],
+    "crowd_cheer_single":   [1  ,Paths.sound("snd_crowd_cheer_single")],
+    "drumroll":             [0.3,Paths.sound("snd_drumroll")],
+    "punchmed":             [0.3,Paths.sound("snd_punchmed")],
+    "splat":                [0.3,Paths.sound("snd_splat")],
+};  
+function getS() {
+    var T = songs.bump[1].play();
+    var R = T.soundTransform.clone();
+    T.stop();
+    return R;
+}
+var soundV = getS();
+soundV.pan = -1;
+function playSnd(Strs) {
+    var snd = Reflect.field(songs,Strs);
+    //var snd = songs.get(Strs);
+    //trace(snd.length);
+    //snd.stop();
+    if (!isThis){
+        soundV.volume = snd[0];
+    }else{
+        soundV.volume = 1;
+    }
+    snd[1].play(0,0,soundV);
+}
+setVar("endScreen",this);
 function onCreate() {
+    trace(songs);
 	FlxG.cameras.add(camEnd, false);
 	game.luaDebugGroup.cameras.push(camEnd);
 	// game.transitioning = true;
@@ -19,7 +52,6 @@ function onCreate() {
 	// D3Main 820;
 }
 
-var isThis = false;
 
 function onCustomSubstateCreate(name) {
 	isThis = name == "END";
@@ -44,11 +76,20 @@ function onCustomSubstateCreate(name) {
 function onCustomSubstateCreatePost(n) {
 	if (!isThis)
 		return;
+    var lastY = -720;
+    var vec = 1;
 	FlxTween.tween(camEnd, {y: 0}, 1.8 ,{
         ease: FlxEase.bounceOut,
         onComplete: (_) -> {
+            playSnd("bump");
 		    TW(0);
-        }       
+        } ,
+        onUpdate: ()->{
+            if (vec>0&&camEnd.y-lastY<0)
+                playSnd("bump");
+            vec = camEnd.y-lastY;
+            lastY = camEnd.y;
+        }      
     });
 }
 var COOLText = null;
@@ -58,8 +99,9 @@ var isEnd = false;
 function onCustomSubstateUpdate(n, e) {
 	if (!isThis)
 		return;
-    if (Control.CHAR_SELECT )
-		MusicBeatState.resetState();
+    if (Control.CHAR_SELECT ){
+		playSnd("splat");
+		MusicBeatState.resetState();}
     if (Control.ACCEPT &&isEnd)
         TW(8);
 		//MusicBeatState.resetState();
@@ -96,19 +138,21 @@ function genText(str,a,?x=0,?y=0) {
     var text = [];
 
     text.push(genText_(str,a,x+3,y+3));
-    text[0].color = 0x002467;
+    text[0].color = 0x00102D;
     text.push(genText_(str,a,x+0,y+0));
     //text[1].color = color;
     //trace("a");
     return text;
 }
-
+var lSnd = ["splat","splat","coin","coin","crowd_cheer_single","crowd_cheer_single"];
 function getTVRating(p) {
     var c = 0;
-    for (i in [[50,"Z"],[65,"C"],[80,"B"],[90,"A"],[98,"S"],[101,"T"]]){
+    var targ = [[50,"Z"],[65,"C"],[80,"B"],[90,"A"],[98,"S"],[101,"T"]];
+    for (i in targ){
         c+=i[0]>90?1:0;
-        if (i[0]>p)
-            return [i[1],c];
+        if (i[0]>p){
+            playSnd(lSnd[targ.indexOf(i)]);
+            return [i[1],c];}
     }
 }
  var T;
@@ -128,7 +172,8 @@ function TW(a) {
         FlxTween.tween(RT[0], {x: 260}, 0.5 ,{
             startDelay: 1,
             onUpdate:()->{RT[1].x=RT[0].x-3;},
-            onStart:()->{RT[0].visible=true;RT[1].visible=true;},
+            onStart:()->{RT[0].visible=true;RT[1].visible=true;
+        playSnd("closet_impact");},
             ease: FlxEase.elasticOut,
             onComplete: (_) -> {
                 TW(1);
@@ -138,43 +183,48 @@ function TW(a) {
         //MusicBeatState.startTransition();
     }
     if (a == 1){
-        new FlxTimer().start(0.05,()->{
+        new FlxTimer().start(0.4,()->{
         var RT = genText("MISSED NOTES","left",320,150);
         RT[1].color = 0xFF0000;
         RT = genText(game.songMisses,"right",920,150);
         RT[1].color = 0xFF0000;
+        playSnd("punchmed");
         TW(2);
         });
     }
     if (a == 2){
-        new FlxTimer().start(0.5,()->{
+        new FlxTimer().start(0.45,()->{
         var RT = genText("NORMAL NOTES","left",320,200);
         var r = game.ratingsData;
         RT = genText(r[1].hits+"+"+(r[2].hits+r[3].hits),"right",920,200);
+        playSnd("punchmed");
         TW(3);
         });
     }
     if (a == 3){
-        new FlxTimer().start(0.5,()->{
+        new FlxTimer().start(0.45,()->{
         var RT = genText("GOLD NOTES","left",320,250);
         RT[1].color = 0xF6FF00;
         var r = game.ratingsData;
         RT = genText(r[0].hits,"right",920,250);
         RT[1].color = 0xF6FF00;
+        playSnd("punchmed");
         TW(4);
         });
     }
     if (a == 4){
-        new FlxTimer().start(0.5,()->{
+        new FlxTimer().start(0.45,()->{
         var RT = genText("LONGEST COMBO","left",320,300);
         RT = genText(game.maxCombo,"right",920,300);
+        playSnd("punchmed");
         TW(5);
         });
     }
     if (a == 5){
-        new FlxTimer().start(0.5,()->{
+        new FlxTimer().start(0.45,()->{
         var RT = genText("TOTAL SCORE","left",320,350);
         new FlxTimer().start(0.5,()->{TW(6);});
+        playSnd("punchmed");
         });
     }
     if (a == 6){
@@ -182,13 +232,15 @@ function TW(a) {
         FlxTimer.loop(60/1500,(t)->{
             RT[0].text = Math.min(game.songScore,t*1000);
             RT[1].text = Math.min(game.songScore,t*1000);
+            playSnd("bump");
         },Std.int(game.songScore/1000)+1);
-        new FlxTimer().start((game.songScore/1000+1)*60/1500+2,()->{
+        new FlxTimer().start((game.songScore/1000+1)*60/1500+0.2,()->{
             TW(7);
         });
     }
-    if (a == 7){
-        new FlxTimer().start(0.5,()->{
+    if (a == 7){  
+            playSnd("drumroll"); 
+        new FlxTimer().start(1.2,()->{
             var RT = genText("FC "+(Std.int(game.ratingPercent*1000)/10)+" - ","center",500,450);
             Rating = getTVRating(game.ratingPercent*100);
             COOLText = new FlxText(670, 435, 0, Rating[0], 90, true);
@@ -199,7 +251,7 @@ function TW(a) {
             COOLText.alignment = a;
             customSubstate.add(COOLText);  
             isEnd = true;                 
-            new FlxTimer().start(15,()->{TW(8);});
+            //new FlxTimer().start(15,()->{TW(8);});
         });
 
     }

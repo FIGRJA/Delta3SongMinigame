@@ -85,12 +85,12 @@ function load_all_posible_notes_neo(file:String) {
 			scr_rhythmgame_addnote(noteData[0], noteData[1], noteData[2], noteData[3], noteData[4]);
 		}
 	}
-	if (d.length==4){
+	if (d.length>=4){
 		for (n in d[3].split("\n")){
 			noteData = n.split("|");
-			debugPrint(noteData);
+			//debugPrint(noteData);
 			if (noteData.length > 1)
-				scr_rhythmgame_add_lyric(Std.int(noteData[0]), noteData[1], noteData[2]);
+				scr_rhythmgame_add_lyric(Std.int(noteData[0]), noteData[1], (noteData[2]!=null&&noteData[2].length)>2?noteData[2]:"null");
 		}
 	}
 	
@@ -294,8 +294,8 @@ function scr_rhythmgame_add_lyric(timming, str1 = "", ?str2 = "") {
 	var subEvent:EventNote = {
 		strumTime: timming * 1000, // lyricBuffer[0] , // + ClientPrefs.data.noteOffset,
 		event: "ill make lyric",
-		value1: "", // timming * 1000 - lyricBuffer[0],
-		value2: str1 + "\n" + str2 // lyricBuffer[1]
+		value1: str1, // timming * 1000 - lyricBuffer[0],
+		value2: str2 // lyricBuffer[1]
 	};
 	eventNotes.push(subEvent);
 	// }

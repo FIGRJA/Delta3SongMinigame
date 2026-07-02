@@ -30,8 +30,8 @@ var ralseiNoteCam:FlxCamera;
 var bmpDistant:FlxBackdrop;
 var bmpDistant4:FlxBackdrop;
 var maskBG:FlxSprite = new ModchartSprite(4,-10);
-var plSplashKris:Array = [[new FlxSprite(-37,185),new FlxSprite(-18,315)],[new FlxSprite(80,185),new FlxSprite(99,315)]];
-var plSplashSusi:Array = [[new FlxSprite(-37,185),new FlxSprite(-18,315)],[new FlxSprite(80,185),new FlxSprite(99,315)]];
+var plSplashKris:Array = [[new FlxSprite(-37,185),new FlxSprite(-18,315),new FlxSprite(-37,185),new FlxSprite(-18,315)],[new FlxSprite(80,185),new FlxSprite(99,315),new FlxSprite(80,185),new FlxSprite(99,315)]];
+var plSplashSusi:Array = [[new FlxSprite(-37,185),new FlxSprite(-18,315),new FlxSprite(-37,185),new FlxSprite(-18,315)],[new FlxSprite(80,185),new FlxSprite(99,315),new FlxSprite(80,185),new FlxSprite(99,315)]];
 var krisMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var susiMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var krisMute:FlxSprite = new ModchartSprite(-55, -195);
@@ -130,7 +130,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 			PlayState.SONG.bpm = song.bpm;
 			Conductor.bpm = song.bpm;
 			//PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
-			PlayState.SONG.speed = song.speed!=null?song.speed/(450/4.2):1.1;
+			PlayState.SONG.speed = song.speed!=null?song.speed/(450/2.9):1.1;
 
 			PlayState.SONG.gameOverLoop = song.songMain;
 			PlayState.SONG.gameOverEnd  = song.songPlay;
@@ -232,8 +232,11 @@ function onCreatePost() {
 		SPCam.camera = game.camGame;
 		var matrix = new FlxMatrix();
 		matrix.translate(camera.width/2, camera.height/2);
+		//camera.width *= 0.5;
+		//camera.height = 1;
 		///camera.visible = false;
 		camera.y = 1000;
+		//camera.x += 100;
 		insert(inZ,SPCam);
 		//debugPrint(SPCam);
 		return [bitmapData,SPCam,camera,matrix];
@@ -273,26 +276,37 @@ function onCreatePost() {
 	SPcameras.push(cams);
 
 	//FlxG.stage.alpha = 1;
-	FlxG.stage.color = 0x00000000;
+	//FlxG.stage.color = 0x00000000;
 	//FlxG.stage.background = 0x00000000;
 	//debugPrint(FlxG.stage.application.window.__attributes);
 	//FlxG.stage.application.window.__backend.flags |= cast WindowFlags.WINDOW_FLAG_STENCIL_BUFFER;
-	FlxG.camera.bgColor = 0x8EEE0000;
-	shader_ = getShader("grayT");
+	//FlxG.camera.bgColor = 0x8EEE0000;
+	if (ClientPrefs.data.shaders){
+var sideTerminalB = getShader("Dglsl/shd_crt");
+	sideTerminalB.setFloat("vignette_intensity"	,42);
+	sideTerminalB.setFloat("vignette_scale"		,0.8);
+	sideTerminalB.setFloat("chromatic_scale"		,0);
+	sideTerminalB.setFloat("filter_amount"		,3.1);
+var sideTerminalB2 = getShader("Dglsl/shd_crt2");
+	sideTerminalB2.setFloat("aberation_amount"	,0.22);
+var transferAB = getShader("Dglsl/shd_underwater");
+	transferAB.setFloat("baseAngle"	,0);
+	//sideTerminalAB.setFloat("Radius"		,0);
+	shader_ = transferAB;
 	//shader_ = game.createRuntimeShader("wiggle");
 	//trace(shader_);
 	game.camGame.bgColor = 0x00;
 	game.camGame.filtersEnabled = true;
-	//game.camGame.filters = [ new ShaderFilter(shader_)];
-	for (cam in FlxG.cameras.list) {
-		cam.bgColor = 0x00000000;
-		//cam.visible =false;
-	}
+	game.camGame.filters = [ new ShaderFilter(shader_)];
 	//FlxG.game.setFilters(null);
 	//FlxG.game.setFilters([ new ShaderFilter(shader_)]);
 	//Lib.current.alpha = 1;
 	//Lib.current.shader = [shader_];
-	
+	}
+	for (cam in FlxG.cameras.list) {
+		cam.bgColor = 0x00000000;
+		//cam.visible =false;
+	}
 	//var gameSprite = cast FlxG.game;
 	//gameSprite.sahder = [shader_];
 	//FlxG.game.alpha = 0.5;
@@ -379,7 +393,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 		i.camera = ralseiNoteCam;
 		i.y = ClientPrefs.data.downScroll?390:-140;
 		//i.alpha = 0.1;
-		i.visible = false;
+		//i.visible = false;
 		if (gog == 0)
 			i.x = -90 + 90 * 0;
 		if (gog == 2)
@@ -396,10 +410,18 @@ if (PlayState.SONG.format != "psych_v1_convert")
 	plSplashKris[0][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
 	plSplashKris[1][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
 	plSplashKris[1][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
+	plSplashKris[0][2].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
+	plSplashKris[0][3].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
+	plSplashKris[1][2].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
+	plSplashKris[1][3].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
 	plSplashKris[0][0].camera = krisNoteCam;
 	plSplashKris[0][1].camera = krisNoteCam;
 	plSplashKris[1][0].camera = krisNoteCam;
 	plSplashKris[1][1].camera = krisNoteCam;
+	plSplashKris[0][2].camera = krisNoteCam;
+	plSplashKris[0][3].camera = krisNoteCam;
+	plSplashKris[1][2].camera = krisNoteCam;
+	plSplashKris[1][3].camera = krisNoteCam;
 	plSplashKris[0][0].flipY = !ClientPrefs.data.downScroll;
 	plSplashKris[0][1].flipY = !ClientPrefs.data.downScroll;
 	plSplashKris[1][0].flipY = !ClientPrefs.data.downScroll;
@@ -408,10 +430,18 @@ if (PlayState.SONG.format != "psych_v1_convert")
 	plSplashKris[0][1].y += ClientPrefs.data.downScroll?0:-410;
 	plSplashKris[1][0].y += ClientPrefs.data.downScroll?0:-280;
 	plSplashKris[1][1].y += ClientPrefs.data.downScroll?0:-410;
+	plSplashKris[0][2].y += ClientPrefs.data.downScroll?0:-280;
+	plSplashKris[0][3].y += ClientPrefs.data.downScroll?0:-410;
+	plSplashKris[1][2].y += ClientPrefs.data.downScroll?0:-280;
+	plSplashKris[1][3].y += ClientPrefs.data.downScroll?0:-410;
 	insert(members.indexOf(game.noteGroup),plSplashKris[0][0]);
 	insert(members.indexOf(game.noteGroup)+1,plSplashKris[0][1]);
 	insert(members.indexOf(game.noteGroup),plSplashKris[1][0]);
 	insert(members.indexOf(game.noteGroup)+1,plSplashKris[1][1]);
+	//insert(members.indexOf(game.noteGroup)+1,plSplashKris[0][2]);
+	//insert(members.indexOf(game.noteGroup)+1,plSplashKris[0][3]);
+	//insert(members.indexOf(game.noteGroup)+1,plSplashKris[1][2]);
+	//insert(members.indexOf(game.noteGroup)+1,plSplashKris[1][3]);
 	noteSplash(0);
 	noteSplash(1);
 	plSplashSusi[0][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
@@ -589,7 +619,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 	}
 	//debugPrint(-4000/PlayState.SONG.bpm);
 	Conductor.songPosition = (-4*1000*60)/PlayState.SONG.bpm + (-1000);
-	//game.grpHoldSplashes.visible =false;
+	game.grpHoldSplashes.visible =false;
 
 	if (ClientPrefs.getGameplaySetting('botplay')){
 		getVar("bgLight").alpha = 0;
@@ -679,8 +709,10 @@ function onSpawnNote(daNote) {
 		//if (!daNote.mustPress) daNote.noteType+=4;
 		daNote.mustPress = false;
 		daNote.noteType = daNote.noteData>=6?"vocal": daNote.noteData>=3?"drum":"lead";
-		if (daNote.noteType == "vocal")
+		if (daNote.noteType == "vocal"){
+			debugPrint(daNote.noteData);
 			daNote.noteData += -6;
+		}
 		if (daNote.noteType == "drum")
 			daNote.noteData += -3;
 	}
@@ -804,7 +836,15 @@ function onUpdate(e) {
 		return;
 
 	//debugPrint(ralseiNoteCam.canvas.graphics);
-	//shader_.setFloat("iTime",Conductor.songPosition);
+	if (ClientPrefs.data.shaders)
+	shader_.setFloat("time",Conductor.songPosition/1000);
+
+           // for (i in FlxG.game.filters)
+           //     if (i.shader != null && i.shader.data.time != null)
+           //         i.shader.data.time.value = FlxG.elapsed/1;
+
+	//shader_.setFloat("Radius",Conductor.songPosition/10000);
+	//shader_.setFloat("aberation_amount",0.45);
 	//shader_.setFloat("pix",1);
 	//shader_.setFloat("hue",Math.sin(Conductor.songPosition/10000));
 	for (light in [L1, L2, L3]) {
@@ -951,8 +991,8 @@ function goodNoteHit(daNote) {
 				game.maxCombo = Std.int(krisCombo.text);
 			}
 			//debugPrint(((Std.int(Std.int(krisCombo.text)/32)/10)+1));
-			var color ;
-			var color2 ;
+			var color = 0x878787 ;
+			var color2 = 0x878787;
 			if (daNote.rating=="sick"){
 				songScore += 100;
 				color = 0xFBAE1F;
@@ -963,7 +1003,13 @@ function goodNoteHit(daNote) {
 				color = 0xE8E8E8;
 				color2 = 0xE8E8E8;
 			}
-			//songScore += Std.int(krisCombo.text)>=32?10:0;
+			else{
+				if (ClientPrefs.data.shaders)
+				FlxTimer.loop(0.9/15,(t)->{
+					shader_.setFloat("Radius"	,(15-t)/(15)+shader_.data.Radius.value);
+				},15);
+			}
+			songScore += Std.int(krisCombo.text)>=32?10:0;
 			noteSplash(daNote.noteData==3);
 			plSplashKris[daNote.noteData==3][0].color = color2;
 			plSplashKris[daNote.noteData==3][0].alpha = 1;
@@ -1003,7 +1049,14 @@ function susiGoodHit(daNote) {
 	// game.showRating = !game.showRating;
 	// game.showComboNum = !game.showComboNum;
 	game.goodNoteHit(daNote);
-	susiPressed(daNote.noteData-1,0xF5F5F5);
+	var color2 = 0x878787;
+	if (daNote.rating=="sick")
+		color2 = 0xEDF100;
+	
+	else if (daNote.rating=="good")
+		color2 = 0xE8E8E8;
+	
+	susiPressed(daNote.noteData-1,color2);
 	// game.showRating = !game.showRating;
 	// game.showComboNum = !game.showComboNum;
 	game.vocals.volume = bob;
@@ -1035,6 +1088,7 @@ function noteSplash(key:Int,?mini=false) {
             onUpdate:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x*2;},   
             onComplete:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x;}   
         });
+
 		//debugPrint(t);
 }
 

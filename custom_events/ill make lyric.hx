@@ -22,18 +22,22 @@ function onEvent(N, v1, v2, T) {
 	// v1 = v1*0.9;
 	// StringTools.replace(v2,"-"," ");
 	v2 = v2.split("-").join("- ");
+	v1 = v1.split("-").join("- ");
 	RstrinNEXT = [];
 	// word = -1;
-	var dR = v2.split("\n");
-	if (dR[1] == "null")
-		dR[1] = dR[0];
+	//var dR = v2.split("\n");
+	//var dR = [v1,v2];
+	if (v2 == "null")
+		v2 = v1;
+	//if (dR[1] == "null")
+	//	dR[1] = dR[0];
 	// debugPrint(v2);
 	// songTxt.text = dR[0];
 
 	// var tirg:Array = [];
 
-	var d1 = dR[0].split(" ").join("").split("-").join("");
-	var d2 = dR[1].split(" ");
+	var d1 = v1.split(" ").join("").split("-").join("");
+	var d2 = v2.split(" ");
 	var g = -1;
 	for (m in 0...d2.length) {
 		var d = [d1, d2[m]];
@@ -110,19 +114,20 @@ function opponentNoteHit(daNote) {//требуется пересборка
 			}
             if (word >= Rstrin.length) return
             if (flxM != null)
-				//return;
 			    flxM.cancel();
-            flxM = new FlxTimer().start(
-                daNote.sustainLength / 1000 + 1,
-                ()->{
-                    if (word+1 >= Rstrin.length){
-                        songTxt.text="";
-                        //debugPrint("coc");
-                        //if (flxT != null)
-                        //    flxT.cancel();
-                    }
-                }
-            );
+				//return;
+			if (word+1 >= Rstrin.length)
+				flxM = new FlxTimer().start(
+					(daNote.sustainLength / 1000) + 2,
+					()->{
+						if (word+1 >= Rstrin.length){
+							songTxt.text="";
+							//debugPrint("coc");
+							//if (flxT != null)
+							//    flxT.cancel();
+						}
+					}
+				);
 			// debugPrint(daNote.sustainLength/Rstrin[word].length/1000);
 			if (flxT != null)
 				//return;

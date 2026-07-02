@@ -9,6 +9,12 @@ import mikolka.vslice.StickerSubState;
 import mikolka.vslice.freeplay.FreeplayState;
 import flixel.addons.transition.FlxTransitionableState;
 
+function setVF(Var,Fun) {
+	if (getVar(Var).exists(Fun))
+		this.set(Fun,getVar(Var).get(Fun));
+	
+}
+
 var pauseBG:FlxCamera = new FlxCamera(-700, -100, 700, 1500, 1);
 var stunAction = false;
 var isPause:Bool = false;
@@ -20,6 +26,8 @@ var freeAction:Array = [];
 var inst:FlxSound;
 
 function onCreate() {
+
+setVF("endScreen","playSnd");
 	pauseBG.angle = -10;
 	FlxG.cameras.insert(pauseBG,3, false);
 	// pauseBG.visible =false;
@@ -30,10 +38,12 @@ function onUpdate(e) {
 	game.canPause = false;
 	if (Control.PAUSE && PlayState.SONG.song != "songChart")
 		CustomSubstate.openCustomSubstate('DeltaPause', true);
-	if (Control.CHAR_SELECT && PlayState.SONG.song == "songChart")
-		MusicBeatState.resetState();
-	if (Control.FAVORITE && PlayState.SONG.song != "songChart")
-		CustomSubstate.openCustomSubstate('END', true);
+	if (Control.CHAR_SELECT && PlayState.SONG.song == "songChart"){
+		playSnd("splat");
+		MusicBeatState.resetState();}
+	if (Control.FAVORITE && PlayState.SONG.song != "songChart"){
+		playSnd("crowd_cheer_single");
+		CustomSubstate.openCustomSubstate('END', true);}
 }
 
 function onCustomSubstateCreate(name) {
@@ -112,6 +122,8 @@ function onCustomSubstateUpdate(name, e) {
 	}
 	// debugPrint("lol");
 	if (Control.BACK) {
+
+		playSnd("splat");
 		timer = 4;
 		FlxTween.tween(pauseBG, {x: -700, alpha: 0}, 60 / Conductor.bpm, {ease: FlxEase.circOut});
 		backTimer.visible = true;
@@ -126,6 +138,8 @@ function onCustomSubstateUpdate(name, e) {
 		});
 	}
 	if (Control.ACCEPT) {
+
+		playSnd("coin");
 		switch (freeAction[curAction].text) {
 			case "restart":
                 FlxTransitionableState.skipNextTransIn = false;
@@ -157,10 +171,12 @@ function onCustomSubstateUpdate(name, e) {
 	if (Control.UI_UP) {
 		curAction -= 1;
 		timer = 0.15;
+		playSnd("bump");
 	}
 	if (Control.UI_DOWN) {
 		curAction += 1;
 		timer = 0.15;
+		playSnd("bump");
 	}
 	curAction = Math.abs(freeAction.length + curAction) % freeAction.length;
 	// debugPrint("                                                           "+curAction);

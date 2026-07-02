@@ -41,7 +41,7 @@ function setVF(Var,Fun) {
 	
 }
 setVar("songMenu",this);
-//setVF("D3Main","loadSongsLists");
+setVF("endScreen","playSnd");
 
 var glitchAr = [];
 var limitD = 0;
@@ -287,8 +287,8 @@ function loadSongsLists() {
 					s = s+'	"speed":'+data[4]+',';
 					s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
 					s = s+'	"songPlay":"'+data[1].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
-					s = s+'	"prew":"'+data[6].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
-					s = s+'	"prewCh":"'+data[7].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
+					s = s+'	"prewCh":"'+data[6].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
+					s = s+'	"prew":"'+data[7].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
 					s = s+'	"album":'+data[11]+',';
 					s = s+'	"index":"'+n.split("customsong_info")[1].split(".")[0]+'",';
 					s = s+'	"hxModule":null,';
@@ -336,8 +336,8 @@ function loadSongsLists() {
 				s = s+'	"speed":'+data.Note_speed+',';
 				s = s+'	"songMain":"'+data.Music_file_no_guitar.split(".")[0]+'",';
 				s = s+'	"songPlay":"'+data.Music_file.split(".")[0]+'",';
-				s = s+'	"prew":"'+data.Menu_preview.split(".")[0]+'",';
 				s = s+'	"prewCh":"'+data.Menu_preview.split(".")[0]+'",';
+				s = s+'	"prew":"'+data.Menu_preview.split(".")[0]+'",';
 				s = s+'	"album":'+data.Album+',';
 				s = s+'	"index":"",';
 				s = s+'	"hxModule":null,';
@@ -404,7 +404,8 @@ function onUpdate(e) {
 			if (glitchAr.length==0&&limitD>50){
 				var r = FlxG.random.int(0,freeAction.length-1);
 				PlayState.SONG.song = freeAction[r][2].name;//song name
-				PlayState.SONG.format = freeAction[r][0][0].name +"^"+ freeAction[r][0][1].dificulties[0].text;// mod name + dificult
+				//PlayState.SONG.format = freeAction[r][0][0].name +"^"+ freeAction[r][0][1].dificulties[0].text;// mod name + dificult
+				PlayState.SONG.format = freeAction[r][0][0].name +"^";// no different
 				MusicBeatState.resetState();
 
 			}
@@ -413,6 +414,7 @@ function onUpdate(e) {
 
 	if (Control.BACK) {
 		if (diffAction != null) {
+			playSnd("splat");
 			onCreatePost();
 			for (diff in diffAction) {
 				diff.destroy();
@@ -438,6 +440,7 @@ function onUpdate(e) {
 	}
 	if (Control.ACCEPT) {
 		if (diffAction == null) {
+			playSnd("coin");
 			diffAction = [];
 
 			inst.fadeOut(2, 0.1);
@@ -469,7 +472,8 @@ function onUpdate(e) {
 				//freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",false,freeAction[curAction][2].songMain), true);
 				//trace(Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: mus');
 				//debugPrint(getTmpScore()>0?(freeAction[curAction][2].prew==null?freeAction[curAction][2].songMain:freeAction[curAction][2].prew):(freeAction[curAction][2].prewCh==null?freeAction[curAction][2].songPlay:freeAction[curAction][2].prewCh));
-				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+(getTmpScore()>0?((freeAction[curAction][2].prew==null||freeAction[curAction][2].prew="NONE")?freeAction[curAction][2].songMain:freeAction[curAction][2].prew):((freeAction[curAction][2].prewCh==null||freeAction[curAction][2].prewCh=="NONE")?freeAction[curAction][2].songPlay:freeAction[curAction][2].prewCh))+".ogg",true,Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: mus'), true);
+				var songT = freeAction[curAction][2];
+				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+(getTmpScore()>0?((songT.prew==null||songT.prew=="NONE")?songT.songMain:songT.prew):((songT.prewCh==null||songT.prewCh=="NONE")?songT.songPlay:songT.prewCh))+".ogg",true,Paths.formatToSongPath(songT.name)+'/Inst, PATH: mus'), true);
 				freePlay.volume = 0;
 				freePlay.play();
 				freePlay.fadeOut(2,1);
@@ -495,6 +499,7 @@ function onUpdate(e) {
 		else
 			curDiffAction -= 1;
 		timer = 0.15;
+		playSnd("bump");
 	}
 	if (Control.UI_DOWN) {
 		if (diffAction == null)
@@ -502,9 +507,12 @@ function onUpdate(e) {
 		else
 			curDiffAction += 1;
 		timer = 0.15;
+		playSnd("bump");
 	}
 	if (Control.NOTE_RIGHT){
 		resetSong();
+		timer = 0.05;
+		playSnd("crowd_cheer_single");
 	}
 	curAction = Math.abs(freeAction.length + curAction) % freeAction.length;
 	if (diffAction != null)
