@@ -8,7 +8,7 @@ import psychlua.CustomSubstate;
 import flixel.addons.display.FlxBackdrop;
 import flixel.util.FlxSpriteUtil;
 import flixel.sound.FlxSound;
-import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Json;
+import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Json;//or TJSON
 import mikolka.vslice.StickerSubState;
 import mikolka.vslice.freeplay.FreeplayState;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
@@ -352,6 +352,8 @@ function loadSongsLists() {
 			var pack = TJSON.parse('{"name":"'+i+'"}');
 			result.push([pack, list,i]);
 		}
+
+		
 	}
 	return result;
 }

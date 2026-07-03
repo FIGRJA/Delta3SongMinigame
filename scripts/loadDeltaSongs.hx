@@ -12,6 +12,11 @@ var curStepCrochet:Int;
 var DeltaRuneCode:HScript;
 var songTxt:FlxText;
 var StausLoad = [true,true,true]; // lead,drums,vocal,lyric
+function setVF(Var,Fun) {
+	if (getVar(Var).exists(Fun))
+		this.set(Fun,getVar(Var).get(Fun));
+	
+}
 setVar("load_delta_notes", this);
 function onCreate() {
 
@@ -33,6 +38,8 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 			load_all_posible_notes_txt(file, index);
 		else if (file.lastIndexOf(".neo") == file.length - 4)
 			load_all_posible_notes_neo(file);
+		else if (file.lastIndexOf(".mid") == file.length - 4)
+			load_all_posible_notes_mid(file);
 
 		game.unspawnNotes.sort(function(a, b) {
 			return a.strumTime - b.strumTime;
@@ -71,6 +78,33 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 	}
 	return [false,false,false];
 }
+//// num => [fun,[args]]
+//var midiMap = [35=>[]];
+function load_all_posible_notes_mid(file:String) {
+
+	game.unspawnNotes = [];
+	setVF("MidiParser","parseMidi");
+	if (!NativeFileSystem.exists(file)) return;
+	var midi = parseMidi(File.getBytes(file));
+	for (t in midi.tracks){
+		for (n in t.notes){
+			var leng = (n.endTime-n.startTime)/1000;
+			switch (n.noteNumber){
+				case 35:
+					addFastNote(n.startTime/100,0,leng,0,"lead");
+				case 36:
+					addFastNote(n.startTime/100,0,0,0,"lead");
+				case 38:
+					addFastNote(n.startTime/100,1,0,0,"lead");
+				case 39:
+					addFastNote(n.startTime/100,1,leng,0,"lead");
+			}
+            trace("c-"+n.channel+" n-"+n.noteNumber+" t-"+n.startTime+" e-"+n.endTime+" o-"+n.velocityOn+" f-"+n.velocityOff);
+			
+        }
+	}
+}
+
 
 function load_all_posible_notes_neo(file:String) {
 
@@ -204,9 +238,9 @@ function scr_rhythmgame_addnote_range(timming, type, sus, ?spec = 0) {
 	scr_rhythmgame_addnote(timming, type, sus, spec);
 }
 
-function addFastNote(time,type,sus,spec,who) {
+function addFastNote(time,data,sus,spec,who) {
 	typeTample = who;
-	scr_rhythmgame_addnote(time,type,sus,spec);
+	scr_rhythmgame_addnote(time,data,sus,spec);
 }
 
 var oldNote:Note;
