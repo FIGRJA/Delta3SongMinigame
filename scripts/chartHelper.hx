@@ -2,6 +2,7 @@
 
 import flixel.FlxG;
 import backend.CacheSystem;
+import backend.ui.PsychUIBox;
 import Type;
 import Reflect;
 import backend.Mods;
@@ -125,6 +126,9 @@ function getSong(song) {
 var songEx = false;
 var Helper ;
 var icons = ["kris","susi","ralsei"];
+var lyricBox;
+var lyricText;
+var lastTime = 0;
 var section = 0;
 var e = 0;
 Helper = ()->{
@@ -136,8 +140,8 @@ Helper = ()->{
         ChartingState.GRID_PLAYERS = Std.int(statusLoad[0])+Std.int(statusLoad[1])+Std.int(statusLoad[2]);
         ChartingState.GRID_COLUMNS_PER_PLAYER = Math.max((statusLoad[0]?2:0),Math.max((statusLoad[1]?3:0),(statusLoad[2]?3:0)));
         if (Type.getClassName(Type.getClass(FlxG.state))=="states.editors.ChartingState"){
+            var state =  FlxG.state;
             if (FlxG.sound.music.length<1000){
-                var state =  FlxG.state;
                 //trace(getSong("mus/"+songI+".ogg"));
                 FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+PlayState.SONG.gameOverLoop+".ogg"),true,"nice Try"));
                 state.maxTime = FlxG.sound.music.length;
@@ -172,14 +176,32 @@ Helper = ()->{
                 }
                 //FlxG.sound.play();
             }
-            if (FlxG.state.curSec!=section){
-                section = FlxG.state.curSec;
+            if (state.curSec!=section){
+                section = state.curSec;
                 //FlxG.state.waveformSprite.x = FlxG.state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
                 for (i in 0...ChartingState.GRID_PLAYERS){
                     //FlxG.state.icons[i].changeIcon(icons[i]);
-                    FlxG.state.icons[i].antialiasing=false;
+                    state.icons[i].antialiasing=false;
                 }
             }
+            if (lyricBox==null){
+                lyricBox = new PsychUIBox(state.infoBoxPosition.x, state.infoBoxPosition.y, 500, 100, ['lyric','custom settings(x)']);
+                lyricBox.scrollFactor.set();
+                lyricBox.cameras = [state.camUI];
+                lyricText = new FlxText(15, 15, 470, 'test1\ntext 1.2.3', 16);
+                lyricText.scrollFactor.set();
+                lyricBox.getTab('lyric').menu.add(lyricText);
+                state.add(lyricBox);
+            }
+            for (note in state.curRenderedNotes)
+			{
+                if(note == null) continue;
+                if (note.isEvent){
+                    if(Conductor.songPosition > note.strumTime && lastTime <= note.strumTime)
+                    lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
+                }
+            }
+            lastTime = Conductor.songPosition;
         }
         try{
             //for (i in FlxG.game.filters)
@@ -187,11 +209,11 @@ Helper = ()->{
             //        i.shader.data.time.value = FlxG.elapsed/1;
 
         //FlxG.game.filters[0].shader.setFloat("time",FlxG.elapsed);
-            //if (PlayState.SONG.stage!="D3Main"){
-            //    FlxG.signals.preUpdate.remove(Helper);
-            //    ChartingState.GRID_PLAYERS = 2;
-            //    ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
-            //}
+            if (PlayState.SONG.stage!="D3Main"){
+                FlxG.signals.preUpdate.remove(Helper);
+                ChartingState.GRID_PLAYERS = 2;
+                ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
+            }
         }catch (e:Dynamic){}
     }catch (e:Dynamic) {trace(e);FlxG.signals.preUpdate.remove(Helper);}
 }

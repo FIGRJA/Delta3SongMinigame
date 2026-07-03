@@ -25,6 +25,7 @@ function onCreate() {
 
 function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 	PlayState.SONG.notes = [];
+	PlayState.SONG.events = [];
 	// PlayState.instance.clearNotesBefore(0);
 	// PlayState.instance.setSongTime(0);
 	//curStepCrochet = 60 / PlayState.SONG.bpm * 1000 / 4.0;
@@ -82,7 +83,7 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 //var midiMap = [35=>[]];
 function load_all_posible_notes_mid(file:String) {
 
-	game.unspawnNotes = [];
+	//game.unspawnNotes = [];
 	setVF("MidiParser","parseMidi");
 	setVF("MidiParser","ticksToMilliseconds");
 	if (!NativeFileSystem.exists(file)) return;
