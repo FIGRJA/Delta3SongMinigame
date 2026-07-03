@@ -84,24 +84,50 @@ function load_all_posible_notes_mid(file:String) {
 
 	game.unspawnNotes = [];
 	setVF("MidiParser","parseMidi");
+	setVF("MidiParser","ticksToMilliseconds");
 	if (!NativeFileSystem.exists(file)) return;
 	var midi = parseMidi(File.getBytes(file));
+	var bpm = 120;
+	var TEv ;
+	for (i in midi.tracks){
+		bpm = i.tempoEvents.length > 0 ? Math.round(60000000 / i.tempoEvents[0].tempo) : bpm;
+		TEv = i.tempoEvents.length > 0 ? i.tempoEvents : TEv;
+	}
+
+	Conductor.bpm = bpm;
+	PlayState.SONG.bpm = bpm;
 	for (t in midi.tracks){
 		for (n in t.notes){
-			var leng = (n.endTime-n.startTime)/1000;
+			var leng = ticksToMilliseconds(n.endTime,midi.timeDivision, TEv)/1000;
+			var tS = ticksToMilliseconds(n.startTime,midi.timeDivision, TEv)/1000;
 			switch (n.noteNumber){
+				case 28:
+					addFastNote(tS,2,leng,0,"vocal");
+				case 30:
+					addFastNote(tS,1,leng,0,"vocal");
+				case 32:
+					addFastNote(tS,0,leng,0,"vocal");
 				case 35:
-					addFastNote(n.startTime/100,0,leng,0,"lead");
+					addFastNote(tS,1,leng,0,"lead");
 				case 36:
-					addFastNote(n.startTime/100,0,0,0,"lead");
+					addFastNote(tS,1,0,0,"lead");
 				case 38:
-					addFastNote(n.startTime/100,1,0,0,"lead");
+					addFastNote(tS,0,0,0,"lead");
 				case 39:
-					addFastNote(n.startTime/100,1,leng,0,"lead");
+					addFastNote(tS,0,leng,0,"lead");
+				case 42:
+					addFastNote(tS,1,0,0,"drum");
+				case 44:
+					addFastNote(tS,0,0,0,"drum");
+				case 46:
+					addFastNote(tS,0,0,1,"drum");
 			}
-            trace("c-"+n.channel+" n-"+n.noteNumber+" t-"+n.startTime+" e-"+n.endTime+" o-"+n.velocityOn+" f-"+n.velocityOff);
+           //trace("c-"+n.channel+" n-"+n.noteNumber+" t-"+n.startTime+" e-"+n.endTime+" o-"+n.velocityOn+" f-"+n.velocityOff);
 			
         }
+		//for (e in t.tempoEvents){//not used )))
+		//	trace("ti-"+e.time+" te-"+e.tempo);
+		//}
 	}
 }
 

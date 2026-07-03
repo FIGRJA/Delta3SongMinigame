@@ -6,7 +6,7 @@ import sys.io.File;
 //class MidiParserSimple {
 //function onCreate() {//tester
 //    trace("h");
-//    var mid = File.getBytes("untitled.mid");//my broke patern
+//    var mid = File.getBytes("untitled.mid");//my broke patern//FPC not work on my pc
 //    trace(mid.length);
 //    var xlamidii = parseMidi(mid);
 //    for (t in xlamidii.tracks){
@@ -25,8 +25,50 @@ import sys.io.File;
 from random song
 35 - Long R
 36 - short R
+------------
 38 - short L
 39 - Long L
+add from FPC pic in GB and ^
+28 - RR
+30 - RM
+32 - RL
+
+35 - KRL
+36 - KR
+---------
+38 - KL
+39 - KLL
+
+42 - SR
+44 - SM
+46 - SL
+
+53 - RAnPoint
+54 - RAnCuss
+55 - RAnRude
+56 - RAnSing
+57 - RAnClap
+58 - RAnSurprise
+59 - RAnShock
+60 - RAnPose
+61 - RAnBLush
+62 - RAnRock3
+63 - RAnRock2
+64 - RAnRock1
+
+66 - KAnPoint
+67 - KAnPose
+68 - KAnPlay
+69 - KAnPlay
+70 - KAnIdle
+71 - KAnNoGuitar
+
+72 - SAnPoint
+73 - SAnPlay
+74 - SAnDrumsticks2
+75 - SAnDrumsticks
+76 - SAnReady
+77 - SAnIdle
 */
 setVar("MidiParser",this);
 //main
@@ -271,4 +313,63 @@ function readInt32(data:Bytes, pos:Int):Int {
 function readInt16(data:Bytes, pos:Int):Int {
     return (data.get(pos) << 8) | data.get(pos + 1);
 }
+//}
+//package;
+
+//class MidiTimeConverter {
+    
+    /**
+     * Конвертирует время в тиках в миллисекунды
+     * @param ticks - время в тиках
+     * @param timeDivision - тиков на четверть (из MIDI)
+     * @param tempoEvents - массив событий темпа
+     * @return время в миллисекундах
+     */
+    function ticksToMilliseconds(ticks:Int, timeDivision:Int, tempoEvents:Array<Dynamic>):Float {
+        if (tempoEvents.length == 0) {
+            // Если нет событий темпа, используем стандартный темп 120 BPM
+            var defaultTempo = 500000; // 120 BPM в микросекундах
+            return (ticks / timeDivision) * (defaultTempo / 1000.0);
+        }
+        
+        var currentTime = 0.0;
+        var currentTicks = 0;
+        var currentTempo = tempoEvents[0].tempo;
+        
+        for (i in 0...tempoEvents.length) {
+            var event = tempoEvents[i];
+            var nextTicks = event.time;
+            
+            // Конвертируем отрезок между событиями
+            var ticksDelta = nextTicks - currentTicks;
+            if (ticksDelta > 0) {
+                var seconds = (ticksDelta / timeDivision) * (currentTempo / 1000000.0);
+                currentTime += seconds * 1000; // Переводим в миллисекунды
+            }
+            
+            currentTicks = nextTicks;
+            currentTempo = event.tempo;
+            
+            // Если достигли нужного времени
+            if (nextTicks >= ticks) {
+                // Добавляем оставшиеся тики
+                var remainingTicks = ticks - currentTicks;
+                if (remainingTicks > 0) {
+                    var seconds = (remainingTicks / timeDivision) * (currentTempo / 1000000.0);
+                    currentTime += seconds * 1000;
+                }
+                return currentTime;
+            }
+        }
+        
+        // Если вышли за последнее событие темпа
+        var remainingTicks = ticks - currentTicks;
+        if (remainingTicks > 0) {
+            var seconds = (remainingTicks / timeDivision) * (currentTempo / 1000000.0);
+            currentTime += seconds * 1000;
+        }
+        
+        return currentTime;
+    }
+    
 //}
