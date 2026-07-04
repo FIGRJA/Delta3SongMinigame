@@ -1,11 +1,13 @@
 //package scripts; //эбанный vs
 
-import flixel.FlxG;
-import backend.CacheSystem;
-import backend.ui.PsychUIBox;
 import Type;
 import Reflect;
+import flixel.FlxG;
+import flixel.text.FlxText.FlxTextFormat;
+import flixel.text.FlxText.FlxTextFormatMarkerPair;
 import backend.Mods;
+import backend.CacheSystem;
+import backend.ui.PsychUIBox;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 import states.editors.ChartingState;
 
@@ -193,13 +195,23 @@ Helper = ()->{
                 lyricBox.getTab('lyric').menu.add(lyricText);
                 state.add(lyricBox);
             }
+            var lyricUpdated = false;
             for (note in state.curRenderedNotes)
 			{
                 if(note == null) continue;
                 if (note.isEvent){
-                    if(Conductor.songPosition > note.strumTime && lastTime <= note.strumTime)
-                    lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
+                    if(Conductor.songPosition > (note.strumTime-1) && lastTime <= (note.strumTime-1))
+                        onEventS(note.events[0][1],note.events[0][2]);
+                    //lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
+                }else if (!note.mustPress&&note.sustainLength>0){
+                    if(Conductor.songPosition > note.strumTime && Conductor.songPosition <= note.strumTime+note.sustainLength+10 && !lyricUpdated){
+                        try{
+                        singWord(note,Conductor.songPosition>lastTime);
+                        lyricUpdated = true;
+                        }catch (e:Dynamic){trace(e);}
+                    }
                 }
+                //if (!note.mustPress)trace(note.noteData);
             }
             lastTime = Conductor.songPosition;
         }
@@ -241,4 +253,177 @@ function onDestroy() {
     if (getVar("chartHelper")!=null) return;
     ChartingState.GRID_PLAYERS = 2;
     ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
+}
+
+
+var word = 0;
+var Rstrin = [];
+//var RstrinNEXT = [];
+var blue = new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF0048FF), "$//");
+var blueC = new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF1800CF), "&&");
+
+// var r = ~/-/g;
+function onEventS(v1, v2) {
+    trace(v1);
+	v2 = v2.split("-").join("- ");
+	v1 = v1.split("-").join("- ");
+    //if (RstrinNEXT.length>0){
+    //    Rstrin = RstrinNEXT;
+    //    word = 0;
+    //}
+	//RstrinNEXT = [];
+	Rstrin = [];
+    word = -1;
+	if (v2 == "null")
+		v2 = v1;
+	var d1 = v1.split(" ").join("").split("-").join("");
+	var d2 = v2.split(" ");
+	var g = -1;
+	for (m in 0...d2.length) {
+		var d = [d1, d2[m]];
+		// var tmpA=0;
+		var tmpS = "";
+		var tmpN = 0;
+		var tmpM = 0;
+		var strin = [];
+		var i = -1;
+		while (i < d[1].length - 1) {
+			i += 1;
+			if (d[1].charAt(i) == "-")
+				continue;
+			g += 1;
+			if (d[1].charAt(i) == "[") {
+				// tirg = d[1].substring(i+tmpA,d[1].indexOf("]",i+tmpA)).split(":");
+				tmpN = d[1].substring(i + 1, d[1].indexOf("]", i)).split(":")[0];
+				tmpS = d[1].substring(i + 1, d[1].indexOf("]", i)).split(":")[1];
+				// debugPrint(tmpN+" "+tmpS);
+				i = d[1].indexOf("]", i) + 1 - tmpN;
+			}
+			var r = "";
+			if (tmpS.length > 0) {
+				r = tmpS.substring(Std.int(tmpM), Std.int(tmpM + tmpS.length / tmpN + 0.01));
+				tmpM = tmpM + tmpS.length / tmpN + 0.01;
+				if (Std.int(tmpM) >= tmpS.length) {
+					tmpS = "";
+					tmpM = 0;
+				}
+			} else if (tmpS == null) {
+				r = d[0].charAt(g);
+			} else {
+				r = d[1].charAt(i);
+			} 
+			strin.push([d[0].charAt(g), r]);
+		}
+		if (d[1].charAt(d[1].length - 1) != "-")
+			strin.push([" ", " "]);
+		//RstrinNEXT.push(strin);
+		Rstrin.push(strin);
+	}
+    lyricText.applyMarkup((word+1)+" / "+Rstrin.length+"\n"+v1.split("-").join(""),[]);
+}
+
+var mType = 0;
+var flxT;
+var flxM;
+var oldNote;
+function singWord(daNote,toFu) {
+
+    word += (toFu?1:-1)*(daNote!=oldNote?1:0);
+    //trace(daNote!=oldNote);
+    oldNote = daNote;
+    if (Rstrin.length<word) {
+        //if (RstrinNEXT.length>0){
+        //    Rstrin = RstrinNEXT;
+        //    RstrinNEXT = [];
+        //    word = 0;
+        //}else {
+            return;
+        //}
+    };
+    tim =Std.int((Conductor.songPosition - daNote.strumTime)/( daNote.sustainLength / Rstrin[word].length ));
+    var s = (word+1)+" / "+Rstrin.length+"\n$//";
+    for (m in 0...Rstrin.length) {
+        var ss = false;
+        for (i in 0...Rstrin[m].length) {
+            if (tim == i && m == word) {
+                s = s + "$//";
+                ss = true;
+            }
+            if ((tim >= i && m == word) || (m < word)) {
+                s = s + Rstrin[m][i][1];
+            } else {
+                s = s + Rstrin[m][i][0];
+            }
+        }
+        if (m == word && !ss) {
+            s = s + "$//";
+        }
+        // s = s + "";
+    }
+    // debugPrint(s);
+    //lyricText.text = s;
+    lyricText.applyMarkup(s, [blue, blueC]);
+}
+
+function opponentNoteHitss(daNote) {//требуется пересборка 
+	
+	try {
+		if (!daNote.isSustainNote && (RstrinNEXT.length > 0 || Rstrin.length > 0)) {
+			word += 1;
+			// debugPrint(word);
+
+			if (word >= Rstrin.length && RstrinNEXT.length>0) {
+				Rstrin = RstrinNEXT.copy();
+				RstrinNEXT = [];
+				word = 0;
+			}
+            if (word >= Rstrin.length) return
+            if (flxM != null)
+			    flxM.cancel();
+				//return;
+			if (word+1 >= Rstrin.length)
+				flxM = new FlxTimer().start(
+					(daNote.sustainLength / 1000) + 2,
+					()->{
+						if (word+1 >= Rstrin.length){
+							songTxt.text="";
+							//debugPrint("coc");
+							//if (flxT != null)
+							//    flxT.cancel();
+						}
+					}
+				);
+			// debugPrint(daNote.sustainLength/Rstrin[word].length/1000);
+			if (flxT != null)
+				//return;
+			    flxT.cancel();
+            var mword = word;
+			flxT = FlxTimer.loop(daNote.sustainLength / Rstrin[mword].length / 1000, (tim) -> {
+				// if (tim>=Rstrin[word].length&&word>=Rstrin.length){songTxt.text = "";return;}
+				var s = "$//";
+				for (m in 0...Rstrin.length) {
+					var ss = false;
+					for (i in 0...Rstrin[m].length) {
+						if (tim == i && m == mword) {
+							s = s + "$//";
+							ss = true;
+						}
+						if ((tim >= i && m == mword) || (m < mword)) {
+							s = s + Rstrin[m][i][1];
+						} else {
+							s = s + Rstrin[m][i][0];
+						}
+					}
+					if (m == mword && !ss) {
+						s = s + "$//";
+					}
+					// s = s + "";
+				}
+				// debugPrint(s);
+				songTxt.applyMarkup(s, [blue, blueC]);
+			}, Rstrin[word].length);
+		}
+	} catch (e:Dynamic) {
+		debugPrint(e, FlxColor.RED);
+	}
 }
