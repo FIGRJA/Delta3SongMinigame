@@ -125,6 +125,7 @@ function getSong(song) {
     }
     
 }
+var Rstrin = [];
 var songEx = false;
 var Helper ;
 var icons = ["kris","susi","ralsei"];
@@ -152,23 +153,26 @@ Helper = ()->{
                 //if (!songEx){
                 PlayState.SONG.notes = unspawnNotes.copy();
                 PlayState.SONG.events = eventNotes.copy();
+                trace("test");
                     //songEx = true;
                 //}
                 //trace("h3");
                 state.vocals.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+PlayState.SONG.gameOverEnd+".ogg"),true,"nice Try"));
                 state.updateAudioVolume();
                 state.setPitch();
+                trace("test");
             
                 // ВАЖНО: Перезагружаем ноты в UI//deepseak
                 state.reloadNotes();
                 state.loadSection();
                 state.updateGridVisibility();
+                trace("test");
                 state.waveformSprite.x = state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
                 //state.waveformSprite.x = FlxG.height/2-(ChartingState.GRID_PLAYERS*ChartingState.GRID_SIZE/2);
-                trace(state.waveformSprite.x);
                 var i = 0;
                 for (m in 0...3){
                     if (!statusLoad[m]) continue;
+                trace("test");
                     state.icons[i].changeIcon(icons[m]);
                     Reflect.setProperty(state.characterData,'iconP'+(i+1),icons[m]);
                     state.icons[i].scale.set(2,2);
@@ -196,24 +200,42 @@ Helper = ()->{
                 state.add(lyricBox);
             }
             var lyricUpdated = false;
-            for (note in state.curRenderedNotes)
-			{
-                if(note == null) continue;
-                if (note.isEvent){
-                    if(Conductor.songPosition > (note.strumTime-1) && lastTime <= (note.strumTime-1))
-                        onEventS(note.events[0][1],note.events[0][2]);
-                    //lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
-                }else if (!note.mustPress&&note.sustainLength>0){
-                    if(Conductor.songPosition > note.strumTime && Conductor.songPosition <= note.strumTime+note.sustainLength+10 && !lyricUpdated){
-                        try{
-                        singWord(note,Conductor.songPosition>lastTime);
-                        lyricUpdated = true;
-                        }catch (e:Dynamic){trace(e);}
+            if (lastTime != Conductor.songPosition){
+                for (note in state.curRenderedNotes)
+                {
+                    if(note == null) continue;
+                    if (note.isEvent){
+                        if(Conductor.songPosition > (note.strumTime-1) && lastTime <= (note.strumTime-1)){
+                            try{
+                            onEventS(note.events[0][1],note.events[0][2]);
+                            }catch (e:Dynamic){
+                                trace(e);
+                                e = "ERROR:\n"+Std.string(e).split(":")[2];
+                                Rstrin.push([[e,e]]);
+                                //lyricText.applyMarkup(e,[]);
+                            }
+                        }
+                        //lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
+                    }
+                    //if (!note.mustPress)trace(note.noteData);
+                }
+                for (note in state.curRenderedNotes.members.concat(state.behindRenderedNotes.members)){
+                    if(note == null) continue;
+                    if (!note.mustPress&&note.get_hasSustain()){
+                        if(Conductor.songPosition > note.strumTime && Conductor.songPosition <= note.strumTime+note.sustainLength+10 && !lyricUpdated){
+                            try{
+                            singWord(note,Conductor.songPosition>lastTime);
+                            lyricUpdated = true;
+                            }catch (e:Dynamic){trace(e);}
+                        }
                     }
                 }
-                //if (!note.mustPress)trace(note.noteData);
             }
             lastTime = Conductor.songPosition;
+        }else{
+            if (lyricBox!=null){
+                lyricBox = null;
+            }
         }
         try{
             //for (i in FlxG.game.filters)
@@ -257,7 +279,6 @@ function onDestroy() {
 
 
 var word = 0;
-var Rstrin = [];
 //var RstrinNEXT = [];
 var blue = new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF0048FF), "$//");
 var blueC = new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF1800CF), "&&");
