@@ -26,6 +26,9 @@ setVF("load_delta_notes","writeNoteToSong");
 var isMenuChart:Bool = PlayState.SONG.song == "songChart";
 var susiNoteCam:FlxCamera;
 var krisNoteCam:FlxCamera;
+var KrisBaner:FlxSprite = new ModchartSprite(314, -110);
+var SusiBaner:FlxSprite = new ModchartSprite(164, -110);
+var RalsBaner:FlxSprite = new ModchartSprite(461, -110);
 var ralseiNoteCam:FlxCamera;
 var bmpDistant:FlxBackdrop;
 var bmpDistant4:FlxBackdrop;
@@ -579,6 +582,23 @@ if (PlayState.SONG.format != "psych_v1_convert")
 	maxComboText.color = 0x07E2FF;
 	add(maxComboText);
 
+	KrisBaner.cameras = [game.camGame];
+	KrisBaner.antialiasing = false;
+	KrisBaner.loadGraphic(Paths.image("sp/spr_bnamekris_0"));
+	//KrisBaner.scale.set(1,1);
+	//KrisBaner.updateHitbox();
+	add(KrisBaner);
+
+	SusiBaner.cameras = [game.camGame];
+	SusiBaner.antialiasing = false;
+	SusiBaner.loadGraphic(Paths.image("sp/spr_bnamesusie_0"));
+	add(SusiBaner);
+
+	RalsBaner.cameras = [game.camGame];
+	RalsBaner.antialiasing = false;
+	RalsBaner.loadGraphic(Paths.image("sp/spr_bnameralsei_0"));
+	add(RalsBaner);
+
 	SCORE.font = Paths.getPath("fronts/fnt_main.ttf");
 	SCORE.cameras = [game.camOther];
 	SCORE.antialiasing = true;
@@ -606,16 +626,19 @@ if (PlayState.SONG.format != "psych_v1_convert")
 		game.boyfriend.visible = false;
 		krisNoteCam.visible = false;
 		L1.visible = false;
+		KrisBaner.visible = false;
 	}
 	if (!statusLoad[1]&&!FlxG.random.bool(42)){
 		game.gf.visible = false;
 		susiNoteCam.visible = false;
 		L3.visible = false;
+		SusiBaner.visible = false;
 	}
 	if (!statusLoad[2]&&FlxG.random.bool(42)){
 		game.dad.visible = false;
 		ralseiNoteCam.visible = false;
 		L2.visible = false;
+		RalsBaner.visible = false;
 	}
 	//debugPrint(-4000/PlayState.SONG.bpm);
 	Conductor.songPosition = (-4*1000*60)/PlayState.SONG.bpm + (-1000);
@@ -697,6 +720,7 @@ function noteMiss(daNote) {
 			}, 4);
 			// runTimer(1,"pog");
 			mo[1].alpha = 1;
+			new FlxTimer().start(2,()->{onEndSong();});
 		}
 	}
 }
@@ -726,7 +750,7 @@ function onSpawnNote(daNote) {
 	daNote.scale.set(2.9,3.5);
 	daNote.updateHitbox();
 	daNote.copyScale = false;
-	daNote.offsetY = -200;
+	daNote.offsetY = -180;
 	daNote.offsetX = -105;
 	daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 	
@@ -735,7 +759,7 @@ function onSpawnNote(daNote) {
 		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 		//daNote.angle = 90;
 		daNote.offsetX = -5;
-		daNote.offsetY = -100;
+		daNote.offsetY = -80;
 		//daNote.scale.y = 0.5;
 	}
 	if (daNote.noteType == "lead") {

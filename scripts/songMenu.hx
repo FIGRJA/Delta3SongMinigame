@@ -41,7 +41,6 @@ function setVF(Var,Fun) {
 	
 }
 setVar("songMenu",this);
-setVF("endScreen","playSnd");
 
 var glitchAr = [];
 var limitD = 0;
@@ -359,6 +358,7 @@ function loadSongsLists() {
 }
 
 function onCreatePost() {
+setVF("endScreen","playSnd");
 	try{
 		onCreatePosts();
 	} catch (e:Dynamic){

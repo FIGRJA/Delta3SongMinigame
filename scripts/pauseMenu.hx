@@ -25,7 +25,7 @@ var timer:Float;
 var freeAction:Array = [];
 var inst:FlxSound;
 
-function onCreate() {
+function onCreatePost() {
 
 setVF("endScreen","playSnd");
 	pauseBG.angle = -10;

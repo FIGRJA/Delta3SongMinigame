@@ -143,7 +143,7 @@ function opponentNoteHit(daNote) {//требуется пересборка
 							s = s + "$//";
 							ss = true;
 						}
-						if ((tim >= i && m == mword) || (m < mword)) {
+						if ((tim > i && m == mword) || (m < mword)) {
 							s = s + Rstrin[m][i][1];
 						} else {
 							s = s + Rstrin[m][i][0];

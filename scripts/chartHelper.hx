@@ -2,6 +2,7 @@
 
 import Type;
 import Reflect;
+import Array;
 import flixel.FlxG;
 import flixel.text.FlxText.FlxTextFormat;
 import flixel.text.FlxText.FlxTextFormatMarkerPair;
@@ -23,20 +24,41 @@ var unspawnNotes ;
 var eventNotes ;
 var statusLoad = [true,true,true];
 
+//function deepEquals(a:Dynamic, b:Dynamic):Bool {//deepseak
+//    // Если типы разные
+//    if (Type.typeof(a) != Type.typeof(b)) return false;
+//    
+//    // Если это массивы
+//    if (Std.is(a, Array) && Std.is(b, Array)) {
+//        var arrA:Array<Dynamic> = a;
+//        var arrB:Array<Dynamic> = b;
+//        
+//        if (arrA.length != arrB.length) return false;
+//        
+//        for (i in 0...arrA.length) {
+//            if (!deepEquals(arrA[i], arrB[i])) return false;
+//        }
+//        return true;
+//    }
+//    
+//    // Примитивные типы
+//    return a == b;
+//}
+
 function writeEvents() {
     var eventsL = [];
     for (event in game.eventNotes){
         var Finded = false;
         var i = 0;
         //trace(event);
-        while (i<eventsL.length&&!Finded){
-            var e = eventsL[i];
-            if (e[0]==event.strumTime){
-                e[1].push([event.event,event.value1,event.value2]);
-                Finded=true;
-            }
-            i += 1;
-        }
+        //while (i<eventsL.length&&!Finded){
+        //    var e = eventsL[i];
+        //    if (e[0]==event.strumTime){
+        //        e[1].push([event.event,event.value1,event.value2]);
+        //        Finded=true;
+        //    }
+        //    i += 1;
+        //}
         if (!Finded){
             eventsL.push([event.strumTime,[[event.event,event.value1,event.value2]]]);
         }
@@ -44,8 +66,9 @@ function writeEvents() {
     return eventsL;
 }
 
-function writeNoteToSong(maxTime:Int) {
+function writeNoteToSong() {
 	trace("start write");
+    var maxTime = game.unspawnNotes[game.unspawnNotes.length-1].strumTime;
     //if (PlayState.SONG.format == "psych_v1_convert") return;
 	//PlayState.SONG.notes[0].sectionNotes = [];
 	//PlayState.SONG.notes[0].bpm = PlayState.SONG.bpm;
@@ -54,7 +77,8 @@ function writeNoteToSong(maxTime:Int) {
 	//trace(emty);
 	//var notes:Int = 0;
 	var section:Int = 1 / PlayState.SONG.bpm * 60 * 1000 * 4;
-    for (i in 0...Math.round((maxTime / section) + 0.5))
+    //trace(Math.round((maxTime / section)));
+    for (i in 0...Std.int((maxTime / section))+2)
         SuperSimpleNotes[i] = {
             sectionNotes: [],
             bpm: PlayState.SONG.bpm,
@@ -66,7 +90,7 @@ function writeNoteToSong(maxTime:Int) {
         };
 	for (i in 0...game.unspawnNotes.length) {
 		var note = game.unspawnNotes[i];
-        //trace(Math.round((note.strumTime / section)));
+        //trace(Std.int((note.strumTime / section)));
 		if (note.isSustainNote)
 			continue;
 		var simpleNote:Arry<Dynamic> = [0.0, 0, 0.0];
@@ -78,8 +102,8 @@ function writeNoteToSong(maxTime:Int) {
 
 		//if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]==null)
 		//	PlayState.SONG.notes.push(emty);
-		if (SuperSimpleNotes[Math.round((note.strumTime / section))]==null) {
-			SuperSimpleNotes[Math.round((note.strumTime / section))] = {
+		if (SuperSimpleNotes[Std.int((note.strumTime / section))]==null) {
+			SuperSimpleNotes[Std.int((note.strumTime / section))] = {
                 sectionNotes: [],
                 bpm: PlayState.SONG.bpm,
                 mustHitSection: true,
@@ -89,11 +113,12 @@ function writeNoteToSong(maxTime:Int) {
                 sectionBeats: 4
             };
 		}
-		SuperSimpleNotes[Math.round((note.strumTime / section))].sectionNotes.push(simpleNote);
+		SuperSimpleNotes[Std.int((note.strumTime / section))].sectionNotes.push(simpleNote);
 		//notes++;
 	}
     //trace(PlayState.SONG.notes);
     //trace(PlayState.SONG.notes.length);
+    //trace(SuperSimpleNotes);
 	//trace("end write");
     return SuperSimpleNotes;
 }
@@ -102,7 +127,7 @@ function onCreatePost() {
 //setVF("load_delta_notes","writeNoteToSong");
     //songI = getVar("SONG").songMain;
     //songV = getVar("SONG").songPlay;
-    unspawnNotes = writeNoteToSong(FlxG.sound.music.length);
+    unspawnNotes = writeNoteToSong();
     eventNotes = writeEvents();
     //PlayState.SONG.notes = [];
     ChartingState.GRID_PLAYERS = 2;
@@ -125,7 +150,7 @@ function getSong(song) {
     }
     
 }
-var Rstrin = [];
+var Rstrin = [0];
 var songEx = false;
 var Helper ;
 var icons = ["kris","susi","ralsei"];
@@ -163,10 +188,12 @@ Helper = ()->{
                 trace("test");
             
                 // ВАЖНО: Перезагружаем ноты в UI//deepseak
-                state.reloadNotes();
                 state.loadSection();
+                trace("testm");
                 state.updateGridVisibility();
-                trace("test");
+                trace("testm");
+                state.reloadNotes();
+                trace("testm");
                 state.waveformSprite.x = state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
                 //state.waveformSprite.x = FlxG.height/2-(ChartingState.GRID_PLAYERS*ChartingState.GRID_SIZE/2);
                 var i = 0;
@@ -176,6 +203,7 @@ Helper = ()->{
                     state.icons[i].changeIcon(icons[m]);
                     Reflect.setProperty(state.characterData,'iconP'+(i+1),icons[m]);
                     state.icons[i].scale.set(2,2);
+                    state.icons[i].x += -5;
                     state.icons[i].updateHitbox();
                     state.icons[i].antialiasing=false;
                     i += 1;
@@ -194,39 +222,41 @@ Helper = ()->{
                 lyricBox = new PsychUIBox(state.infoBoxPosition.x, state.infoBoxPosition.y, 500, 100, ['lyric','custom settings(x)']);
                 lyricBox.scrollFactor.set();
                 lyricBox.cameras = [state.camUI];
-                lyricText = new FlxText(15, 15, 470, 'test1\ntext 1.2.3', 16);
+                lyricText = new FlxText(15, 15, 470, statusLoad[2]?'test '+eventNotes.length+'\ntext 1.2.3':"no vocal\nno lyric", 16);
                 lyricText.scrollFactor.set();
                 lyricBox.getTab('lyric').menu.add(lyricText);
                 state.add(lyricBox);
             }
             var lyricUpdated = false;
             if (lastTime != Conductor.songPosition){
-                for (note in state.curRenderedNotes)
-                {
-                    if(note == null) continue;
-                    if (note.isEvent){
-                        if(Conductor.songPosition > (note.strumTime-1) && lastTime <= (note.strumTime-1)){
-                            try{
-                            onEventS(note.events[0][1],note.events[0][2]);
-                            }catch (e:Dynamic){
-                                trace(e);
-                                e = "ERROR:\n"+Std.string(e).split(":")[2];
-                                Rstrin.push([[e,e]]);
-                                //lyricText.applyMarkup(e,[]);
+                if(statusLoad[2]){
+                    for (note in state.curRenderedNotes)
+                    {
+                        if(note == null) continue;
+                        if (note.isEvent){
+                            if(Conductor.songPosition > note.strumTime && lastTime <= note.strumTime){
+                                try{
+                                onEventS(note.strumTime,note.events[0][1],note.events[0][2]);
+                                }catch (e:Dynamic){
+                                    trace(e);
+                                    e = "ERROR:\n"+Std.string(e).split(":")[2];
+                                    Rstrin.push([[e,e]]);
+                                    //lyricText.applyMarkup(e,[]);
+                                }
                             }
+                            //lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
                         }
-                        //lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
+                        //if (note.mustPress)trace(note.songData);
                     }
-                    //if (!note.mustPress)trace(note.noteData);
-                }
-                for (note in state.curRenderedNotes.members.concat(state.behindRenderedNotes.members)){
-                    if(note == null) continue;
-                    if (!note.mustPress&&note.get_hasSustain()){
-                        if(Conductor.songPosition > note.strumTime && Conductor.songPosition <= note.strumTime+note.sustainLength+10 && !lyricUpdated){
-                            try{
-                            singWord(note,Conductor.songPosition>lastTime);
-                            lyricUpdated = true;
-                            }catch (e:Dynamic){trace(e);}
+                    for (note in state.curRenderedNotes.members.concat(state.behindRenderedNotes.members)){
+                        if(note == null) continue;
+                        if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&note.get_hasSustain()){
+                            if(Conductor.songPosition > note.strumTime && Conductor.songPosition <= note.strumTime+note.sustainLength+10 && !lyricUpdated){
+                                try{
+                                singWord(note,Conductor.songPosition>lastTime);
+                                lyricUpdated = true;
+                                }catch (e:Dynamic){trace(e);}
+                            }
                         }
                     }
                 }
@@ -249,7 +279,12 @@ Helper = ()->{
                 ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
             }
         }catch (e:Dynamic){}
-    }catch (e:Dynamic) {trace(e);FlxG.signals.preUpdate.remove(Helper);}
+    }catch (e:Dynamic) {
+        trace(e);
+        FlxG.signals.preUpdate.remove(Helper);
+        if (lyricText!=null)
+            lyricText.text = "i'm dead\n"+e;
+    }
 }
 
 var ema = 0;
@@ -279,12 +314,12 @@ function onDestroy() {
 
 
 var word = 0;
-//var RstrinNEXT = [];
+var RstrinNEXT = [0];
 var blue = new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF0048FF), "$//");
 var blueC = new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF1800CF), "&&");
 
 // var r = ~/-/g;
-function onEventS(v1, v2) {
+function onEventS(T,v1, v2) {
     trace(v1);
 	v2 = v2.split("-").join("- ");
 	v1 = v1.split("-").join("- ");
@@ -292,9 +327,15 @@ function onEventS(v1, v2) {
     //    Rstrin = RstrinNEXT;
     //    word = 0;
     //}
-	//RstrinNEXT = [];
-	Rstrin = [];
-    word = -1;
+	RstrinNEXT = [T];
+	//Rstrin = [];
+    //word = -1;
+    if (v1 == null ||v1.length<=2){
+        lyricText.applyMarkup("0 / -1",[blue]);
+        Rstrin = [T];
+        word = 0;
+        return;
+    }
 	if (v2 == "null")
 		v2 = v1;
 	var d1 = v1.split(" ").join("").split("-").join("");
@@ -337,10 +378,10 @@ function onEventS(v1, v2) {
 		}
 		if (d[1].charAt(d[1].length - 1) != "-")
 			strin.push([" ", " "]);
-		//RstrinNEXT.push(strin);
-		Rstrin.push(strin);
+		RstrinNEXT.push(strin);
+		//Rstrin.push(strin);
 	}
-    lyricText.applyMarkup((word+1)+" / "+Rstrin.length+"\n"+v1.split("-").join(""),[]);
+    //lyricText.applyMarkup((word+1)+" / "+Rstrin.length+"\n"+v1.split("-").join(""),[]);
 }
 
 var mType = 0;
@@ -348,11 +389,17 @@ var flxT;
 var flxM;
 var oldNote;
 function singWord(daNote,toFu) {
+    if (daNote!=oldNote){
+        if (Rstrin[0]!=RstrinNEXT[0]){
+            word = 0;
+            Rstrin = RstrinNEXT.copy();
+        }
+        word += (toFu?1:-1);
+    }
 
-    word += (toFu?1:-1)*(daNote!=oldNote?1:0);
     //trace(daNote!=oldNote);
     oldNote = daNote;
-    if (Rstrin.length<word) {
+    if (Rstrin.length<=word) {
         //if (RstrinNEXT.length>0){
         //    Rstrin = RstrinNEXT;
         //    RstrinNEXT = [];
@@ -362,15 +409,15 @@ function singWord(daNote,toFu) {
         //}
     };
     tim =Std.int((Conductor.songPosition - daNote.strumTime)/( daNote.sustainLength / Rstrin[word].length ));
-    var s = (word+1)+" / "+Rstrin.length+"\n$//";
-    for (m in 0...Rstrin.length) {
+    var s = (word)+" / "+(Rstrin.length-1)+"\n$//";
+    for (m in 1...Rstrin.length) {
         var ss = false;
         for (i in 0...Rstrin[m].length) {
             if (tim == i && m == word) {
                 s = s + "$//";
                 ss = true;
             }
-            if ((tim >= i && m == word) || (m < word)) {
+            if ((tim > i && m == word) || (m < word)) {
                 s = s + Rstrin[m][i][1];
             } else {
                 s = s + Rstrin[m][i][0];

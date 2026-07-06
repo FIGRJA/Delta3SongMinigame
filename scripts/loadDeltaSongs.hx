@@ -151,7 +151,7 @@ function load_all_posible_notes_neo(file:String) {
 			noteData = n.split("|");
 			//debugPrint(noteData);
 			if (noteData.length > 1)
-				scr_rhythmgame_add_lyric(Std.int(noteData[0]), noteData[1], (noteData[2]!=null&&noteData[2].length)>2?noteData[2]:"null");
+				scr_rhythmgame_add_lyric(Std.int(noteData[0]*1000-20)/1000, noteData[1], (noteData[2]!=null&&noteData[2].length)>2?noteData[2]:"null");
 		}
 	}
 	
@@ -199,7 +199,7 @@ function loadTxtLyrics(file:String) {
 			noteData = note.split(",");
 			if (noteData.length >= 1) {
 				// debugPrint(noteData[2]);
-				scr_rhythmgame_add_lyric(Std.int(noteData[0]), noteData[1], noteData[3] == null ? "null" : noteData[2]);
+				scr_rhythmgame_add_lyric(Std.int(noteData[0]*1000-20)/1000, noteData[1], (noteData[2]==null||noteData[2].length<2)?"null":noteData[2]);
 			}
 		}
 		//debugPrint("loaded " + file);
@@ -344,7 +344,7 @@ function stringsetloc(defString, tag) {
 }
 
 function scr_rhythmgame_clear_lyric(timming) {
-	scr_rhythmgame_add_lyric(timming, " ", " ");
+	scr_rhythmgame_add_lyric(timming, "", "");
 }
 
 // var lyricBuffer = [0,""];
