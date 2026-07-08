@@ -26,6 +26,7 @@ if ((!Highscore.songScores.exists(practicN)||Highscore.songScores.get(practicN)<
 }
 var Control = Controls.instance;
 var backed:FlxBackdrop;
+var AlbumCover:FlxSprite = new FlxSprite(1070,60);
 var inst:FlxSound = new FlxSound();
 var freePlay:FlxSound = new FlxSound();
 var curAction:Int = 0;
@@ -191,6 +192,12 @@ function onCreate() {
 	modInfoText.antialiasing = false;
 	modInfoText.alignment = "right";
 	add(modInfoText);
+
+	//AlbumCover.x = 700;
+	AlbumCover.cameras = [menu];
+	AlbumCover.width = 120;
+	AlbumCover.height = 90;
+	add(AlbumCover);
 
 	songScoreText = new FlxText(700, 660, 580, "000000", 60, true);
 	songScoreText.font = Paths.getPath("fronts/fnt_main.ttf");
@@ -366,6 +373,15 @@ setVF("endScreen","playSnd");
 	}
 }
 
+function getAlbumCover(mod,cover) {
+	//var name = "mods/"+mod+"/SongAlbums/"+cover+".png";
+	//if (NativeFileSystem.exists(name)){
+		//trace("found!");
+		//FlxG.bitmap.add(name);
+	return CacheSystem.loadBitmap("/SongAlbums/"+cover+".png",mod,true);
+	//}
+}
+
 function onCreatePosts() {
 	if (!isAllowed)
 		return;
@@ -374,6 +390,14 @@ function onCreatePosts() {
 			{ease: FlxEase.circOut});
 	}
 	modInfoText.text = freeAction[curAction][0][0].name;
+	
+	var bg = getAlbumCover(freeAction[curAction][0][2],freeAction[curAction][2].album);
+	AlbumCover.loadGraphic(bg);
+	AlbumCover.visible = bg != null;
+	//trace(120/AlbumCover.width+" 	"+90/AlbumCover.height);
+	var scale = 200/(AlbumCover.width>AlbumCover.height?AlbumCover.width:AlbumCover.height);
+	AlbumCover.scale.set(scale,scale);
+	AlbumCover.updateHitbox();
 	game.startingSong = false;
 
         FlxG.sound.music.pause();
@@ -522,6 +546,15 @@ function onUpdate(e) {
 	// debugPrint("                                                           "+curAction);
 	songScoreText.text = formatIntToString(getTmpScore(), 6);
 	if (timer > 0) {
+		var bg = getAlbumCover(freeAction[curAction][0][2],freeAction[curAction][2].album);
+		AlbumCover.loadGraphic(bg);
+		AlbumCover.visible = bg != null;
+		//trace(120/AlbumCover.width+" 	"+90/AlbumCover.height);
+		var scale = 200/(AlbumCover.width>AlbumCover.height?AlbumCover.width:AlbumCover.height);
+		AlbumCover.scale.set(scale,scale);
+		AlbumCover.updateHitbox();
+		//AlbumCover.width = 120;
+		//AlbumCover.height = 90;
 		modInfoText.text = freeAction[curAction][0][0].name;
 		if (diffAction == null)
 			for (i in 0...freeAction.length)

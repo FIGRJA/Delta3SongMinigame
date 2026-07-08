@@ -14,7 +14,7 @@
             "speed":90,
             "songMain":"ch3-practice_song_noguit",
             "songPlay":"ch3-practice_song_combined",
-            "album":null,
+            "album":"Deltaruine3",
             "index":1,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
             "dynamic_solo":false
@@ -26,7 +26,7 @@
             "songPlay":"ch3_karaoke_full",
             "prewCh":"ch3_karaoke_preview",
             "prew":"ch3_karaoke_preview_crisp",
-            "album":null,
+            "album":"Deltaruine3",
             "index":0,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
             "dynamic_solo":true
@@ -38,7 +38,7 @@
             "songPlay":"tenna_battle_guitar",
             "prewCh":"tenna_battle_preview",
             "prew":"tenna_battle_preview_crisp",
-            "album":null,
+            "album":"Deltaruine3",
             "index":2,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
             "dynamic_solo":false
@@ -51,7 +51,7 @@
             "songPlay":"rhythm_knockdown_combined",
             "prewCh":"boxing_boss_preview",
             "prew":"boxing_boss_preview_crisp",
-            "album":null,
+            "album":"Deltaruine4",
             "index":10,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
             "dynamic_solo":false
@@ -61,7 +61,7 @@
             "speed":120,
             "songMain":"4rd_sanctuary_noguit",
             "songPlay":"4rd_sanctuary",
-            "album":null,
+            "album":"Deltaruine5",
             "index":15,
             "hxModule":"scripts/deltaCode/gml_ch5_scr_rhythmgame_notechart.hx",
             "dynamic_solo":false
@@ -71,7 +71,7 @@
             "speed":150,
             "songMain":"ch3_tvtime",
             "songPlay":"ch3_tvtime_guitar",
-            "album":null,
+            "album":"Deltaruine3",
             "index":3,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
             "dynamic_solo":false
@@ -81,9 +81,9 @@
             "speed":30,
             "songMain":"board4_rhythm",
             "songPlay":"board4_rhythm",
-            "album":null,
+            "album":"Deltaruine3",
             "index":4,
-            "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
+            "hxModule":"scripts/deltaCode/gml_ch3_scr_rhythmgame_notechart.hx",
             "dynamic_solo":false
         },{
             "name":"Time to get FUNKY         (bad)",
@@ -91,7 +91,7 @@
             "speed":150,
             "songMain":"battle",
             "songPlay":"battle",
-            "album":null,
+            "album":"Deltaruine",
             "index":5,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
             "dynamic_solo":false
@@ -101,7 +101,7 @@
             "speed":150,
             "songMain":"battle_vapor",
             "songPlay":"battle_vapor",
-            "album":null,
+            "album":"Deltaruine",
             "index":6,
             "hxModule":"scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",
             "dynamic_solo":false
@@ -111,7 +111,7 @@
             "speed":120,
             "songMain":"rhythm_3rd_sanctuary_noguit",
             "songPlay":"rhythm_3rd_sanctuary_guit",
-            "album":null,
+            "album":"Deltaruine5",
             "index":11,
             "hxModule":"scripts/deltaCode/gml_ch5_scr_rhythmgame_notechart.hx",
             "dynamic_solo":false

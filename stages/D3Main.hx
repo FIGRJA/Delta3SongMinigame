@@ -295,7 +295,7 @@ var sideTerminalB2 = getShader("Dglsl/shd_crt2");
 var transferAB = getShader("Dglsl/shd_underwater");
 	transferAB.setFloat("baseAngle"	,0);
 	//sideTerminalAB.setFloat("Radius"		,0);
-	shader_ = sideTerminalB;
+	shader_ = sideTerminalB2;
 	//shader_ = game.createRuntimeShader("wiggle");
 	//trace(shader_);
 	game.camGame.bgColor = 0x00;
@@ -720,7 +720,8 @@ function noteMiss(daNote) {
 			}, 4);
 			// runTimer(1,"pog");
 			mo[1].alpha = 1;
-			new FlxTimer().start(2,()->{onEndSong();});
+			if (tmpMissKris == 3)	
+				new FlxTimer().start(2,()->{onEndSong();});
 		}
 	}
 }
