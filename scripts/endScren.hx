@@ -3,7 +3,7 @@ import flixel.text.FlxTextBorderStyle;
 import flixel.group.FlxTypedGroup;
 import backend.Controls;
 import backend.MusicBeatState;
-import flash.media.SoundTransform;
+//import flash.media.SoundTransform; // not unvalible
 import Reflect;
 
 var Control = Controls.instance;

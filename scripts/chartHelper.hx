@@ -124,6 +124,7 @@ function writeNoteToSong() {
 }
 
 function onCreatePost() {
+    if (game.songName=="songchart") return;
 //setVF("load_delta_notes","writeNoteToSong");
     //songI = getVar("SONG").songMain;
     //songV = getVar("SONG").songPlay;

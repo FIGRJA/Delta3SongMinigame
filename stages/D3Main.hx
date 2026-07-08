@@ -751,7 +751,7 @@ function onSpawnNote(daNote) {
 	daNote.scale.set(2.9,3.5);
 	daNote.updateHitbox();
 	daNote.copyScale = false;
-	daNote.offsetY = -180;
+	daNote.offsetY = -185;
 	daNote.offsetX = -105;
 	daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 	
@@ -760,7 +760,7 @@ function onSpawnNote(daNote) {
 		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 		//daNote.angle = 90;
 		daNote.offsetX = -5;
-		daNote.offsetY = -80;
+		daNote.offsetY = -95;
 		//daNote.scale.y = 0.5;
 	}
 	if (daNote.noteType == "lead") {
@@ -837,7 +837,7 @@ function onSpawnNote(daNote) {
 		if (!daNote.isSustainNote){
 			//daNote.visible = ralsClap;
 
-			daNote.offsetY = -160;
+			daNote.offsetY = -150;
 			daNote.scale.x = daNote.scale.x*10;
 			daNote.scale.y = daNote.scale.y/2;
 		}
@@ -942,8 +942,8 @@ function onUpdate(e) {
 		}
 	}
 
-	bmpDistant.y =  (ClientPrefs.data.downScroll?1:-1)*(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) + (ClientPrefs.data.downScroll?428:-100) ;
-	bmpDistant4.y = (ClientPrefs.data.downScroll?1:-1)*(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + (ClientPrefs.data.downScroll?428:-100) ;
+	bmpDistant.y =  (ClientPrefs.data.downScroll?1:-1)*(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) + (ClientPrefs.data.downScroll?440:-100) ;
+	bmpDistant4.y = (ClientPrefs.data.downScroll?1:-1)*(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + (ClientPrefs.data.downScroll?440:-100) ;
 
 	if (susiRofls) {
 		game.gf.stunned = true;
