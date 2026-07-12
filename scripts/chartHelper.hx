@@ -1,3 +1,4 @@
+if (PlayState.SONG.stage!="D3Main") return;
 //package scripts; //эбанный vs
 
 import Type;
@@ -66,9 +67,9 @@ function writeEvents() {
     return eventsL;
 }
 
-function writeNoteToSong() {
+function writeNoteToSong(maxTime) {
 	trace("start write");
-    var maxTime = game.unspawnNotes[game.unspawnNotes.length-1].strumTime;
+    maxTime = Math.max(game.unspawnNotes[game.unspawnNotes.length-1].strumTime,maxTime);
     //if (PlayState.SONG.format == "psych_v1_convert") return;
 	//PlayState.SONG.notes[0].sectionNotes = [];
 	//PlayState.SONG.notes[0].bpm = PlayState.SONG.bpm;
@@ -128,7 +129,7 @@ function onCreatePost() {
 //setVF("load_delta_notes","writeNoteToSong");
     //songI = getVar("SONG").songMain;
     //songV = getVar("SONG").songPlay;
-    unspawnNotes = writeNoteToSong();
+    unspawnNotes = writeNoteToSong(FlxG.sound.music.length);
     eventNotes = writeEvents();
     //PlayState.SONG.notes = [];
     ChartingState.GRID_PLAYERS = 2;
@@ -179,28 +180,28 @@ Helper = ()->{
                 //if (!songEx){
                 PlayState.SONG.notes = unspawnNotes.copy();
                 PlayState.SONG.events = eventNotes.copy();
-                trace("test");
+                //trace("test");
                     //songEx = true;
                 //}
                 //trace("h3");
                 state.vocals.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+PlayState.SONG.gameOverEnd+".ogg"),true,"nice Try"));
                 state.updateAudioVolume();
                 state.setPitch();
-                trace("test");
+                //trace("test");
             
                 // ВАЖНО: Перезагружаем ноты в UI//deepseak
                 state.loadSection();
-                trace("testm");
+                //trace("testm");
                 state.updateGridVisibility();
-                trace("testm");
+                //trace("testm");
                 state.reloadNotes();
-                trace("testm");
+                //trace("testm");
                 state.waveformSprite.x = state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
                 //state.waveformSprite.x = FlxG.height/2-(ChartingState.GRID_PLAYERS*ChartingState.GRID_SIZE/2);
                 var i = 0;
                 for (m in 0...3){
                     if (!statusLoad[m]) continue;
-                trace("test");
+                //trace("test");
                     state.icons[i].changeIcon(icons[m]);
                     Reflect.setProperty(state.characterData,'iconP'+(i+1),icons[m]);
                     state.icons[i].scale.set(2,2);
@@ -220,24 +221,30 @@ Helper = ()->{
                 }
             }
             if (lyricBox==null){
-                lyricBox = new PsychUIBox(state.infoBoxPosition.x, state.infoBoxPosition.y, 500, 100, ['lyric','custom settings(x)']);
+                lyricBox = new PsychUIBox((FlxG.width/2)+200, 338, 440, 100, ['lyric','custom settings(x)']);
                 lyricBox.scrollFactor.set();
                 lyricBox.cameras = [state.camUI];
                 lyricText = new FlxText(15, 15, 470, statusLoad[2]?'test '+eventNotes.length+'\ntext 1.2.3':"no vocal\nno lyric", 16);
                 lyricText.scrollFactor.set();
                 lyricBox.getTab('lyric').menu.add(lyricText);
                 state.add(lyricBox);
-            }
+            }//else {
+            //    trace (lyricBox.x+" "+lyricBox.y);
+            //}
             var lyricUpdated = false;
             if (lastTime != Conductor.songPosition){
                 if(statusLoad[2]){
-                    for (note in state.curRenderedNotes)
+                    for (note in state.curRenderedNotes.members.concat(state.behindRenderedNotes.members))
                     {
                         if(note == null) continue;
-                        if (note.isEvent){
-                            if(Conductor.songPosition > note.strumTime && lastTime <= note.strumTime){
+                        if(Conductor.songPosition > note.strumTime && lastTime <= note.strumTime+note.sustainLength){
+                            if (note.isEvent){
                                 try{
-                                onEventS(note.strumTime,note.events[0][1],note.events[0][2]);
+                                    if (note.events[0][0]=="ill make lyric"){
+                                        //onEventS2(note.strumTime,note.events[0][1],note.events[0][2]);
+                                        onEventS(note.strumTime,note.events[0][1],note.events[0][2]);
+                                        lyricUpdated = false;
+                                    }
                                 }catch (e:Dynamic){
                                     trace(e);
                                     e = "ERROR:\n"+Std.string(e).split(":")[2];
@@ -246,19 +253,16 @@ Helper = ()->{
                                 }
                             }
                             //lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
-                        }
-                        //if (note.mustPress)trace(note.songData);
-                    }
-                    for (note in state.curRenderedNotes.members.concat(state.behindRenderedNotes.members)){
-                        if(note == null) continue;
-                        if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&note.get_hasSustain()){
-                            if(Conductor.songPosition > note.strumTime && Conductor.songPosition <= note.strumTime+note.sustainLength+10 && !lyricUpdated){
-                                try{
-                                singWord(note,Conductor.songPosition>lastTime);
-                                lyricUpdated = true;
-                                }catch (e:Dynamic){trace(e);}
+                            else if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&note.get_hasSustain()){
+                                if(!lyricUpdated){
+                                    try{
+                                    singWord(note,Conductor.songPosition>lastTime);
+                                    lyricUpdated = true;
+                                    }catch (e:Dynamic){trace(e);}
+                                }
                             }
                         }
+                        //if (note.mustPress)trace(note.songData);
                     }
                 }
             }
@@ -293,7 +297,7 @@ function onUpdate(e) {
     ema += e;
     if (ema>(e*10)&&ema<(e*12)){
         songEx = false;
-        if ((game.songName=="songchart"||game.chartingMode)&&getVar("chartHelper")!=null){
+        if ((game.songName=="songchart"||true)&&getVar("chartHelper")!=null){
             trace("removed");
             FlxG.signals.preUpdate.remove(getVar("chartHelper"));
             setVar("chartHelper",null);
@@ -315,11 +319,73 @@ function onDestroy() {
 
 
 var word = 0;
-var RstrinNEXT = [0];
+var oldNote;
+//var RstrinNEXT = [0];
 var blue = new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF0048FF), "$//");
 var blueC = new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF1800CF), "&&");
 
 // var r = ~/-/g;
+
+function onEventS2(T,v1, v2) {//try new method
+	Rstrin = [];
+    word = -1;
+    if (v1 == null ||v1.length<=2){
+        lyricText.applyMarkup("0 / -1",[blue]);
+        return;
+    }
+    if (v2 == null ||v2 == "null" ||v2.length<=2)
+        v2 = v1;
+    var charI = -1;
+        var tmpS = "";
+		var tmpN = 0;
+		var tmpM = 0;
+		var strin = [];
+		var i = -1;
+		while (i < v2.length - 1) {
+			i += 1;
+			charI += 1;
+			//if (v2.charAt(i) == "-")
+			//	continue;
+			if (v2.charAt(i) == "[") {
+				// tirg = v2.substring(i+tmpA,v2.indexOf("]",i+tmpA)).split(":");
+				tmpN = v2.substring(i + 1, v2.indexOf("]", i)).split(":")[0];
+				tmpS = v2.substring(i + 1, v2.indexOf("]", i)).split(":")[1];
+				// debugPrint(tmpN+" "+tmpS);
+				i = v2.indexOf("]", i) + 1 - tmpN;
+			}
+			var r = "";
+			if (tmpS.length > 0) {
+				r = tmpS.substring(Std.int(tmpM), Std.int(tmpM + tmpS.length / tmpN + 0.01));
+				tmpM = tmpM + tmpS.length / tmpN + 0.01;
+				if (Std.int(tmpM) >= tmpS.length) {
+					tmpS = "";
+					tmpM = 0;
+				}
+			} else if (tmpS == null) {
+				r = v1.charAt(charI);
+			} else {
+				r = v2.charAt(i);
+			} 
+			strin.push([v1.charAt(charI), r]);
+		}
+        var tStin = [];
+        for (s in strin){
+            tStin.push(s);
+            if (s[1]==" "){
+                Rstrin.push(tStin.copy());
+                tStin = [];
+            }
+            else if (s[1]=="-"){
+                //tStin.remove(s);
+                s[1]="";
+                Rstrin.push(tStin.copy());
+                tStin = [];
+            }
+        }
+        Rstrin.push(tStin.copy());
+    trace (strin);
+}
+
 function onEventS(T,v1, v2) {
     trace(v1);
 	v2 = v2.split("-").join("- ");
@@ -328,16 +394,16 @@ function onEventS(T,v1, v2) {
     //    Rstrin = RstrinNEXT;
     //    word = 0;
     //}
-	RstrinNEXT = [T];
-	//Rstrin = [];
-    //word = -1;
+	//RstrinNEXT = [T];
+	Rstrin = [];
+    word = -1;
     if (v1 == null ||v1.length<=2){
         lyricText.applyMarkup("0 / -1",[blue]);
-        Rstrin = [T];
+        Rstrin = [];
         word = 0;
         return;
     }
-	if (v2 == "null")
+	if (v2 == null ||v2 == "null" ||v2.length<=2)
 		v2 = v1;
 	var d1 = v1.split(" ").join("").split("-").join("");
 	var d2 = v2.split(" ");
@@ -379,28 +445,30 @@ function onEventS(T,v1, v2) {
 		}
 		if (d[1].charAt(d[1].length - 1) != "-")
 			strin.push([" ", " "]);
-		RstrinNEXT.push(strin);
-		//Rstrin.push(strin);
+		//RstrinNEXT.push(strin);
+		Rstrin.push(strin);
 	}
+    //trace(Rstrin);
+    lyricText.applyMarkup((word+1)+" / "+Rstrin.length+"\n",[]);
+    for (s in Rstrin)
+        for (c in s)
+            lyricText.text += c[0];
     //lyricText.applyMarkup((word+1)+" / "+Rstrin.length+"\n"+v1.split("-").join(""),[]);
 }
 
 var mType = 0;
-var flxT;
-var flxM;
-var oldNote;
 function singWord(daNote,toFu) {
     if (daNote!=oldNote){
-        if (Rstrin[0]!=RstrinNEXT[0]){
-            word = 0;
-            Rstrin = RstrinNEXT.copy();
-        }
+        //if (Rstrin[0]!=RstrinNEXT[0]){
+        //    word = 0;
+        //    Rstrin = RstrinNEXT.copy();
+        //}
         word += (toFu?1:-1);
     }
 
     //trace(daNote!=oldNote);
     oldNote = daNote;
-    if (Rstrin.length<=word) {
+    if (Rstrin.length<=word||word<0) {
         //if (RstrinNEXT.length>0){
         //    Rstrin = RstrinNEXT;
         //    RstrinNEXT = [];
@@ -410,8 +478,8 @@ function singWord(daNote,toFu) {
         //}
     };
     tim =Std.int((Conductor.songPosition - daNote.strumTime)/( daNote.sustainLength / Rstrin[word].length ));
-    var s = (word)+" / "+(Rstrin.length-1)+"\n$//";
-    for (m in 1...Rstrin.length) {
+    var s = (word+1)+" / "+(Rstrin.length)+"\n$//";
+    for (m in 0...Rstrin.length) {
         var ss = false;
         for (i in 0...Rstrin[m].length) {
             if (tim == i && m == word) {

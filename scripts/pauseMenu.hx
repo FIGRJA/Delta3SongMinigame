@@ -1,3 +1,4 @@
+if (PlayState.SONG.stage!="D3Main") return;
 import backend.Controls;
 import backend.MusicBeatState;
 import psychlua.CustomSubstate;
@@ -200,3 +201,5 @@ function onCustomSubstateDestroy(name) {
 	freeAction = [];
 	pauseBG.x = -700;
 }
+
+function onDestroy() {}

@@ -1,3 +1,4 @@
+if (PlayState.SONG.stage!="D3Main") return;
 //import haxe.macro.Expr.Catch;
 import backend.Controls;
 import backend.MusicBeatState;
@@ -378,7 +379,7 @@ function getAlbumCover(mod,cover) {
 	//if (NativeFileSystem.exists(name)){
 		//trace("found!");
 		//FlxG.bitmap.add(name);
-	return CacheSystem.loadBitmap("/SongAlbums/"+cover+".png",mod,true);
+	return CacheSystem.loadBitmap("SongAlbums/"+cover+".png",mod,true);
 	//}
 }
 

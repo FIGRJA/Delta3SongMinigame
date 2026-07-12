@@ -1,3 +1,4 @@
+if (PlayState.SONG.stage!="D3Main") return;
 //package scripts;
 
 
@@ -19,3 +20,5 @@ function onCreatePost() {
 function onUpdate(e) {
     
 }
+
+function onDestroy() {}

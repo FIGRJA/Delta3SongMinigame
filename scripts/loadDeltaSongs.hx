@@ -1,3 +1,4 @@
+if (PlayState.SONG.stage!="D3Main") return;
 // import haxe.macro.Expr.Case;
 import sys.thread.EventLoop.NextEventTime;
 import psychlua.HScript;
@@ -446,3 +447,5 @@ function loadLua(file) {
 	new FunkinLua(luaToLoad);
 	return true;
 }
+
+function onDestroy() {}

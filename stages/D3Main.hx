@@ -26,9 +26,12 @@ setVF("load_delta_notes","writeNoteToSong");
 var isMenuChart:Bool = PlayState.SONG.song == "songChart";
 var susiNoteCam:FlxCamera;
 var krisNoteCam:FlxCamera;
-var KrisBaner:FlxSprite = new ModchartSprite(314, -110);
-var SusiBaner:FlxSprite = new ModchartSprite(164, -110);
-var RalsBaner:FlxSprite = new ModchartSprite(461, -110);
+var KrisBaner:FlxSprite = new ModchartSprite(329, -110);
+var SusiBaner:FlxSprite = new ModchartSprite(179, -110);
+var RalsBaner:FlxSprite = new ModchartSprite(476, -110);
+var KrisIcon:FlxSprite = new ModchartSprite(295, -115);
+var SusiIcon:FlxSprite = new ModchartSprite(145, -115);
+var RalsIcon:FlxSprite = new ModchartSprite(442, -115);
 var ralseiNoteCam:FlxCamera;
 var bmpDistant:FlxBackdrop;
 var bmpDistant4:FlxBackdrop;
@@ -133,7 +136,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 			PlayState.SONG.bpm = song.bpm;
 			Conductor.bpm = song.bpm;
 			//PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
-			PlayState.SONG.speed = song.speed!=null?song.speed/(450/2.9):1.1;
+			PlayState.SONG.speed = song.speed!=null?song.speed/(450/4):1.1;
 
 			PlayState.SONG.gameOverLoop = song.songMain;
 			PlayState.SONG.gameOverEnd  = song.songPlay;
@@ -295,12 +298,12 @@ var sideTerminalB2 = getShader("Dglsl/shd_crt2");
 var transferAB = getShader("Dglsl/shd_underwater");
 	transferAB.setFloat("baseAngle"	,0);
 	//sideTerminalAB.setFloat("Radius"		,0);
-	shader_ = sideTerminalB2;
+	shader_ = transferAB;
 	//shader_ = game.createRuntimeShader("wiggle");
 	//trace(shader_);
 	game.camGame.bgColor = 0x00;
 	game.camGame.filtersEnabled = true;
-	//game.camGame.filters = [ new ShaderFilter(shader_)];
+	game.camGame.filters = [ new ShaderFilter(shader_)];
 	//FlxG.game.setFilters(null);
 	//FlxG.game.setFilters([ new ShaderFilter(shader_)]);
 	//Lib.current.alpha = 1;
@@ -584,20 +587,40 @@ if (PlayState.SONG.format != "psych_v1_convert")
 
 	KrisBaner.cameras = [game.camGame];
 	KrisBaner.antialiasing = false;
+	KrisBaner.color = 0x326BE6;
 	KrisBaner.loadGraphic(Paths.image("sp/spr_bnamekris_0"));
 	//KrisBaner.scale.set(1,1);
 	//KrisBaner.updateHitbox();
-	add(KrisBaner);
+	insert(members.indexOf(SPcameras[1][1]),KrisBaner);
 
 	SusiBaner.cameras = [game.camGame];
 	SusiBaner.antialiasing = false;
+	SusiBaner.color = 0xE73F3F;
 	SusiBaner.loadGraphic(Paths.image("sp/spr_bnamesusie_0"));
-	add(SusiBaner);
+	insert(members.indexOf(SPcameras[0][1]),SusiBaner);
 
 	RalsBaner.cameras = [game.camGame];
 	RalsBaner.antialiasing = false;
+	RalsBaner.color = 0x6CE94D;
 	RalsBaner.loadGraphic(Paths.image("sp/spr_bnameralsei_0"));
-	add(RalsBaner);
+	insert(members.indexOf(SPcameras[2][1]),RalsBaner);
+
+	KrisIcon.cameras = [game.camGame];
+	KrisIcon.antialiasing = false;
+	KrisIcon.loadGraphic(Paths.image("icons/kris"));
+	//KrisBaner.scale.set(1,1);
+	//KrisBaner.updateHitbox();
+	insert(members.indexOf(SPcameras[1][1]),KrisIcon);
+
+	SusiIcon.cameras = [game.camGame];
+	SusiIcon.antialiasing = false;
+	SusiIcon.loadGraphic(Paths.image("icons/susi"));
+	insert(members.indexOf(SPcameras[0][1]),SusiIcon);
+
+	RalsIcon.cameras = [game.camGame];
+	RalsIcon.antialiasing = false;
+	RalsIcon.loadGraphic(Paths.image("icons/ralsei"));
+	insert(members.indexOf(SPcameras[2][1]),RalsIcon);
 
 	SCORE.font = Paths.getPath("fronts/fnt_main.ttf");
 	SCORE.cameras = [game.camOther];
@@ -627,18 +650,21 @@ if (PlayState.SONG.format != "psych_v1_convert")
 		krisNoteCam.visible = false;
 		L1.visible = false;
 		KrisBaner.visible = false;
+		KrisIcon.visible = false;
 	}
 	if (!statusLoad[1]&&!FlxG.random.bool(42)){
 		game.gf.visible = false;
 		susiNoteCam.visible = false;
 		L3.visible = false;
 		SusiBaner.visible = false;
+		SusiIcon.visible = false;
 	}
 	if (!statusLoad[2]&&FlxG.random.bool(42)){
 		game.dad.visible = false;
 		ralseiNoteCam.visible = false;
 		L2.visible = false;
 		RalsBaner.visible = false;
+		RalsIcon.visible = false;
 	}
 	//debugPrint(-4000/PlayState.SONG.bpm);
 	Conductor.songPosition = (-4*1000*60)/PlayState.SONG.bpm + (-1000);
@@ -705,6 +731,10 @@ function noteMiss(daNote) {
 		tmpTweensusi = FlxTween.tween(susiMissBack, {alpha: 0}, 0.5);
 		susiCombo.text = "0";
 	} else {
+		if (ClientPrefs.data.shaders)
+			FlxTimer.loop(1.8/30,(t)->{
+				shader_.setFloat("Radius"	,2*(30-t)/(30)+shader_.data.Radius.value);
+			},30);
 		tmpMissKris += 1;
 		shareSprite(game.boyfriend,10);
 		krisMissBack.alpha = 1;
@@ -751,7 +781,7 @@ function onSpawnNote(daNote) {
 	daNote.scale.set(2.9,3.5);
 	daNote.updateHitbox();
 	daNote.copyScale = false;
-	daNote.offsetY = -185;
+	daNote.offsetY = -188;
 	daNote.offsetX = -105;
 	daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 	
@@ -760,7 +790,7 @@ function onSpawnNote(daNote) {
 		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 		//daNote.angle = 90;
 		daNote.offsetX = -5;
-		daNote.offsetY = -95;
+		daNote.offsetY = -98;
 		//daNote.scale.y = 0.5;
 	}
 	if (daNote.noteType == "lead") {
@@ -856,13 +886,15 @@ function onSpawnNote(daNote) {
 	// daNote.animation.play("purpleholdend",true);
 }
 var susiSkills = ["singDOWN-alt", "singUP", "singDOWN"];
+var TimeUp = 0;
 function onUpdate(e) {
 	if (isMenuChart)
 		return;
-
+	TimeUp +=e;
 	//debugPrint(ralseiNoteCam.canvas.graphics);
 	if (ClientPrefs.data.shaders)
-	shader_.setFloat("time",Conductor.songPosition/1000);
+	shader_.setFloat("time",TimeUp);
+	//shader_.setFloat("time",Conductor.songPosition/1000);
 
            // for (i in FlxG.game.filters)
            //     if (i.shader != null && i.shader.data.time != null)
@@ -873,7 +905,8 @@ function onUpdate(e) {
 	//shader_.setFloat("pix",1);
 	//shader_.setFloat("hue",Math.sin(Conductor.songPosition/10000));
 	for (light in [L1, L2, L3]) {
-		light.y = Math.sin(Conductor.songPosition / 650) * 25 + 230;
+		//light.y = Math.sin(Conductor.songPosition / 650) * 25 + 230;
+		light.y = Math.sin(TimeUp /0.5) * 25 + 230;
 	}
 
 	game.health = 2;

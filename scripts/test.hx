@@ -1,3 +1,4 @@
+if (PlayState.SONG.stage!="D3Main") return;
 import lime.app.Application;
 import lime.ui.Window;
 import lime.graphics.RenderContext;

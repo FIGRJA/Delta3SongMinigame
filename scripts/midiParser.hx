@@ -373,3 +373,6 @@ function readInt16(data:Bytes, pos:Int):Int {
     }
     
 //}
+
+
+function onDestroy() {}

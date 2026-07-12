@@ -1,3 +1,4 @@
+if (PlayState.SONG.stage!="D3Main") return;
 //package scripts;
 
 var isAllowed:Bool = game.songName == "tutorialus----(infinity)";
@@ -85,3 +86,6 @@ function onEndSong() {
         //game.unspawnNotes = notes.copy();
         //onCreate();
 }
+
+
+function onDestroy() {}

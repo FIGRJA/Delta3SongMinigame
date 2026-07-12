@@ -1,4 +1,4 @@
 auto lyric
 
-Value 1: Null
-Value 2: lyric 1+1
+Value 1: original lyrix
+Value 2: fixed lyric or null

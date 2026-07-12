@@ -162,3 +162,5 @@ function opponentNoteHit(daNote) {//требуется пересборка
 		debugPrint(e, FlxColor.RED);
 	}
 }
+
+function onDestroy() {}

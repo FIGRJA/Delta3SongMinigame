@@ -1,3 +1,4 @@
+if (PlayState.SONG.stage!="D3Main") return;
 import flixel.addons.display.FlxBackdrop;
 import flixel.text.FlxTextBorderStyle;
 import flixel.group.FlxTypedGroup;
@@ -42,7 +43,7 @@ function playSnd(Strs) {
 }
 setVar("endScreen",this);
 function onCreate() {
-    trace(songs);
+   // trace(songs);
 	FlxG.cameras.add(camEnd, false);
 	game.luaDebugGroup.cameras.push(camEnd);
 	// game.transitioning = true;
@@ -99,6 +100,7 @@ var isEnd = false;
 function onCustomSubstateUpdate(n, e) {
 	if (!isThis)
 		return;
+    getVar("D3Main").call("onUpdate",[e]);
     if (Control.CHAR_SELECT ){
 		playSnd("splat");
 		MusicBeatState.resetState();}
@@ -268,3 +270,4 @@ function TW(a) {
 	//	//MusicBeatState.resetState();
     //});
 }
+function onDestroy() {}
