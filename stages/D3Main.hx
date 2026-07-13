@@ -42,9 +42,9 @@ var krisMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var susiMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var krisMute:FlxSprite = new ModchartSprite(-55, -195);
 var susiMute:FlxSprite = new ModchartSprite(-55, -195);
-var susiCombo:FlxText = new FlxText(-110, 80, 350, "0", 240, true);
-var krisCombo:FlxText = new FlxText(-110, 80, 350, "0", 240, true);
-var ralsCombo:FlxText = new FlxText(-110, 80, 350, "0", 240, true);
+var susiCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
+var krisCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
+var ralsCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
 var wordCombo:FlxText = new FlxText(-115, 265, 350, "COMBO", 90, true);
 var maxCombo:FlxText = new FlxText(960, 647, 0, "000000", 60, true);
 var maxComboText:FlxText = new FlxText(857, 675, 0, "MAX COMBO", 25, true);
@@ -136,7 +136,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 			PlayState.SONG.bpm = song.bpm;
 			Conductor.bpm = song.bpm;
 			//PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
-			PlayState.SONG.speed = song.speed!=null?song.speed/(450/4):1.1;
+			PlayState.SONG.speed = song.speed!=null?song.speed/(450/3):1.1;
 
 			PlayState.SONG.gameOverLoop = song.songMain;
 			PlayState.SONG.gameOverEnd  = song.songPlay;
@@ -674,6 +674,13 @@ if (PlayState.SONG.format != "psych_v1_convert")
 		getVar("bgLight").alpha = 0;
 		getVar("bgDark").alpha = 1;
 	}
+	game.botplayTxt.font = Paths.getPath("fronts/fnt_main.ttf");
+	game.botplayTxt.cameras = [krisNoteCam];
+	game.botplayTxt.x = -180;
+	game.botplayTxt.y = 80;
+	game.botplayTxt.size = 65;
+	game.botplayTxt.color = 0x0579C7;
+
 }
 
 
@@ -805,6 +812,11 @@ function onSpawnNote(daNote) {
 		}
 		if (rawType == 1) {
 			daNote.color = 0x07E2FF;
+		}
+		if (rawType == 2) {
+			daNote.color = 0x07E2FF;
+			daNote.noteData = 3;
+			daNote.animSuffix = '-alt';
 		}
 		// if (krisMute.alpha == 1)daNote.ignoreNote = true;
 		//daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_2"));
@@ -967,7 +979,7 @@ function onUpdate(e) {
 	}
 	for (co in [susiCombo, krisCombo, ralsCombo]) {
 		if (co.text.length > 3) {
-			co.scale.x = 0.4;
+			co.scale.x = 0.45;
 		} else if (co.text.length > 2) {
 			co.scale.x = 0.6;
 		} else {

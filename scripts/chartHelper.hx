@@ -449,10 +449,10 @@ function onEventS(T,v1, v2) {
 		Rstrin.push(strin);
 	}
     //trace(Rstrin);
-    lyricText.applyMarkup((word+1)+" / "+Rstrin.length+"\n",[]);
-    for (s in Rstrin)
-        for (c in s)
-            lyricText.text += c[0];
+    //lyricText.applyMarkup((word+1)+" / "+Rstrin.length+"\n",[]);
+    //for (s in Rstrin)
+    //    for (c in s)
+    //        lyricText.text += c[0];
     //lyricText.applyMarkup((word+1)+" / "+Rstrin.length+"\n"+v1.split("-").join(""),[]);
 }
 

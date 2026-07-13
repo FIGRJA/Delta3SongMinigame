@@ -60,7 +60,8 @@ void DoFog(inout vec4 SrcColour, float fogval)
 //varying vec2 v_ vTexcoord;
 //varying vec4 v_ vColour;
 
-const vec2 resolution = vec2(1280.0/4, 720.0/4);
+//const vec2 resolution = vec2(1280.0/4, 720.0/4);
+uniform vec2 resolution ;//
 
 const float scan_line_amount = 0.4;
 const float warp_amount = 0.6;
