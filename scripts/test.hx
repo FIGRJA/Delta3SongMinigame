@@ -86,3 +86,46 @@ if (R.has(fun)){
 function onDestroy() {
     //R.remove(fun);
 }
+
+
+var filter:Array<String> = [
+	'You Suck!',
+	'Shit',
+	'Bad',
+	'Bruh',
+	'Meh',
+	'Nice',
+	'Good',
+	'Great',
+	'Sick!',
+	'Perfect!!'
+];
+
+function getStaticVar(tag:String) {
+	for (i in filter)
+		if (i[0] == tag) {
+			trace("getStaticVar: not allowed " + tag, FlxColor.RED);
+			return null;
+		}
+	for (i in PlayState.ratingStuff)
+		if (i[0] == tag)
+			return i[1];
+	return null;
+}
+
+//trace(PlayState.ratingStuff);
+function setStaticVar(tag:String, varis:Dynamic) {
+	for (i in filter)
+		if (i[0] == tag) {
+			trace("setStaticVar: not allowed " + tag, FlxColor.RED);
+			return;
+		}
+	for (i in PlayState.ratingStuff)
+		if (i[0] == tag) {
+			i[1] = varis;
+			return;
+		}
+	PlayState.ratingStuff.insert(-1, [tag, varis]);
+}
+
+setVar("extraVar",this);

@@ -91,21 +91,21 @@ var CustomControls = {
 	"[F10]" : 121,
 	"[F11]" : 122,
 	"[F12]" : 123,
-	"[N-0]" : 96,
-	"[N-1]" : 97,
-	"[N-2]" : 98,
-	"[N-3]" : 99,
-	"[N-4]" : 100,
-	"[N-5]" : 101,
-	"[N-6]" : 102,
-	"[N-7]" : 103,
-	"[N-8]" : 104,
-	"[N-9]" : 105,
-	"[N--]" : 109,
-	"[N-+]" : 107,
-	"[N-PERIOD]" : 110,
-	"[N-*]" : 106,
-	"[N-/]" : 111
+	"[#0]" : 96,
+	"[#1]" : 97,
+	"[#2]" : 98,
+	"[#3]" : 99,
+	"[#4]" : 100,
+	"[#5]" : 101,
+	"[#6]" : 102,
+	"[#7]" : 103,
+	"[#8]" : 104,
+	"[#9]" : 105,
+	"[#-]" : 109,
+	"[#+]" : 107,
+	"[#PERIOD]" : 110,
+	"[#*]" : 106,
+	"[#/]" : 111
 };
 
 function CustomStr2int(str) {
@@ -236,6 +236,8 @@ function int2str(int) {
 
 
 var isAllowed:Bool = PlayState.SONG.song != "songChart";
+var isTutorial:Bool = game.songName == "tutorialus----(infinity)";
+
 var keyboardBinds = Controls.instance.keyboardBinds;
 var keySprites = [
     new FlxText(208,100,90,CustomInt2str(keyboardBinds["note_left"][0] ),30),
@@ -255,7 +257,7 @@ function onCreate() {
     }
 }
 var upTime = 0;
-var tweenRemover = true;
+var tweenRemover = true;//isTutorial
 function onUpdate(e) {
         upTime += e;
     if (upTime>5&&!tweenRemover){

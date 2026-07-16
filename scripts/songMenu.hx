@@ -367,6 +367,10 @@ function loadSongsLists() {
 
 function onCreatePost() {
 setVF("endScreen","playSnd");
+setVF("extraVar","setStaticVar");
+setVF("extraVar","getStaticVar");
+	if (getStaticVar("test")!=null)
+		curAction = getStaticVar("test");
 	try{
 		onCreatePosts();
 	} catch (e:Dynamic){
@@ -442,7 +446,7 @@ function onUpdate(e) {
 	if (Control.BACK) {
 		if (diffAction != null) {
 			playSnd("splat");
-			onCreatePost();
+			onCreatePosts();
 			for (diff in diffAction) {
 				diff.destroy();
 			}
@@ -507,6 +511,7 @@ function onUpdate(e) {
 				FlxG.sound.list.add(freePlay);
 			} catch (e:Dynamic) {}
 		} else {
+			setStaticVar("test",curAction);
 			inst.fadeOut(0.5);
 			PlayState.SONG.song = freeAction[curAction][2].name;
 			PlayState.SONG.format = freeAction[curAction][0][0].name +"^"+ diffAction[curDiffAction].text;
@@ -525,7 +530,7 @@ function onUpdate(e) {
 			curAction -= 1;
 		else
 			curDiffAction -= 1;
-		timer = 0.15;
+		timer = 0.12;
 		playSnd("bump");
 	}
 	if (Control.UI_DOWN) {
@@ -533,7 +538,7 @@ function onUpdate(e) {
 			curAction += 1;
 		else
 			curDiffAction += 1;
-		timer = 0.15;
+		timer = 0.12;
 		playSnd("bump");
 	}
 	if (Control.NOTE_RIGHT){

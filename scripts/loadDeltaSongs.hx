@@ -144,7 +144,7 @@ function load_all_posible_notes_neo(file:String) {
 		//debugPrint(d.length);
 		for (m in d[i].split("\n")){
 			noteData = m.split(",");
-			scr_rhythmgame_addnote(noteData[0], noteData[1], noteData[2], noteData[3], noteData[4]);
+			scr_rhythmgame_addnote(noteData[0], noteData[1], noteData[2], noteData[3]);
 		}
 	}
 	if (d.length>=4){
@@ -152,7 +152,7 @@ function load_all_posible_notes_neo(file:String) {
 			noteData = n.split("|");
 			//debugPrint(noteData);
 			if (noteData.length > 1)
-				scr_rhythmgame_add_lyric(Std.int(noteData[0]*1000-20)/1000, noteData[1], (noteData[2]!=null&&noteData[2].length)>2?noteData[2]:"null");
+				scr_rhythmgame_add_lyric(Std.int((noteData[0]*1000)-40)/1000, noteData[1], (noteData[2]!=null&&noteData[2].length)>2?noteData[2]:"null");
 		}
 	}
 	
@@ -186,7 +186,7 @@ function loadTxtNotes(file:String) {
 		//debugPrint("loaded " + file);
 		return true;
 	} else {
-		//debugPrint("not loaded " + file);
+		debugPrint("not loaded " + file);
 		return false;
 	}
 }
@@ -200,7 +200,7 @@ function loadTxtLyrics(file:String) {
 			noteData = note.split(",");
 			if (noteData.length >= 1) {
 				// debugPrint(noteData[2]);
-				scr_rhythmgame_add_lyric(Std.int(noteData[0]*1000-20)/1000, noteData[1], (noteData[2]==null||noteData[2].length<2)?"null":noteData[2]);
+				scr_rhythmgame_add_lyric(Std.int((noteData[0]*1000)-40)/1000, noteData[1], (noteData[2]==null||noteData[2].length<2)?"null":noteData[2]);
 			}
 		}
 		//debugPrint("loaded " + file);
@@ -273,7 +273,7 @@ function addFastNote(time,data,sus,spec,who) {
 
 var oldNote:Note;
 
-function scr_rhythmgame_addnote(timming, types, sus, ?spec = 0, ?lolTag) {
+function scr_rhythmgame_addnote(timming, types, sus, ?spec ) {
 	    //trace("Добавляю ноту: время=" + timming + ", тип=" + typeTample + ", длинна=" + sus);
 	// typeTample = getVar("typeTample");
 	sus = sus * 1000;
@@ -298,14 +298,14 @@ function scr_rhythmgame_addnote(timming, types, sus, ?spec = 0, ?lolTag) {
 	var daNote:Note = new Note(timming, types, oldNote);
 	// daNote.mustPress = mustPress;
 	daNote.noteType = typeTample;
-	if (spec > 0) {
+	if (spec != null) {
 		daNote.animSuffix = spec == 1 ? '-alt' : "";
+		daNote.extraData.set("lolTag", spec);
 		// debugPrint(timming+typeTample+spec );
 	}
 	// daNote.noteType = typeNote;
-	daNote.scrollFactor.set();
+	daNote.scrollFactor.set(1,1);
 	daNote.sustainLength = sus;
-	daNote.extraData.set("lolTag", lolTag);
 
 	game.unspawnNotes.push(daNote);
 

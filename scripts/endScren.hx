@@ -175,6 +175,7 @@ function genText_(str,a,?x=0,?y=0,?size=60) {
     return text;
 }
 
+var textAr = [];
 function genText(str,a,?x=0,?y=0) {
     var text = [];
 
@@ -183,6 +184,7 @@ function genText(str,a,?x=0,?y=0) {
     text.push(genText_(str,a,x+0,y+0));
     //text[1].color = color;
     //trace("a");
+    textAr.push(text);
     return text;
 }
 var lSnd = ["splat","splat","coin","coin","crowd_cheer_single","crowd_cheer_single"];
@@ -310,6 +312,8 @@ function TW(a) {
         FlxTween.num(1, 0, 0.65*l,  null,num -> backed.alpha = num );
         FlxTween.num(-100, -200*l, 0.5*l,  null,num -> backed.velocity.x = num );
         FlxTween.num(100, 200*l, 0.5*l,  null,num -> backed.velocity.y = num );
+        for (t in textAr)
+            FlxTween.num(1, 0, 0.65*l,  null,num -> t[0].alpha = num );
         //backed.visible = false;
         //FlxTimer.loop(60/1000,(v)->{camEnd.alpha=v/(2*60*1000);},60*1000*2);
         //FlxTween.num(1,0,2,);

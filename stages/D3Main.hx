@@ -136,7 +136,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 			PlayState.SONG.bpm = song.bpm;
 			Conductor.bpm = song.bpm;
 			//PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
-			PlayState.SONG.speed = song.speed!=null?song.speed/(450/3):1.1;
+			PlayState.SONG.speed = song.speed!=null?(4/450 * song.speed):1.1;
 
 			PlayState.SONG.gameOverLoop = song.songMain;
 			PlayState.SONG.gameOverEnd  = song.songPlay;
@@ -207,7 +207,7 @@ function onCreatePost() {
 	//game.moveCamera(false);
 	//game.camFollow.y = 0;
 	//game.camHUD.scroll.x += 100;
-	game.noteKillOffset = 120;
+	game.noteKillOffset = 0;
 	// getVar("load_delta_notes").call("loadSong",["scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",2]);
 	// PlayState.SONG.bpm = 148;
 	// Conductor.bpm = 148;
@@ -227,8 +227,10 @@ function onCreatePost() {
 	FlxG.cameras.insert(susiNoteCam, 1, false);
 	FlxG.cameras.insert(krisNoteCam, 2, false);
 	FlxG.cameras.insert(ralseiNoteCam, 3, false);
-	
+	var SPCamY = FlxG.random.bool(1)?60:0;
 	var createCamSP = (camera:FlxCamera,inZ:Int)->{
+		camera.height += SPCamY;
+		camera.scroll.y -= SPCamY/0.35;
 		var bitmapData:BitmapData = new BitmapData(camera.width*2, camera.height*2, true, 0x00FFFFFF);
 		//bitmapData.draw(camera.canvas);
 		bitmapData.scroll(-camera.width,-camera.height);
@@ -239,9 +241,8 @@ function onCreatePost() {
 		var matrix = new FlxMatrix();
 		matrix.translate(camera.width/2, camera.height/2);
 		//camera.width *= 0.5;
-		//camera.height = 1;
 		///camera.visible = false;
-		camera.y = 1000;
+		camera.y += 1000;
 		//camera.x += 100;
 		insert(inZ,SPCam);
 		//debugPrint(SPCam);
@@ -316,17 +317,17 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	//var gameSprite = cast FlxG.game;
 	//gameSprite.sahder = [shader_];
 	//FlxG.game.alpha = 0.5;
-	//Lib.application.window.opacity = 1;
+	Lib.application.window.opacity = 1;
 	//FlxG.signals.postDraw.add(clear);
 	//debugPrint(Lib.application.window.display.supportedModes );
 	//var a = Lib.application.window.displayMode;
 	//a.pixelFormat = 1; 
 	//Lib.application.window.display.supportedModes = [a];
 	//Lib.application.window.background =  0x00FF0000;
-	Lib.application.window.context.attributes.background = null;// = 0x00FF0000;
+	//Lib.application.window.context.attributes.background = null;// = 0x00FF0000;
 	//Lib.application.window.context.attributes.alpha = true;// = 0x00FF0000;
-	Lib.application.window.context.attributes.depth = false;// = 0x00FF0000;
-	Lib.application.window.context.attributes.stencil = false;// = 0x00FF0000;
+	//Lib.application.window.context.attributes.depth = false;// = 0x00FF0000;
+	//Lib.application.window.context.attributes.stencil = false;// = 0x00FF0000;
 	////Lib.application.window.context.gles2.SRC_ALPHA = 1;
 	//GL.enable(GL.BLEND);
 	//GL.enable(GL.ALPHA_TEST);        
@@ -350,7 +351,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	game.scoreTxt.visible = false;
 	
 if (PlayState.SONG.format != "psych_v1_convert")
-	game.endCallback = onEndSong;
+	game.endCallback = ()->{game.endingSong=true;onEndSong();};
 
 	var gog:Int = 0;
 	for (i in playerStrums) {
@@ -772,7 +773,7 @@ function onSpawnNote(daNote) {
 		daNote.mustPress = false;
 		daNote.noteType = daNote.noteData>=6?"vocal": daNote.noteData>=3?"drum":"lead";
 		if (daNote.noteType == "vocal"){
-			debugPrint(daNote.noteData);
+			//debugPrint(daNote.noteData);
 			daNote.noteData += -6;
 		}
 		if (daNote.noteType == "drum")
@@ -786,6 +787,8 @@ function onSpawnNote(daNote) {
 	rawType = daNote.noteData;
 
 	daNote.scale.set(2.9,3.5);
+	//daNote.origins.set();
+	daNote.scrollFactor.set(1,1);
 	daNote.updateHitbox();
 	daNote.copyScale = false;
 	daNote.offsetY = -188;
@@ -864,6 +867,11 @@ function onSpawnNote(daNote) {
 		daNote.scale.set(0.6,2.8);
 		daNote.alpha = 1;
 		daNote.offsetY = -80;
+
+		if (PlayState.SONG.format == "psych_v1_convert"){
+			daNote.offsetX = -105;
+			daNote.offsetY = -180;
+		}
 		// daNote.reloadNote();
 		if (rawType == 0) {
 			daNote.color = 0x008F1F;
@@ -874,8 +882,6 @@ function onSpawnNote(daNote) {
 		if (rawType == 2) {
 			daNote.color = 0x00FF37;
 		}
-		if (daNote.sustainLength>0)
-			daNote.visible = false;
 		if (!daNote.isSustainNote){
 			//daNote.visible = ralsClap;
 
@@ -883,9 +889,21 @@ function onSpawnNote(daNote) {
 			daNote.scale.x = daNote.scale.x*10;
 			daNote.scale.y = daNote.scale.y/2;
 		}
+		if (daNote.sustainLength>0){
+			daNote.visible = false;
+			daNote.correctionOffset = 0;
+			//daNote.offsetY = -80;
+		}
 	}
-	if (daNote.extraData.get("lolTag") != null)
-		daNote.color = 0x000000;
+	//debugPrint(daNote.extraData.get("lolTag"));
+	//if (daNote.extraData.get("lolTag")!=null&&daNote.extraData.get("lolTag").indexOf("death")>=0){
+	//	daNote.color = 0x470000;
+	//	daNote.ignoreNote = true;
+	//	//daNote.missHealth = 0.1;
+	//	daNote.hitCausesMiss = true;
+	//	daNote.hitsound = 'cancelMenu';
+	//	daNote.hitsoundChartEditor = false;
+	//}
 	if (daNote.isSustainNote)
 		daNote.color = daNote.prevNote.color;
 	if (daNote.nextNote == null){
@@ -1148,13 +1166,15 @@ function susiPressed(key:Int,color) {
 }
 var tw = [false,false];
 function noteSplash(key:Int,?mini=false) {
+		tw[key] = mini?tw[key]+1:0;
+		var mim = tw[key]>2;
+		if (mim||!mini)FlxTween.cancelTweensOf(plSplashKris[key][0]);
+		if (!mim && mini) return;
 		plSplashKris[key][0].color = 0xFFFFFF;
 		plSplashKris[key][0].alpha = 0.3;
 		plSplashKris[key][0].scale.x = mini?0.5:1.3;
 		plSplashKris[key][1].scale.x = (mini?0.5:1.3)*2;
-		if (tw[key]==mini||!mini)FlxTween.cancelTweensOf(plSplashKris[key][0]);
-		tw[key] = mini;
-		var t = FlxTween.tween(plSplashKris[key][0], {"scale.x": 0}, 0.18 ,{
+		var t = FlxTween.tween(plSplashKris[key][0], {"scale.x": 0}, mim?0.09:0.18 ,{
             onUpdate:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x*2;},   
             onComplete:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x;}   
         });

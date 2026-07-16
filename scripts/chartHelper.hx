@@ -224,8 +224,10 @@ Helper = ()->{
                 lyricBox = new PsychUIBox((FlxG.width/2)+200, 338, 440, 100, ['lyric','custom settings(x)']);
                 lyricBox.scrollFactor.set();
                 lyricBox.cameras = [state.camUI];
-                lyricText = new FlxText(15, 15, 470, statusLoad[2]?'test '+eventNotes.length+'\ntext 1.2.3':"no vocal\nno lyric", 16);
+                lyricText = new FlxText(10, 5, 470, statusLoad[2]?'test '+eventNotes.length+'\ntext 1.2.3':"no vocal\nno lyric", 30);
                 lyricText.scrollFactor.set();
+                lyricText.font = Paths.getPath("fronts/fnt_main.ttf");
+                lyricText.antialiasing = false;
                 lyricBox.getTab('lyric').menu.add(lyricText);
                 state.add(lyricBox);
             }//else {
