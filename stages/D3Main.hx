@@ -36,8 +36,8 @@ var ralseiNoteCam:FlxCamera;
 var bmpDistant:FlxBackdrop;
 var bmpDistant4:FlxBackdrop;
 var maskBG:FlxSprite = new ModchartSprite(4,-10);
-var plSplashKris:Array = [[new FlxSprite(-37,185),new FlxSprite(-18,315),new FlxSprite(-37,185),new FlxSprite(-18,315)],[new FlxSprite(80,185),new FlxSprite(99,315),new FlxSprite(80,185),new FlxSprite(99,315)]];
-var plSplashSusi:Array = [[new FlxSprite(-37,185),new FlxSprite(-18,315),new FlxSprite(-37,185),new FlxSprite(-18,315)],[new FlxSprite(80,185),new FlxSprite(99,315),new FlxSprite(80,185),new FlxSprite(99,315)]];
+var plSplashKris:Array = [[new FlxSprite(-39,185),new FlxSprite(-20,315),new FlxSprite(-39,185),new FlxSprite(-18,315)],[new FlxSprite(78,185),new FlxSprite(97,315),new FlxSprite(78,185),new FlxSprite(97,315)]];
+var plSplashSusi:Array = [[new FlxSprite(-39,185),new FlxSprite(-20,315),new FlxSprite(-39,185),new FlxSprite(-18,315)],[new FlxSprite(78,185),new FlxSprite(97,315),new FlxSprite(78,185),new FlxSprite(97,315)]];
 var krisMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var susiMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var krisMute:FlxSprite = new ModchartSprite(-55, -195);
@@ -358,9 +358,9 @@ if (PlayState.SONG.format != "psych_v1_convert")
 		//i.downScroll = true;
 		//i.copyScale = false;
 		if (gog<2)
-			i.x = -57;
+			i.x = -55;
 		else
-			i.x = 60;
+			i.x = 62;
 
 		if (gog == 0 || gog == 3) {
 			i.camera = krisNoteCam;
@@ -377,16 +377,16 @@ if (PlayState.SONG.format != "psych_v1_convert")
 			if (gog == 2)
 				i.color = 0xFF07A0;
 		}
-		i.y = ClientPrefs.data.downScroll?428:-100;
+		i.y = ClientPrefs.data.downScroll?415:-100;
 		
 		i.visible = false;
 		gog += 1;
-		var fakeNS = new FlxSprite(i.x+40,i.y);
+		var fakeNS = new FlxSprite(i.x,i.y);
 		//fakeNS.x = 0;
 		//fakeNS.y = 440;
 		fakeNS.loadGraphic(Paths.image("sp/spr_rhythmgame_button_4"));
 		fakeNS.scale.set(2.9,3);
-		//fakeNS.updateHitbox();
+		fakeNS.updateHitbox();
 		fakeNS.camera = i.camera;
 		//fakeNS.cameras = i.cameras;
 		//fakeNS.cameras = [krisNoteCam,game.camHUD];
@@ -782,6 +782,7 @@ function onSpawnNote(daNote) {
 	daNote.noteSplashData.disabled = true;
 	daNote.lateHitMult = 1;
 	daNote.rgbShader.enabled = false;
+	daNote.antialiasing = false;
 	// daNote.rgbShader.mult = 0.5;
 	// daNote.noteHoldSplash.alpha = 0;
 	rawType = daNote.noteData;
@@ -789,18 +790,22 @@ function onSpawnNote(daNote) {
 	daNote.scale.set(2.9,3.5);
 	//daNote.origins.set();
 	daNote.scrollFactor.set(1,1);
-	daNote.updateHitbox();
 	daNote.copyScale = false;
-	daNote.offsetY = -188;
-	daNote.offsetX = -105;
+	//daNote.offsetY = -188;
+	//daNote.offsetX = -105;
+	daNote.offsetY = 4;
+	daNote.offsetX = 6;
 	daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 	
 	if (daNote.isSustainNote) {
-		daNote.scale.set(0.6,3);
-		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
+		daNote.scale.set(1,1);
+		//daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
+		daNote.makeGraphic(20, 0.45 * (50) * (game.songSpeed), 0xFFFFE3E3);
 		//daNote.angle = 90;
-		daNote.offsetX = -5;
-		daNote.offsetY = -98;
+		daNote.offsetX += 40;
+		//daNote.offsetY += -38.5;
+		//daNote.offsetY = -15;
+		daNote.offsetY = -52;
 		//daNote.scale.y = 0.5;
 	}
 	if (daNote.noteType == "lead") {
@@ -811,7 +816,7 @@ function onSpawnNote(daNote) {
 		// daNote.x = 0;
 		if (rawType == 0) {
 			//daNote.rgbShader.r = 0x4CFF9D;
-			daNote.color = 0x4CFF9D;
+			daNote.color = 0x864CFF9D;
 		}
 		if (rawType == 1) {
 			daNote.color = 0x07E2FF;
@@ -849,8 +854,10 @@ function onSpawnNote(daNote) {
 		else if (rawType == 2) {
 			daNote.color = 0x833B00;
 			daNote.alpha = 0.1;
-			daNote.animSuffix = "-alt";
-			daNote.scale.x = daNote.scale.x*6;
+			daNote.animSuffix = "-alt"; 
+			daNote.offsetX += -150;
+			daNote.offsetY += 9;
+			daNote.scale.x = daNote.scale.x*3;
 			daNote.scale.y = daNote.scale.y/2;
 		}
 		//daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_2"));
@@ -864,13 +871,16 @@ function onSpawnNote(daNote) {
 			daNote.noteData = 0;
 		daNote.camera = ralseiNoteCam;
 		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_1"));
-		daNote.scale.set(0.6,2.8);
+		daNote.scale.x = 0.6;
+		daNote.scale.y = 0.45 * (50) * (game.songSpeed) /10;
+		//daNote.scale.set(0.6,2.8);
 		daNote.alpha = 1;
-		daNote.offsetY = -80;
+		//daNote.offsetX += -49;
+		daNote.offsetY += 40;
 
 		if (PlayState.SONG.format == "psych_v1_convert"){
-			daNote.offsetX = -105;
-			daNote.offsetY = -180;
+			//daNote.offsetX = -105;
+			//daNote.offsetY = -180;
 		}
 		// daNote.reloadNote();
 		if (rawType == 0) {
@@ -885,9 +895,10 @@ function onSpawnNote(daNote) {
 		if (!daNote.isSustainNote){
 			//daNote.visible = ralsClap;
 
-			daNote.offsetY = -150;
-			daNote.scale.x = daNote.scale.x*10;
-			daNote.scale.y = daNote.scale.y/2;
+			daNote.offsetX = -42;
+			daNote.offsetY += -5;
+			daNote.scale.x = 6;
+			daNote.scale.y = 1.4;
 		}
 		if (daNote.sustainLength>0){
 			daNote.visible = false;
@@ -908,8 +919,9 @@ function onSpawnNote(daNote) {
 		daNote.color = daNote.prevNote.color;
 	if (daNote.nextNote == null){
 
-		daNote.offsetY += -20;
+		//daNote.offsetY += -20;
 	}
+	daNote.updateHitbox();
 	//debugPrint(daNote.multSpeed);
 	// else { daNote.blockHit = true;}
 	// daNote.noteType = "";
@@ -1173,9 +1185,9 @@ function noteSplash(key:Int,?mini=false) {
 		plSplashKris[key][0].color = 0xFFFFFF;
 		plSplashKris[key][0].alpha = 0.3;
 		plSplashKris[key][0].scale.x = mini?0.5:1.3;
-		plSplashKris[key][1].scale.x = (mini?0.5:1.3)*2;
+		plSplashKris[key][1].scale.x = (mini?0.5:1.3)*1.9;
 		var t = FlxTween.tween(plSplashKris[key][0], {"scale.x": 0}, mim?0.09:0.18 ,{
-            onUpdate:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x*2;},   
+            onUpdate:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x*1.9;},   
             onComplete:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x;}   
         });
 
