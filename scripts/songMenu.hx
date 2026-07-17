@@ -287,20 +287,20 @@ function loadSongsLists() {
 					if (ok) s = s + ",";
 					ok = true;
 					var data:Array<String> = File.getContent(path + "/SongCharts/"+n).split("\n");
-					s = s+'{';
-					s = s+'	"name":"'+data[9]+'",';
-					s = s+'	"nameFile":"",';
-					s = s+'	"bpm":'+data[3]+',';
-					s = s+'	"speed":'+data[4]+',';
-					s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
-					s = s+'	"songPlay":"'+data[1].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
-					s = s+'	"prewCh":"'+data[6].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
-					s = s+'	"prew":"'+data[7].split(".")[0].split("CUSTOM_SONGS/")[1]+'",';
-					s = s+'	"album":'+data[11]+',';
-					s = s+'	"index":"'+n.split("customsong_info")[1].split(".")[0]+'",';
-					s = s+'	"hxModule":null,';
-					s = s+'	"dynamic_solo":false';
-					s = s+'}';
+					s = s+'{\n';
+					s = s+'	"name":"'+data[9]+'",\n';
+					s = s+'	"nameFile":"",\n';
+					s = s+'	"bpm":'+data[3]+',\n';
+					s = s+'	"speed":'+data[4]+',\n';
+					s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
+					s = s+'	"songPlay":"'+data[1].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
+					s = s+'	"prewCh":"'+data[6].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
+					s = s+'	"prew":"'+data[7].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
+					s = s+'	"album":'+data[11]+',\n';
+					s = s+'	"index":"'+n.split("customsong_info")[1].split(".")[0]+'",\n';
+					s = s+'	"hxModule":null,\n';
+					s = s+'	"dynamic_solo":false\n';
+					s = s+'}\n';
 				}
 			}
 			if (ok){
