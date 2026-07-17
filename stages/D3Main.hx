@@ -113,7 +113,7 @@ function onCreate() // PlayState.SONG.bpm = 0.1;
 	//
 	if (isMenuChart)
 		return;
-
+	//Conductor.offset = -1500; fucking Antonymph
 if (PlayState.SONG.format != "psych_v1_convert")
 	for (mod in loadSongsLists()) for (song in mod[1].songs) {
 		if (PlayState.SONG.song == song.name) {

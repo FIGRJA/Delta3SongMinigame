@@ -4,8 +4,13 @@
 - self-lists
     - from gameScript(like **haxe** in Game)
     - from txt charts
+    - from neo charts
+    - from midi charts
 - suppors Enhanced Rhythm Songs
-- support lyric(not finished)
+- suppors Lightner's Live NEO
+- support lyric (not finished)
+- Enhanced ChartEditor (not finished)
+- not support hard mode
 
 # Install
 1. clone **repo** or download (`code` -> `download Zip`) in `mods` folder
@@ -30,7 +35,7 @@
     3. copy `.ogg` files in `mus` folder
 3. ### self-charts
     1. create mod folder in `mods` for this
-    2. copy and edit `songList.json`
+    2. copy and edit `songList.json` and `pack.json`
     3. good luck to understand
 ## ⚠ all songs always loaded without _ModManager in FNF_ , so don't need copy `pack.json`
 
