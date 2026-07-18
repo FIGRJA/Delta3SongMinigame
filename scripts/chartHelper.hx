@@ -161,6 +161,9 @@ var lyricText;
 var lastTime = 0;
 var section = 0;
 var e = 0;
+
+var RedE = new FlxTextFormatMarkerPair(new FlxTextFormat(0xAF0000), "'");
+var Green = new FlxTextFormatMarkerPair(new FlxTextFormat(0x00FF15), "'");
 Helper = ()->{
     try{
         //e += _;
@@ -171,9 +174,32 @@ Helper = ()->{
         ChartingState.GRID_COLUMNS_PER_PLAYER = Math.max((statusLoad[0]?2:0),Math.max((statusLoad[1]?3:0),(statusLoad[2]?3:0)));
         if (Type.getClassName(Type.getClass(FlxG.state))=="states.editors.ChartingState"){
             var state =  FlxG.state;
+            if (lyricBox==null){
+                lyricBox = new PsychUIBox((FlxG.width/2)+200, 338, 440, 100, ['lyric','custom settings(x)']);
+                lyricBox.scrollFactor.set();
+                lyricBox.cameras = [state.camUI];
+                lyricText = new FlxText(10, 5, 470, statusLoad[2]?'test '+eventNotes.length+'\ntext 1.2.3':"no vocal\nno lyric", 30);
+                lyricText.scrollFactor.set();
+                lyricText.font = Paths.getPath("fronts/fnt_main.ttf");
+                lyricText.antialiasing = false;
+                lyricBox.getTab('lyric').menu.add(lyricText);
+                state.add(lyricBox);
+            }
             if (FlxG.sound.music.length<1000){
                 //trace(getSong("mus/"+songI+".ogg"));
                 FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+PlayState.SONG.gameOverLoop+".ogg"),true,"nice Try"));
+                
+                if (FlxG.sound.music.length<1000) {
+                    if (lyricBox!=null){
+                        lyricText.applyMarkup("'err load music \ncheak 'data' -> 'Game Over Loop Music",[RedE]);
+                        lyricText.color = 0xF7EDED;
+                    }
+                    return;
+                }else if (lyricBox!=null&&lyricText.color == 0xF7EDED){
+                    lyricText.applyMarkup("'thanks'",[Green]);
+                    //lyricText.text = "thanks";
+                    lyricText.color = 0xffffff;
+                }
                 state.maxTime = FlxG.sound.music.length;
 			    state.prevEndInput.max = FlxMath.roundDecimal(state.maxTime/1000,2);
                 state._cacheSections();
@@ -219,17 +245,6 @@ Helper = ()->{
                     //FlxG.state.icons[i].changeIcon(icons[i]);
                     state.icons[i].antialiasing=false;
                 }
-            }
-            if (lyricBox==null){
-                lyricBox = new PsychUIBox((FlxG.width/2)+200, 338, 440, 100, ['lyric','custom settings(x)']);
-                lyricBox.scrollFactor.set();
-                lyricBox.cameras = [state.camUI];
-                lyricText = new FlxText(10, 5, 470, statusLoad[2]?'test '+eventNotes.length+'\ntext 1.2.3':"no vocal\nno lyric", 30);
-                lyricText.scrollFactor.set();
-                lyricText.font = Paths.getPath("fronts/fnt_main.ttf");
-                lyricText.antialiasing = false;
-                lyricBox.getTab('lyric').menu.add(lyricText);
-                state.add(lyricBox);
             }//else {
             //    trace (lyricBox.x+" "+lyricBox.y);
             //}

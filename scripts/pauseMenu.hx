@@ -126,15 +126,16 @@ function onCustomSubstateUpdate(name, e) {
 
 		playSnd("splat");
 		timer = 4;
-		FlxTween.tween(pauseBG, {x: -700, alpha: 0}, 60 / Conductor.bpm, {ease: FlxEase.circOut});
+		//FlxTween.tween(pauseBG, {x: -700, alpha: 0}, 60 / Conductor.bpm, {ease: FlxEase.circOut});
+		FlxTween.tween(pauseBG, {x: -700, alpha: 0}, 0.5, {ease: FlxEase.circOut});
 		backTimer.visible = true;
-		FlxTimer.loop(60 / Conductor.bpm, (tim) -> {
+		FlxTimer.loop(0.5, (tim) -> {
 			backTimer.text = 3 - tim;
 			if (tim == 3)
 				CustomSubstate.closeCustomSubstate();
 		}, 4);
 
-		inst.fadeOut(120 / Conductor.bpm, 0, () -> {
+		inst.fadeOut(1.5, 0, () -> {
 			inst.pause();
 		});
 	}

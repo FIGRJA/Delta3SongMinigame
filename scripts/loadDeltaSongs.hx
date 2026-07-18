@@ -123,6 +123,8 @@ function load_all_posible_notes_mid(file:String) {
 					addFastNote(tS,0,0,0,"drum");
 				case 46:
 					addFastNote(tS,0,0,1,"drum");
+				default:
+					trace("unused/support midiTone-"+ n.noteNumber);
 			}
            //trace("c-"+n.channel+" n-"+n.noteNumber+" t-"+n.startTime+" e-"+n.endTime+" o-"+n.velocityOn+" f-"+n.velocityOff);
 			
