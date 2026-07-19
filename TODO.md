@@ -18,6 +18,7 @@
     * [ ]  ? занижение сложности
     * [X]  ноты
     * [ ]  реакция на ghost tapping
+    * [ ]  ритмичность ralsei
   * [ ]  First logIn
     * [ ]  view infinity tutorial
     * [X]  practice
@@ -47,6 +48,8 @@
   * [ ]  ShowRating
   * [ ]  coolScore
   * [ ]  mobile support
+  * [X]  сортировка
+  * [ ]  ? категории
 * [ ]  Chart Editor
   * [ ]  customWindow
     * [X]  show It

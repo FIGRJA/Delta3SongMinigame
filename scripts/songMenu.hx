@@ -207,7 +207,9 @@ function onCreate() {
 	songScoreText.alignment = "right";
 	add(songScoreText);
 
-	for (mod in loadSongsLists())
+
+	for (mod in loadSongsLists()){
+		//if (!list.enabled.contains(mod[2]))continue;
 		for (song in mod[1].songs) {
 			var action = new FlxText(0, 0, 12000, song.name, 100, true);
 			action.font = Paths.getPath("fronts/fnt_main.ttf");
@@ -221,6 +223,7 @@ function onCreate() {
 			add(action);
 			freeAction.push([mod, action, song]);
 		}
+	}
 
 	game.endCallback = function() {
 		debugPrint("bep");
@@ -257,7 +260,11 @@ function readNEOHead(_File) {
 function loadSongsLists() {
 	//return getVar("D3Main").call("loadSongsLists",[]);
 	var result:Array = [];
-	for (i in Mods.getModDirectories()) {
+
+	Mods.updateModList();
+	var list = Mods.parseList();
+	//for (i in Mods.getModDirectories()) {
+	for (i in list.enabled) {
 		var path = "mods/" + i;
 		if (NativeFileSystem.exists(path + "/songList.json") && NativeFileSystem.exists(path + "/pack.json")) {
 			// debugPrint(path);

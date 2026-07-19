@@ -20,7 +20,7 @@ function onCreatePost() {
     notes = game.unspawnNotes.copy();
     game.unspawnNotes = [];
     for (n in notes){
-        if (n.strumTime<2000)
+        if (n.strumTime<2000&&!n.isSustainNote)
             addFastNote((n.strumTime+maxTime)/1000,n.noteData,(n.sustainLength+n.strumTime+maxTime)/1000,n.animSuffix == '-alt',n.noteType);
 
     }
