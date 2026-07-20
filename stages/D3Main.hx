@@ -235,7 +235,7 @@ function onCreatePost() {
 	FlxG.cameras.insert(krisNoteCam, 2, false);
 	FlxG.cameras.insert(ralseiNoteCam, 3, false);
 	var SPCamY = FlxG.random.bool(1)?60:0;
-	var createCamSP = (camera:FlxCamera,inZ:Int,x:Int,y:Int,color)->{
+	var createCamSP = (camera:FlxCamera,inZ:Int,x:Int,y:Int)->{
 		camera.height += SPCamY;
 		camera.scroll.y -= SPCamY/0.35;
 
@@ -267,7 +267,7 @@ function onCreatePost() {
 		//insert(inZ,SPR);
 		insert(inZ,SPCam);
 		//debugPrint(SPCam);
-		return [bitmapData,SPCam,camera,matrix,color];
+		return [bitmapData,SPCam,camera,matrix,0];
 	}
 
 	susiNoteCam.zoom = 0.5;
@@ -279,7 +279,7 @@ function onCreatePost() {
 	//susiNoteCam.scroll.y = 10000;
 	//var cams = createCamSP(susiNoteCam,members.indexOf(game.gfGroup),145,-87);
 	//cams[1].x =145;
-	SPcameras.push(createCamSP(susiNoteCam,members.indexOf(game.gfGroup),145,-87,0xFFE73F3F));
+	SPcameras.push(createCamSP(susiNoteCam,members.indexOf(game.gfGroup),145,-87));
 	
 	krisNoteCam.zoom = 0.5;
 	krisNoteCam.bgColor = 0x00;
@@ -290,7 +290,7 @@ function onCreatePost() {
 	//krisNoteCam.scroll.y = 10000;
 	//var cams = createCamSP(krisNoteCam,members.indexOf(game.boyfriendGroup),295,-87);
 	//cams[1].x =295;
-	SPcameras.push(createCamSP(krisNoteCam,members.indexOf(game.boyfriendGroup),295,-87,0xFF326BE6));
+	SPcameras.push(createCamSP(krisNoteCam,members.indexOf(game.boyfriendGroup),295,-87));
 	
 	ralseiNoteCam.zoom = 0.5;
 	ralseiNoteCam.bgColor = 0x00;
@@ -301,7 +301,7 @@ function onCreatePost() {
 	//ralseiNoteCam.scroll.y = 10000;
 	//var cams = createCamSP(ralseiNoteCam,members.indexOf(game.dadGroup),445,-87);
 	//cams[1].x =445;
-	SPcameras.push(createCamSP(ralseiNoteCam,members.indexOf(game.dadGroup),445,-87,0xFF6CE94D));
+	SPcameras.push(createCamSP(ralseiNoteCam,members.indexOf(game.dadGroup),445,-87));
 
 	//FlxG.stage.alpha = 1;
 	//FlxG.stage.color = 0x00000000;
@@ -388,15 +388,15 @@ if (PlayState.SONG.format != "psych_v1_convert")
 			//i.cameras = [krisNoteCam,game.camHUD];
 			//i.x = -48 + gog * 45;
 			if (gog == 0)
-				i.color = 0x4CFF9D;
+				i.color = 0xFF4CFF9D;
 			if (gog == 3)
-				i.color = 0x07E2FF;
+				i.color = 0xFF07E2FF;
 		} else if (gog == 1 || gog == 2) {
 			i.camera = susiNoteCam;
 			if (gog == 1)
-				i.color = 0xFF073D;
+				i.color = 0xFFFF073D;
 			if (gog == 2)
-				i.color = 0xFF07A0;
+				i.color = 0xFFFF07A0;
 		}
 		i.y = ClientPrefs.data.downScroll?415:-100;
 		
@@ -422,17 +422,27 @@ if (PlayState.SONG.format != "psych_v1_convert")
 		i.y = ClientPrefs.data.downScroll?390:-140;
 		//i.alpha = 0.1;
 		//i.visible = false;
-		if (gog == 0)
+		if (gog == 0){
 			i.x = -90 + 90 * 0;
-		if (gog == 2)
+			i.color = 0xFF008F1F;
+		}
+		if (gog == 2){
 			i.x = -90 + 90 * 1;
-		if (gog == 3)
+			i.color = 0xFFD0FF00;
+		}
+		if (gog == 3){
 			i.x = -90 + 90 * 2;
+			i.color = 0xFF00FF37;
+		}
 		if (gog == 1)
 			i.visible = false;
 			//i.x = -400;
 		gog += 1;
 	}
+	SPcameras[0][4] = playerStrums.members[2].color;
+	SPcameras[1][4] = playerStrums.members[3].color;
+	SPcameras[2][4] = opponentStrums.members[2].color;
+
 
 	plSplashKris[0][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
 	plSplashKris[0][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
@@ -609,7 +619,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 
 	KrisBaner.cameras = [game.camGame];
 	KrisBaner.antialiasing = false;
-	KrisBaner.color = 0x326BE6;
+	KrisBaner.color = SPcameras[1][4];
 	KrisBaner.loadGraphic(Paths.image("sp/spr_bnamekris_0"));
 	//KrisBaner.scale.set(1,1);
 	//KrisBaner.updateHitbox();
@@ -617,13 +627,13 @@ if (PlayState.SONG.format != "psych_v1_convert")
 
 	SusiBaner.cameras = [game.camGame];
 	SusiBaner.antialiasing = false;
-	SusiBaner.color = 0xE73F3F;
+	SusiBaner.color = SPcameras[0][4];
 	SusiBaner.loadGraphic(Paths.image("sp/spr_bnamesusie_0"));
 	insert(members.indexOf(SPcameras[0][1])+1,SusiBaner);
 
 	RalsBaner.cameras = [game.camGame];
 	RalsBaner.antialiasing = false;
-	RalsBaner.color = 0x6CE94D;
+	RalsBaner.color = SPcameras[2][4];
 	RalsBaner.loadGraphic(Paths.image("sp/spr_bnameralsei_0"));
 	insert(members.indexOf(SPcameras[2][1])+1,RalsBaner);
 
@@ -832,16 +842,17 @@ function onSpawnNote(daNote) {
 	if (daNote.noteType == "lead") {
 		daNote.mustPress = true;
 		daNote.noteData = rawType * 3;
+		daNote.color = playerStrums.members[daNote.noteData].color;
 		daNote.camera = krisNoteCam;
 		// daNote.reloadNote();
 		// daNote.x = 0;
-		if (rawType == 0) {
-			//daNote.rgbShader.r = 0x4CFF9D;
-			daNote.color = 0x864CFF9D;
-		}
-		if (rawType == 1) {
-			daNote.color = 0x07E2FF;
-		}
+		//if (rawType == 0) {
+		//	//daNote.rgbShader.r = 0x4CFF9D;
+		//	daNote.color = 0x864CFF9D;
+		//}
+		//if (rawType == 1) {
+		//	daNote.color = 0x07E2FF;
+		//}
 		if (rawType == 2) {
 			daNote.color = 0x07E2FF;
 			daNote.noteData = 3;
@@ -857,6 +868,7 @@ function onSpawnNote(daNote) {
 		//	//daNote.destroy();
 		//	//return;
 		}
+		daNote.color = playerStrums.members[daNote.noteData].color;
 		daNote.camera = susiNoteCam;
 		daNote.gfNote = true;
 		daNote.blockHit = true;
@@ -866,13 +878,13 @@ function onSpawnNote(daNote) {
 		//if (susiRofls)
 		//	daNote.extraData.set("hit", 1000);
 		// daNote.reloadNote();
-		if (rawType == 0) {
-			daNote.color = 0xFF073D;
-		}
-		else if (rawType == 1) {
-			daNote.color = 0xFF07A0;
-		}
-		else if (rawType == 2) {
+		//if (rawType == 0) {
+		//	daNote.color = 0xFF073D;
+		//}
+		//else if (rawType == 1) {
+		//	daNote.color = 0xFF07A0;
+		//}
+		if (rawType == 2) {
 			daNote.color = 0x833B00;
 			daNote.alpha = 0.1;
 			daNote.animSuffix = "-alt"; 
@@ -890,6 +902,7 @@ function onSpawnNote(daNote) {
 		daNote.noteData = rawType + 1;
 		if (rawType == 0)
 			daNote.noteData = 0;
+		daNote.color = opponentStrums.members[daNote.noteData].color;
 		daNote.camera = ralseiNoteCam;
 		daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_1"));
 		daNote.scale.x = 0.6;
@@ -904,15 +917,15 @@ function onSpawnNote(daNote) {
 			//daNote.offsetY = -180;
 		}
 		// daNote.reloadNote();
-		if (rawType == 0) {
-			daNote.color = 0x008F1F;
-		}
-		if (rawType == 1) {
-			daNote.color = 0xD0FF00;
-		}
-		if (rawType == 2) {
-			daNote.color = 0x00FF37;
-		}
+		//if (rawType == 0) {
+		//	daNote.color = 0x008F1F;
+		//}
+		//if (rawType == 1) {
+		//	daNote.color = 0xD0FF00;
+		//}
+		//if (rawType == 2) {
+		//	daNote.color = 0x00FF37;
+		//}
 		if (!daNote.isSustainNote){
 			//daNote.visible = ralsClap;
 
