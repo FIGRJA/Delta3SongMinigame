@@ -17,7 +17,7 @@
 # Install
 
 1. clone **repo** or download (`code` -> `download Zip`) in `mods` folder
-2. copy `mus` in mod root from **deltarune**  folder
+2. copy `mus` in mod root from **deltarune** folder
 3. enjoy
 
 ## how play
@@ -59,3 +59,7 @@ you can open **ChartEditor** in every songs
 ## ⚠ all songs always loaded without _ModManager in FNF_ , so don't need copy `pack.json`
 
 # thank you, TobyFox for deltarune
+
+used sprites , sounds and notechart**Code** from Deltarune chapter 3-5
+
+![](https://github.com/FIGRJA/Delta3SongMinigame/blob/main/images/spr_dw_poster_band_0.png?raw=true)

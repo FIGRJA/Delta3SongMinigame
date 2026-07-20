@@ -242,8 +242,8 @@ var keyboardBinds = Controls.instance.keyboardBinds;
 var keySprites = [
     new FlxText(208,100,90,CustomInt2str(keyboardBinds["note_left"][0] ),30),
     new FlxText(208,125,90,CustomInt2str(keyboardBinds["note_left"][1] ),30),
-    new FlxText(380,100,90,CustomInt2str(keyboardBinds["note_right"][0]),30),
-    new FlxText(380,125,90,CustomInt2str(keyboardBinds["note_right"][1]),30),
+    new FlxText(378,100,90,CustomInt2str(keyboardBinds["note_right"][0]),30),
+    new FlxText(378,125,90,CustomInt2str(keyboardBinds["note_right"][1]),30),
 ];
 
 function onCreate() {

@@ -1,7 +1,9 @@
 import openfl.Lib;
 import openfl.display.BitmapData;
+import openfl.geom.Rectangle;
 import flixel.math.FlxMatrix;
 import flixel.util.FlxTimer;
+import flixel.util.FlxSpriteUtil;
 import flixel.addons.display.FlxBackdrop;
 import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Json;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
@@ -55,6 +57,7 @@ var L2 = MusicBeatState.getVariables().get("L2");
 var L3 = MusicBeatState.getVariables().get("L3");
 var susiRofls:Bool = false;
 var songScore = 0;
+var BPix = 7*1/0.35;
 var SPcameras = [];
 
 /*
@@ -140,7 +143,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 
 			PlayState.SONG.gameOverLoop = song.songMain;
 			PlayState.SONG.gameOverEnd  = song.songPlay;
-			//debugPrint(song.speed);*
+			debugPrint(song.songMain);
 			//PlayState.SONG.speed = 1;
 			//game.songSpeed = 1.1;
 			moddir = mod[2];
@@ -181,11 +184,15 @@ var clear = function() {
 }
 
 function getSong(mod,song) {
-	var name = "mods/"+mod+"/mus/"+song+".ogg";
-	if (NativeFileSystem.exists(name))
-		return name;
+	var name = "/mus/"+song+".ogg";
+	if (song.indexOf(".mp3")>0)
+		name = "/"+song;
+	var Mname = "mods/"+mod+name;
+	//trace(Mname);
+	if (NativeFileSystem.exists(Mname))
+		return Mname;
 	else
-		return Paths.getPath("mus/"+song+".ogg");
+		return Paths.getPath(name);
 	
 }
 
@@ -215,10 +222,10 @@ function onCreatePost() {
 	// game.songSpeed = 1.1;//sos[3]/sos[2]
 	try {
 		//debugPrint("mods/"+moddir+"/mus/"+SONG.songMain+".ogg");
-		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,PlayState.SONG.gameOverLoop),true,Paths.formatToSongPath(PlayState.SONG.gameOverLoop)+'/Inst, PATH: mus'));
-		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,PlayState.SONG.gameOverEnd),true,Paths.formatToSongPath(PlayState.SONG.gameOverEnd)+'/Vocals, PATH: mus'));
+		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,PlayState.SONG.gameOverLoop),true,Paths.formatToSongPath(PlayState.SONG.gameOverLoop)+'//Inst, PATH: mus'));
+		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,PlayState.SONG.gameOverEnd),true,Paths.formatToSongPath(PlayState.SONG.gameOverEnd)+'//Vocals, PATH: mus'));
 		//writeNoteToSong(game.inst.length);
-	} catch (e:Dynamic) {}
+	} catch (e:Dynamic) {trace(e);}
 
 	susiNoteCam = new FlxCamera(361, 55, 120, 390, 1);
 	krisNoteCam = new FlxCamera(578, 55, 120, 390, 1);
@@ -228,25 +235,39 @@ function onCreatePost() {
 	FlxG.cameras.insert(krisNoteCam, 2, false);
 	FlxG.cameras.insert(ralseiNoteCam, 3, false);
 	var SPCamY = FlxG.random.bool(1)?60:0;
-	var createCamSP = (camera:FlxCamera,inZ:Int)->{
+	var createCamSP = (camera:FlxCamera,inZ:Int,x:Int,y:Int,color)->{
 		camera.height += SPCamY;
 		camera.scroll.y -= SPCamY/0.35;
-		var bitmapData:BitmapData = new BitmapData(camera.width*2, camera.height*2, true, 0x00FFFFFF);
+
+		var bitmapData:BitmapData = new BitmapData(camera.width*2+BPix, camera.height*2+BPix, true, 0x00FFFFFF);
 		//bitmapData.draw(camera.canvas);
 		bitmapData.scroll(-camera.width,-camera.height);
-		var SPCam = new FlxSprite(0,-87,bitmapData);
+
+		var SPCam = new FlxSprite(x-(BPix*0.35)/2,y-(BPix*0.35)/2,bitmapData);
 		SPCam.scale.set(0.35,0.35);
 		SPCam.updateHitbox();
 		SPCam.camera = game.camGame;
+
+		//var SPR = new FlxSprite(x,y);
+		//SPR.makeGraphic(camera.width*2+BPix*2, camera.height*2+BPix*2,0x996565,true);
+		////FlxSpriteUtil.drawRect(SPR,0,0,camera.width*2+BPix*2, camera.height*2+BPix*2,0x00,{color: color,thickness: BPix});
+		//SPR.scale.set(0.35,0.35);
+		//SPR.updateHitbox();
+		//SPR.camera = game.camGame;
+
 		var matrix = new FlxMatrix();
-		matrix.translate(camera.width/2, camera.height/2);
+		matrix.translate(camera.width/2+BPix/2, camera.height/2+BPix/2);
+
 		//camera.width *= 0.5;
 		///camera.visible = false;
 		camera.y += 1000;
 		//camera.x += 100;
+
+
+		//insert(inZ,SPR);
 		insert(inZ,SPCam);
 		//debugPrint(SPCam);
-		return [bitmapData,SPCam,camera,matrix];
+		return [bitmapData,SPCam,camera,matrix,color];
 	}
 
 	susiNoteCam.zoom = 0.5;
@@ -256,9 +277,9 @@ function onCreatePost() {
 	//sp1.camera = game.camGame;
 	//add(sp1);
 	//susiNoteCam.scroll.y = 10000;
-	var cams = createCamSP(susiNoteCam,members.indexOf(game.gfGroup));
-	cams[1].x =145;
-	SPcameras.push(cams);
+	//var cams = createCamSP(susiNoteCam,members.indexOf(game.gfGroup),145,-87);
+	//cams[1].x =145;
+	SPcameras.push(createCamSP(susiNoteCam,members.indexOf(game.gfGroup),145,-87,0xFFE73F3F));
 	
 	krisNoteCam.zoom = 0.5;
 	krisNoteCam.bgColor = 0x00;
@@ -267,9 +288,9 @@ function onCreatePost() {
 	//sp2.camera = game.camGame;
 	//add(sp2);
 	//krisNoteCam.scroll.y = 10000;
-	var cams = createCamSP(krisNoteCam,members.indexOf(game.boyfriendGroup));
-	cams[1].x =295;
-	SPcameras.push(cams);
+	//var cams = createCamSP(krisNoteCam,members.indexOf(game.boyfriendGroup),295,-87);
+	//cams[1].x =295;
+	SPcameras.push(createCamSP(krisNoteCam,members.indexOf(game.boyfriendGroup),295,-87,0xFF326BE6));
 	
 	ralseiNoteCam.zoom = 0.5;
 	ralseiNoteCam.bgColor = 0x00;
@@ -278,9 +299,9 @@ function onCreatePost() {
 	//sp3.camera = game.camGame;
 	//add(sp3);
 	//ralseiNoteCam.scroll.y = 10000;
-	var cams = createCamSP(ralseiNoteCam,members.indexOf(game.dadGroup));
-	cams[1].x =445;
-	SPcameras.push(cams);
+	//var cams = createCamSP(ralseiNoteCam,members.indexOf(game.dadGroup),445,-87);
+	//cams[1].x =445;
+	SPcameras.push(createCamSP(ralseiNoteCam,members.indexOf(game.dadGroup),445,-87,0xFF6CE94D));
 
 	//FlxG.stage.alpha = 1;
 	//FlxG.stage.color = 0x00000000;
@@ -592,36 +613,36 @@ if (PlayState.SONG.format != "psych_v1_convert")
 	KrisBaner.loadGraphic(Paths.image("sp/spr_bnamekris_0"));
 	//KrisBaner.scale.set(1,1);
 	//KrisBaner.updateHitbox();
-	insert(members.indexOf(SPcameras[1][1]),KrisBaner);
+	insert(members.indexOf(SPcameras[1][1])+1,KrisBaner);
 
 	SusiBaner.cameras = [game.camGame];
 	SusiBaner.antialiasing = false;
 	SusiBaner.color = 0xE73F3F;
 	SusiBaner.loadGraphic(Paths.image("sp/spr_bnamesusie_0"));
-	insert(members.indexOf(SPcameras[0][1]),SusiBaner);
+	insert(members.indexOf(SPcameras[0][1])+1,SusiBaner);
 
 	RalsBaner.cameras = [game.camGame];
 	RalsBaner.antialiasing = false;
 	RalsBaner.color = 0x6CE94D;
 	RalsBaner.loadGraphic(Paths.image("sp/spr_bnameralsei_0"));
-	insert(members.indexOf(SPcameras[2][1]),RalsBaner);
+	insert(members.indexOf(SPcameras[2][1])+1,RalsBaner);
 
 	KrisIcon.cameras = [game.camGame];
 	KrisIcon.antialiasing = false;
 	KrisIcon.loadGraphic(Paths.image("icons/kris"));
 	//KrisBaner.scale.set(1,1);
 	//KrisBaner.updateHitbox();
-	insert(members.indexOf(SPcameras[1][1]),KrisIcon);
+	insert(members.indexOf(SPcameras[1][1])+1,KrisIcon);
 
 	SusiIcon.cameras = [game.camGame];
 	SusiIcon.antialiasing = false;
 	SusiIcon.loadGraphic(Paths.image("icons/susi"));
-	insert(members.indexOf(SPcameras[0][1]),SusiIcon);
+	insert(members.indexOf(SPcameras[0][1])+1,SusiIcon);
 
 	RalsIcon.cameras = [game.camGame];
 	RalsIcon.antialiasing = false;
 	RalsIcon.loadGraphic(Paths.image("icons/ralsei"));
-	insert(members.indexOf(SPcameras[2][1]),RalsIcon);
+	insert(members.indexOf(SPcameras[2][1])+1,RalsIcon);
 
 	SCORE.font = Paths.getPath("fronts/fnt_main.ttf");
 	SCORE.cameras = [game.camOther];
@@ -1036,10 +1057,12 @@ function onUpdate(e) {
 		susiRofls = true;
 
 	for (m in SPcameras){
-		m[0].scroll(-m[2].width,-m[2].height);
+		//m[0].scroll(-m[2].width,-m[2].height);
 		m[0].disposeImage();
+		//m[0].fillRect(m[4],m[5]);
 		m[0].fillRect(m[0].rect,0x00000000);
 		m[0].draw(m[2].canvas,m[3]);
+		FlxSpriteUtil.drawRect(m[1],0,0,m[0].rect.width, m[0].rect.height,0x00,{color: m[4],thickness: BPix});
 	}
 	
 }
