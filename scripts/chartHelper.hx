@@ -69,7 +69,10 @@ function writeEvents() {
 
 function writeNoteToSong(maxTime) {
 	trace("start write");
-    maxTime = Math.max(game.unspawnNotes[game.unspawnNotes.length-1].strumTime,maxTime);
+    var NoteTime = 0;
+    if (game.unspawnNotes.length>0)
+        NoteTime = game.unspawnNotes[game.unspawnNotes.length-1].strumTime;
+    maxTime = Math.max(NoteTime,maxTime);
     //if (PlayState.SONG.format == "psych_v1_convert") return;
 	//PlayState.SONG.notes[0].sectionNotes = [];
 	//PlayState.SONG.notes[0].bpm = PlayState.SONG.bpm;
@@ -120,7 +123,7 @@ function writeNoteToSong(maxTime) {
     //trace(PlayState.SONG.notes);
     //trace(PlayState.SONG.notes.length);
     //trace(SuperSimpleNotes);
-	//trace("end write");
+	trace("end write");
     return SuperSimpleNotes;
 }
 
@@ -310,22 +313,24 @@ Helper = ()->{
 }
 
 var ema = 0;
+var dis = false;
 function onUpdate(e) {
     ema += e;
-    if (ema>(e*10)&&ema<(e*12)){
+    if (ema>(e*3)&&!dis){
         songEx = false;
         if ((game.songName=="songchart"||true)&&getVar("chartHelper")!=null){
-            trace("removed");
+            trace("UnExtended Editor");
             FlxG.signals.preUpdate.remove(getVar("chartHelper"));
             setVar("chartHelper",null);
             
         }
         if (getVar("chartHelper")==null&&game.songName!="songchart"){
-            trace("added");
+            trace("Extended Editor");
             FlxG.signals.preUpdate.add(Helper);
         }
+        dis = true;
         //trace(game.songName);
-        ema += e;
+        //ema += e;
     }
 }
 function onDestroy() {

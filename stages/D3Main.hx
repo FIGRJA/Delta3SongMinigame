@@ -1,6 +1,7 @@
 import openfl.Lib;
 import openfl.display.BitmapData;
 import openfl.geom.Rectangle;
+import openfl.media.Sound;
 import flixel.math.FlxMatrix;
 import flixel.util.FlxTimer;
 import flixel.util.FlxSpriteUtil;
@@ -57,7 +58,7 @@ var L2 = MusicBeatState.getVariables().get("L2");
 var L3 = MusicBeatState.getVariables().get("L3");
 var susiRofls:Bool = false;
 var songScore = 0;
-var BPix = 7*1/0.35;
+var BPix = 5*1/0.35;
 var SPcameras = [];
 
 /*
@@ -185,14 +186,23 @@ var clear = function() {
 
 function getSong(mod,song) {
 	var name = "/mus/"+song+".ogg";
-	if (song.indexOf(".mp3")>0)
-		name = "/"+song;
 	var Mname = "mods/"+mod+name;
+	if (song.indexOf(".mp3")>0){
+		Mname = "mods/"+mod+"/"+song;
+
+		if (!NativeFileSystem.exists(Mname)) break;
+		var bytes:ByteArray = File.getBytes(Mname);
+
+		var sound:Sound = new Sound();
+		sound.loadPCMFromByteArray(bytes, bytes.length);
+		trace(sound.length);
+		return sound;
+	}
 	//trace(Mname);
 	if (NativeFileSystem.exists(Mname))
-		return Mname;
+		return CacheSystem.loadSound(Mname,true,Paths.formatToSongPath(song));
 	else
-		return Paths.getPath(name);
+		return CacheSystem.loadSound(Paths.getPath(name),true,Paths.formatToSongPath(song));
 	
 }
 
@@ -222,19 +232,19 @@ function onCreatePost() {
 	// game.songSpeed = 1.1;//sos[3]/sos[2]
 	try {
 		//debugPrint("mods/"+moddir+"/mus/"+SONG.songMain+".ogg");
-		game.inst.loadEmbedded(CacheSystem.loadSound(getSong(moddir,PlayState.SONG.gameOverLoop),true,Paths.formatToSongPath(PlayState.SONG.gameOverLoop)+'//Inst, PATH: mus'));
-		game.vocals.loadEmbedded(CacheSystem.loadSound(getSong(moddir,PlayState.SONG.gameOverEnd),true,Paths.formatToSongPath(PlayState.SONG.gameOverEnd)+'//Vocals, PATH: mus'));
+		game.inst.loadEmbedded(getSong(moddir,PlayState.SONG.gameOverLoop));
+		game.vocals.loadEmbedded(getSong(moddir,PlayState.SONG.gameOverEnd));
 		//writeNoteToSong(game.inst.length);
 	} catch (e:Dynamic) {trace(e);}
 
-	susiNoteCam = new FlxCamera(361, 55, 120, 390, 1);
-	krisNoteCam = new FlxCamera(578, 55, 120, 390, 1);
-	ralseiNoteCam = new FlxCamera(796, 55, 120, 390, 1);
+	susiNoteCam = new FlxCamera(361, 55, 117, 390, 1);
+	krisNoteCam = new FlxCamera(578, 55, 117, 390, 1);
+	ralseiNoteCam = new FlxCamera(796, 55, 117, 390, 1);
 
 	FlxG.cameras.insert(susiNoteCam, 1, false);
 	FlxG.cameras.insert(krisNoteCam, 2, false);
 	FlxG.cameras.insert(ralseiNoteCam, 3, false);
-	var SPCamY = FlxG.random.bool(1)?60:0;
+	var SPCamY = FlxG.random.bool(10)?60:0;
 	var createCamSP = (camera:FlxCamera,inZ:Int,x:Int,y:Int)->{
 		camera.height += SPCamY;
 		camera.scroll.y -= SPCamY/0.35;
@@ -715,6 +725,20 @@ if (PlayState.SONG.format != "psych_v1_convert")
 
 }
 
+function onEvent(N,v1,v2,T) {
+	if (N == "Change Scroll Speed"){
+		var T = ()->{
+				var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
+				bmpDistant.spacing.y = distant*4;
+				bmpDistant4.spacing.y = distant;
+			}
+		FlxTween.tween(bmpDistant,{alpha:1},v2,{
+			onUpdate: T,
+			onComplete: T
+		});
+	}
+	
+}
 
 function onDestroy() {
 	FlxG.signals.preDraw.remove(clear);
@@ -817,6 +841,8 @@ function onSpawnNote(daNote) {
 	// daNote.rgbShader.mult = 0.5;
 	// daNote.noteHoldSplash.alpha = 0;
 	rawType = daNote.noteData;
+	trace(rawType);
+	trace(daNote.noteType);
 
 	daNote.scale.set(2.9,3.5);
 	//daNote.origins.set();
@@ -842,7 +868,9 @@ function onSpawnNote(daNote) {
 	if (daNote.noteType == "lead") {
 		daNote.mustPress = true;
 		daNote.noteData = rawType * 3;
-		daNote.color = playerStrums.members[daNote.noteData].color;
+		try{
+			daNote.color = playerStrums.members[daNote.noteData].color;
+		} catch (e:Dynamic) {trace(e);}
 		daNote.camera = krisNoteCam;
 		// daNote.reloadNote();
 		// daNote.x = 0;
@@ -854,9 +882,9 @@ function onSpawnNote(daNote) {
 		//	daNote.color = 0x07E2FF;
 		//}
 		if (rawType == 2) {
-			daNote.color = 0x07E2FF;
-			daNote.noteData = 3;
+			daNote.color = 0x132022;
 			daNote.animSuffix = '-alt';
+			daNote.noteData = 3;
 		}
 		// if (krisMute.alpha == 1)daNote.ignoreNote = true;
 		//daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_2"));
@@ -1080,6 +1108,7 @@ function onUpdate(e) {
 	
 }
 
+
 function onUpdatePost(e){
 
     //var context = Lib.current.stage.context3D;
@@ -1220,9 +1249,9 @@ function noteSplash(key:Int,?mini=false) {
 		if (!mim && mini) return;
 		plSplashKris[key][0].color = 0xFFFFFF;
 		plSplashKris[key][0].alpha = 0.3;
-		plSplashKris[key][0].scale.x = mini?0.5:1.3;
-		plSplashKris[key][1].scale.x = (mini?0.5:1.3)*1.9;
-		var t = FlxTween.tween(plSplashKris[key][0], {"scale.x": 0}, mim?0.09:0.18 ,{
+		plSplashKris[key][0].scale.x = mini?0.6:1.4;
+		plSplashKris[key][1].scale.x = (mini?0.6:1.4)*1.9;
+		var t = FlxTween.tween(plSplashKris[key][0], {"scale.x": 0}, mim?0.07:0.18 ,{
             onUpdate:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x*1.9;},   
             onComplete:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x;}   
         });
@@ -1230,7 +1259,7 @@ function noteSplash(key:Int,?mini=false) {
 		//debugPrint(t);
 }
 
-function onKeyPress(key:Int) {
+function onKeyPresss(key:Int) {
 	if (key==0){
 		game.boyfriend.playAnim("singLEFT");
 	} else

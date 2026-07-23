@@ -59,6 +59,7 @@
       * [ ]  split OppHitSound
       * [ ]  preview characters
       * [ ]  save as ***other* file/s**
+      * [ ]  conver from DLLFRE
   * [X]  3 players
   * [X]  3 normal icons players
   * [X]  load music from mus
@@ -74,3 +75,22 @@
   * [X]  ERS (txt)
   * [X]  NEO
   * [X]  GameScript (like haxeScript/Iris)
+* [ ]  PsychCovector
+  * [ ]  ExtendCE
+    * [ ]  functions
+    * [X]  self-remove
+    * [ ]  convert
+      * [X]  Psych2stage
+      * [ ]  Stage2Psych
+  * [ ]  events
+    * [X]  changeSpeed
+    * [ ]  changeBPM
+    * [ ]  changePerBPM
+    * [ ]  cusomanimations
+    * [X]  lyric
+  * [ ]  notes
+    * [X]  convert NoteData
+    * [ ]  fixLongSize
+  * [ ]  example mod
+    * [ ]  GSAF5
+    * [ ]  ? port DDLFRE CMMM

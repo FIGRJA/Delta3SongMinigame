@@ -64,9 +64,9 @@ function onCreate() {
 }
 function onCreatePost() {
     setVF("D3Main","getShader");
-    sideTerminalB2 = getShader("Dglsl/shd_crt2");
+    sideTerminalB2 = getShader("Dglsl/shd_crt3");
 	sideTerminalB2.setFloat("aberation_amount"	,0);
-    sideTerminalB2.setFloatArray("resolution",[342,221]);
+    sideTerminalB2.setFloatArray("resolution",[1280,720]);
     
 }
 
@@ -161,7 +161,7 @@ function onCustomSubstateDestroy(n) {
 }
 
 function genText_(str,a,?x=0,?y=0,?size=60) {
-    var text = new FlxText(0, 0, 0, str, 15*4, true);
+    var text = new FlxText(0, 0, 0, str, 15*2, true);
 	text.font = Paths.getPath("fronts/fnt_main.ttf");
 	text.cameras = [camEnd];
 	text.camera= camEnd;
@@ -317,7 +317,7 @@ function TW(a) {
         //backed.visible = false;
         //FlxTimer.loop(60/1000,(v)->{camEnd.alpha=v/(2*60*1000);},60*1000*2);
         //FlxTween.num(1,0,2,);
-        new FlxTimer().start(0.80*l,()->{MusicBeatState.resetState();});
+        new FlxTimer().start(0.80*l,()->{camEnd.filters = [];MusicBeatState.resetState();});
     }
 
 
