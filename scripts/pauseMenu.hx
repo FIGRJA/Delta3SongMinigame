@@ -201,6 +201,7 @@ function onCustomSubstateDestroy(name) {
 		act.destroy();
 	freeAction = [];
 	pauseBG.x = -700;
+	curAction = 0;
 }
 
 function onDestroy() {}

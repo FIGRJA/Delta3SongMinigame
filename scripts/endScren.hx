@@ -47,6 +47,7 @@ function playSnd(Strs) {
     }else{
         soundV.volume = 1;
     }
+    soundV.volume *= FlxG.sound.volume;
     snd[1].play(0,0,soundV);
 }
 setVar("endScreen",this);
@@ -161,7 +162,7 @@ function onCustomSubstateDestroy(n) {
 }
 
 function genText_(str,a,?x=0,?y=0,?size=60) {
-    var text = new FlxText(0, 0, 0, str, 15*2, true);
+    var text = new FlxText(0, 0, 0, str, 15*4, true);
 	text.font = Paths.getPath("fronts/fnt_main.ttf");
 	text.cameras = [camEnd];
 	text.camera= camEnd;

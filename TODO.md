@@ -79,9 +79,9 @@
   * [ ]  ExtendCE
     * [ ]  functions
     * [X]  self-remove
-    * [ ]  convert
+    * [X]  convert
       * [X]  Psych2stage
-      * [ ]  Stage2Psych
+      * [ ]  Stage2Psych // ingoring
   * [ ]  events
     * [X]  changeSpeed
     * [X]  changeBPM/PerBPM

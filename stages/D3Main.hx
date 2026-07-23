@@ -113,6 +113,9 @@ var moddir = "";
 var shader_;
 var statusLoad;
 setVar("D3Main",this);
+function getLV(L) {
+	return this.interp.locals.get(L).r;	
+}
 function onCreate() // PlayState.SONG.bpm = 0.1;
 {
 	//
@@ -142,7 +145,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 			Conductor.bpm = song.bpm;
 			//PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
 			PlayState.SONG.speed = song.speed!=null?(4/450 * song.speed):1.1;
-
+			sectionBeats = song.sectionBeats!=null?song.sectionBeats:4;
 			PlayState.SONG.gameOverLoop = song.songMain;
 			PlayState.SONG.gameOverEnd  = song.songPlay;
 			debugPrint(song.songMain);
@@ -741,10 +744,13 @@ function onEvent(N,v1,v2,T) {
 	
 }
 function onSectionHit(){
-	sectionBeats = PlayState.SONG.notes[game.curSection].sectionBeats;
-	var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
-	bmpDistant.spacing.y = distant*sectionBeats-10;
-	bmpDistant4.spacing.y = distant-10;
+	if (PlayState.SONG.notes.length>game.curSection) {
+		sectionBeats = PlayState.SONG.notes[game.curSection].sectionBeats;
+		var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
+		bmpDistant.spacing.y = distant*sectionBeats-10;
+		bmpDistant4.spacing.y = distant-10;
+	}
+	//game.stepsToDo = sectionBeats*4;
 }
 
 function onDestroy() {
@@ -889,7 +895,7 @@ function onSpawnNote(daNote) {
 		//	daNote.color = 0x07E2FF;
 		//}
 		if (rawType == 2) {
-			daNote.color = 0x132022;
+			daNote.color = 0x09C0D8;
 			daNote.animSuffix = '-alt';
 			daNote.noteData = 3;
 		}

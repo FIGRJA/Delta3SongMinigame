@@ -73,14 +73,22 @@ function writeNoteToSong(maxTime) {
     if (game.unspawnNotes.length>0)
         NoteTime = game.unspawnNotes[game.unspawnNotes.length-1].strumTime;
     maxTime = Math.max(NoteTime,maxTime);
-    //if (PlayState.SONG.format == "psych_v1_convert") return;
+    if (PlayState.SONG.format == "psych_v1_convert") {
+        return PlayState.SONG.notes.copy();
+    }
+    var PB = getVar("D3Main").get("getLV")("sectionBeats");
+    ///trace(Reflect.fields(this));
+    ///trace(Reflect.fields(this.interp));
+    ///trace(Reflect.fields(this.interp.locals.get("PB")));
+    ///trace(this.interp.locals.get("PB").r);
+    //trace(getVar("D3Main").get("getThis")().interp.locals);
 	//PlayState.SONG.notes[0].sectionNotes = [];
 	//PlayState.SONG.notes[0].bpm = PlayState.SONG.bpm;
 	//var emty = 
     var SuperSimpleNotes = [];
 	//trace(emty);
 	//var notes:Int = 0;
-	var section:Int = 1 / PlayState.SONG.bpm * 60 * 1000 * 4;
+	var section:Int = 1 / PlayState.SONG.bpm * 60 * 1000 * PB;
     //trace(Math.round((maxTime / section)));
     for (i in 0...Std.int((maxTime / section))+2)
         SuperSimpleNotes[i] = {
@@ -90,7 +98,7 @@ function writeNoteToSong(maxTime) {
             gfSection: false,
             altAnim: false,
             changeBPM: false,
-            sectionBeats: 4
+            sectionBeats: PB
         };
 	for (i in 0...game.unspawnNotes.length) {
 		var note = game.unspawnNotes[i];
@@ -114,7 +122,7 @@ function writeNoteToSong(maxTime) {
                 gfSection: false,
                 altAnim: false,
                 changeBPM: false,
-                sectionBeats: 4
+                sectionBeats: PB
             };
 		}
 		SuperSimpleNotes[Std.int((note.strumTime / section))].sectionNotes.push(simpleNote);
