@@ -59,6 +59,7 @@ var L3 = MusicBeatState.getVariables().get("L3");
 var susiRofls:Bool = false;
 var songScore = 0;
 var BPix = 5*1/0.35;
+var sectionBeats = 4;
 var SPcameras = [];
 
 /*
@@ -575,7 +576,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 
 	//var distant = 60 / Conductor.bpm * 450;
 	var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
-	bmpDistant = new FlxBackdrop(null, 0x10, 0, (distant*4)-10); // 0x10 = Y
+	bmpDistant = new FlxBackdrop(null, 0x10, 0, (distant*sectionBeats)-10); // 0x10 = Y
 	// bmpDistant.y = 0;
 	bmpDistant.x = -200;
 	// bmpDistant.scale.y = 1;
@@ -729,8 +730,8 @@ function onEvent(N,v1,v2,T) {
 	if (N == "Change Scroll Speed"){
 		var T = ()->{
 				var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
-				bmpDistant.spacing.y = distant*4;
-				bmpDistant4.spacing.y = distant;
+				bmpDistant.spacing.y = distant*sectionBeats-10;
+				bmpDistant4.spacing.y = distant-10;
 			}
 		FlxTween.tween(bmpDistant,{alpha:1},v2,{
 			onUpdate: T,
@@ -738,6 +739,12 @@ function onEvent(N,v1,v2,T) {
 		});
 	}
 	
+}
+function onSectionHit(){
+	sectionBeats = PlayState.SONG.notes[game.curSection].sectionBeats;
+	var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
+	bmpDistant.spacing.y = distant*sectionBeats-10;
+	bmpDistant4.spacing.y = distant-10;
 }
 
 function onDestroy() {
@@ -1079,8 +1086,12 @@ function onUpdate(e) {
 		}
 	}
 
-	bmpDistant.y =  (ClientPrefs.data.downScroll?1:-1)*(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 4000)) * (game.songSpeed/game.playbackRate)) + (ClientPrefs.data.downScroll?440:-100) ;
-	bmpDistant4.y = (ClientPrefs.data.downScroll?1:-1)*(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000)) * (game.songSpeed/game.playbackRate)) + (ClientPrefs.data.downScroll?440:-100) ;
+	var DY = (ClientPrefs.data.downScroll?1:-1)*
+			(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000 * sectionBeats))*
+			(game.songSpeed/game.playbackRate))+
+			(ClientPrefs.data.downScroll?440:-100);
+	bmpDistant.y = DY;
+	bmpDistant4.y = DY;
 
 	if (susiRofls) {
 		game.gf.stunned = true;

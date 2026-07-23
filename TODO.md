@@ -84,8 +84,7 @@
       * [ ]  Stage2Psych
   * [ ]  events
     * [X]  changeSpeed
-    * [ ]  changeBPM
-    * [ ]  changePerBPM
+    * [X]  changeBPM/PerBPM
     * [ ]  cusomanimations
     * [X]  lyric
   * [ ]  notes
@@ -94,3 +93,13 @@
   * [ ]  example mod
     * [ ]  GSAF5
     * [ ]  ? port DDLFRE CMMM
+
+## issuse
+
+* broke censLyric
+* susie noteAnimations
+* unknow alt-0-Kris
+* unknow alt-1-susie
+* unknow alt-any-Ralsei
+* invisible soundwave when 1 player
+* broke firstNote in sections
