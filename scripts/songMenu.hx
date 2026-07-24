@@ -19,9 +19,9 @@ var isAllowed:Bool = PlayState.SONG.song == "songChart";
 var practicN = "practice"+"deltarun 3 MiniGame"+"play";
 //debugPrint(Highscore.songScores.get(practicN));
 if ((!Highscore.songScores.exists(practicN)||Highscore.songScores.get(practicN)<1)&&isAllowed){
-	PlayState.SONG.song = "practice";//song name
+	PlayState.SONG.song = "tutorialus    (infinity)";//song name
 	PlayState.SONG.format = "deltarun 3 MiniGame" +"^"+ "play";// mod name + dificult
-	game.songName = "practice";
+	game.songName = "tutorialus----(infinity)";
 	isAllowed = false;
 	//MusicBeatState.resetState();
 }

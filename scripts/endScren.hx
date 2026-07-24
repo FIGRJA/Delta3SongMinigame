@@ -66,8 +66,9 @@ function onCreate() {
 function onCreatePost() {
     setVF("D3Main","getShader");
     sideTerminalB2 = getShader("Dglsl/shd_crt3");
-	sideTerminalB2.setFloat("aberation_amount"	,0);
-    sideTerminalB2.setFloatArray("resolution",[1280,720]);
+	//sideTerminalB2.setFloat("aberation_amount"	,0.8);
+	sideTerminalB2.setFloat("noise_amount"	,0.007);
+    sideTerminalB2.setFloatArray("resolution",[1280/2,720/3.75]);
     
 }
 
@@ -119,7 +120,9 @@ function onCustomSubstateCreatePost(n) {
         backed.visible = false;
         new FlxTimer().start(3,()->{
             backed.visible = true;
-            FlxTween.num(5, 0.88, 2,  null,num -> sideTerminalB2.data.aberation_amount.value = [num] );
+            FlxTween.num(9, 0.88, 3,  null,num -> sideTerminalB2.data.aberation_amount.value = [num] );
+            //FlxTween.num(0.3, 0.07, 2,  null,num -> sideTerminalB2.data.noise_amount.value = [num] );
+            sideTerminalB2.setFloat("noise_amount"	,0.07);
         });
         new FlxTimer().start(5,()->{
             TW(0);
@@ -223,8 +226,9 @@ function TW(a) {
                 RT[0].visible=true;
                 RT[1].visible=true;
                 playSnd("closet_impact");
-                if (isShader) 
-                    FlxTween.num(2, 0.22, 2,  null,num -> sideTerminalB2.data.aberation_amount.value = [num] );
+                if (isShader) {
+                    FlxTween.num(3, 0.22, 2,  null,num -> sideTerminalB2.data.aberation_amount.value = [num] );
+                }
             },
             ease: FlxEase.elasticOut,
             onComplete: (_) -> {
@@ -313,11 +317,19 @@ function TW(a) {
         FlxTween.num(1, 0, 0.65*l,  null,num -> backed.alpha = num );
         FlxTween.num(-100, -200*l, 0.5*l,  null,num -> backed.velocity.x = num );
         FlxTween.num(100, 200*l, 0.5*l,  null,num -> backed.velocity.y = num );
+        if (isShader) 
+            FlxTween.num(0.07, 0.8, 0.5*l,  null,num -> sideTerminalB2.data.noise_amount.value = [num] );
         for (t in textAr)
             FlxTween.num(1, 0, 0.65*l,  null,num -> t[0].alpha = num );
         //backed.visible = false;
         //FlxTimer.loop(60/1000,(v)->{camEnd.alpha=v/(2*60*1000);},60*1000*2);
         //FlxTween.num(1,0,2,);
+        if (isShader) 
+            new FlxTimer().start(0.60*l,()->{
+                game.camOther.scroll.x = 10000;
+                FlxTween.num(0.8, 0.1, 0.2*l,  null,num -> sideTerminalB2.data.noise_amount.value = [num] );
+                FlxTween.num(1, 0, 0.2*l,  null,num -> camEnd.alpha = num );
+            });
         new FlxTimer().start(0.80*l,()->{camEnd.filters = [];MusicBeatState.resetState();});
     }
 

@@ -19,8 +19,12 @@
     * [X]  ноты
     * [ ]  реакция на ghost tapping
     * [ ]  ритмичность ralsei
+    * [ ]  combo system
+      * [X]  +10 score
+      * [ ]  animate
   * [ ]  First logIn
-    * [ ]  view infinity tutorial
+    * [X]  view infinity tutorial
+    * [ ]  view cpuTapping
     * [X]  practice
     * [X]  view controls
   * [ ]  end Screen
@@ -103,3 +107,4 @@
 * unknow alt-any-Ralsei
 * invisible soundwave when 1 player
 * broke firstNote in sections
+* unknow how load mp3

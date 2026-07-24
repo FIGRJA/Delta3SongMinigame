@@ -25,6 +25,7 @@ function setVF(Var,Fun) {
 setVF("songMenu","loadSongsLists");
 setVF("load_delta_notes","loadSong");
 setVF("load_delta_notes","writeNoteToSong");
+setVF("load_delta_notes","addFastNote");
 
 var isMenuChart:Bool = PlayState.SONG.song == "songChart";
 var susiNoteCam:FlxCamera;
@@ -116,6 +117,9 @@ setVar("D3Main",this);
 function getLV(L) {
 	return this.interp.locals.get(L).r;	
 }
+function setLV(L,r) {
+	this.interp.locals.set(L,{cons: false,r: r});	
+}
 function onCreate() // PlayState.SONG.bpm = 0.1;
 {
 	//
@@ -192,15 +196,15 @@ function getSong(mod,song) {
 	var name = "/mus/"+song+".ogg";
 	var Mname = "mods/"+mod+name;
 	if (song.indexOf(".mp3")>0){
-		Mname = "mods/"+mod+"/"+song;
+		Mname = "mods/"+mod+"/"+song;//not work ))
 
-		if (!NativeFileSystem.exists(Mname)) break;
-		var bytes:ByteArray = File.getBytes(Mname);
-
-		var sound:Sound = new Sound();
-		sound.loadPCMFromByteArray(bytes, bytes.length);
-		trace(sound.length);
-		return sound;
+		//if (!NativeFileSystem.exists(Mname)) break;
+		//var bytes:ByteArray = File.getBytes(Mname);
+//
+		//var sound:Sound = new Sound();
+		//sound.loadPCMFromByteArray(bytes, bytes.length);
+		//trace(sound.length);
+		//return sound;
 	}
 	//trace(Mname);
 	if (NativeFileSystem.exists(Mname))
@@ -214,17 +218,34 @@ function onCreatePost() {
 	if (isMenuChart)
 		return;
 
-	//if (PlayState.SONG.format == "psych_v1_convert"){
-	//	for (note in game.unspawnNotes){
-	//		if (!note.mustPress) note.noteType+=3;
-	//		note.mustPress = true;
-	//		note.noteType = note.noteData>5?"vocal": note.noteData>2?"drum":"lead";
-	//		if (note.noteType == "vocal")
-	//			note.noteData += -6;
-	//		if (note.noteType == "drum")
-	//			note.noteData += -3;
-	//	}
-	//}
+		//trace(PlayState.SONG.format);
+	if (PlayState.SONG.format == "psych_v1_convert"){
+		var susAR = [];
+		for (daNote in game.unspawnNotes){
+			daNote.mustPress = false;
+			daNote.noteType = daNote.noteData>=6?"vocal": daNote.noteData>=3?"drum":"lead";
+			
+			if (daNote.noteType == "vocal")
+				daNote.noteData += -6;
+			if (daNote.noteType == "drum")
+				daNote.noteData += -3;
+
+			if (daNote.sustainLength>0)
+				susAR.push(daNote);
+		}
+		for (daNote in susAR){
+			for (n in daNote.tail){
+				n.kill();
+				game.unspawnNotes.remove(n);
+			}
+			game.unspawnNotes.remove(daNote);
+			addFastNote(daNote.strumTime/1000,daNote.noteData,daNote.strumTime/1000+daNote.sustainLength/1000,daNote.animSuffix == '-alt',daNote.noteType);
+			daNote.kill();
+		}
+		game.unspawnNotes.sort(function(a, b) {
+			return a.strumTime - b.strumTime;
+		});
+	}
 	//game.moveCamera(false);
 	//game.camFollow.y = 0;
 	//game.camHUD.scroll.x += 100;
@@ -248,7 +269,7 @@ function onCreatePost() {
 	FlxG.cameras.insert(susiNoteCam, 1, false);
 	FlxG.cameras.insert(krisNoteCam, 2, false);
 	FlxG.cameras.insert(ralseiNoteCam, 3, false);
-	var SPCamY = FlxG.random.bool(10)?60:0;
+	var SPCamY = FlxG.random.bool(1)?60:0;
 	var createCamSP = (camera:FlxCamera,inZ:Int,x:Int,y:Int)->{
 		camera.height += SPCamY;
 		camera.scroll.y -= SPCamY/0.35;
@@ -385,8 +406,8 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	game.iconP2.visible = false;
 	game.scoreTxt.visible = false;
 	
-if (PlayState.SONG.format != "psych_v1_convert")
-	game.endCallback = ()->{game.endingSong=true;onEndSong();};
+	if (PlayState.SONG.format != "psych_v1_convert")
+		game.endCallback = ()->{game.endingSong=true;onEndSong();};
 
 	var gog:Int = 0;
 	for (i in playerStrums) {
@@ -435,7 +456,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 		i.camera = ralseiNoteCam;
 		i.y = ClientPrefs.data.downScroll?390:-140;
 		//i.alpha = 0.1;
-		//i.visible = false;
+		i.visible = false;
 		if (gog == 0){
 			i.x = -90 + 90 * 0;
 			i.color = 0xFF008F1F;
@@ -453,6 +474,11 @@ if (PlayState.SONG.format != "psych_v1_convert")
 			//i.x = -400;
 		gog += 1;
 	}
+	var fakeNSR = new FlxSprite(opponentStrums.members[0].x+30,opponentStrums.members[0].y+40);
+	fakeNSR.makeGraphic(250,7,0xFFDA7727);
+	fakeNSR.camera = ralseiNoteCam;
+	insert(1,fakeNSR);
+
 	SPcameras[0][4] = playerStrums.members[2].color;
 	SPcameras[1][4] = playerStrums.members[3].color;
 	SPcameras[2][4] = opponentStrums.members[2].color;
@@ -694,6 +720,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 	if (!statusLoad[0]&&FlxG.random.bool(42)){
 		game.boyfriend.visible = false;
 		krisNoteCam.visible = false;
+		SPcameras[1][1].visible = false;
 		L1.visible = false;
 		KrisBaner.visible = false;
 		KrisIcon.visible = false;
@@ -701,6 +728,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 	if (!statusLoad[1]&&!FlxG.random.bool(42)){
 		game.gf.visible = false;
 		susiNoteCam.visible = false;
+		SPcameras[0][1].visible = false;
 		L3.visible = false;
 		SusiBaner.visible = false;
 		SusiIcon.visible = false;
@@ -708,6 +736,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 	if (!statusLoad[2]&&FlxG.random.bool(42)){
 		game.dad.visible = false;
 		ralseiNoteCam.visible = false;
+		SPcameras[2][1].visible = false;
 		L2.visible = false;
 		RalsBaner.visible = false;
 		RalsIcon.visible = false;
@@ -836,17 +865,8 @@ var ralsClap = false;
 game.totalColumns = 9;
 function onSpawnNote(daNote) {
 	//debugPrint(daNote.noteData);
-	if (PlayState.SONG.format == "psych_v1_convert"){
-		//if (!daNote.mustPress) daNote.noteType+=4;
-		daNote.mustPress = false;
-		daNote.noteType = daNote.noteData>=6?"vocal": daNote.noteData>=3?"drum":"lead";
-		if (daNote.noteType == "vocal"){
-			//debugPrint(daNote.noteData);
-			daNote.noteData += -6;
-		}
-		if (daNote.noteType == "drum")
-			daNote.noteData += -3;
-	}
+	//if (PlayState.SONG.format == "psych_v1_convert"){
+	//}
 	daNote.noteSplashData.disabled = true;
 	daNote.lateHitMult = 1;
 	daNote.rgbShader.enabled = false;
@@ -863,7 +883,7 @@ function onSpawnNote(daNote) {
 	daNote.copyScale = false;
 	//daNote.offsetY = -188;
 	//daNote.offsetX = -105;
-	daNote.offsetY = 4;
+	daNote.offsetY = 6;
 	daNote.offsetX = 6;
 	daNote.loadGraphic(Paths.image("sp/spr_rhythmgame_note_0"));
 	
@@ -875,7 +895,8 @@ function onSpawnNote(daNote) {
 		daNote.offsetX += 40;
 		//daNote.offsetY += -38.5;
 		//daNote.offsetY = -15;
-		daNote.offsetY = -52;
+		//daNote.offsetY += ClientPrefs.data.downScroll?-21:0;
+		daNote.offsetY += ClientPrefs.data.downScroll?-58:0;
 		//daNote.scale.y = 0.5;
 	}
 	if (daNote.noteType == "lead") {
@@ -971,9 +992,10 @@ function onSpawnNote(daNote) {
 			//daNote.visible = ralsClap;
 
 			daNote.offsetX = -42;
-			daNote.offsetY += -5;
+			daNote.offsetY += -9;
 			daNote.scale.x = 6;
 			daNote.scale.y = 1.4;
+			daNote.noteData = 2;
 		}
 		if (daNote.sustainLength>0){
 			daNote.visible = false;

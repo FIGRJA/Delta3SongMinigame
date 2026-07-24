@@ -73,7 +73,7 @@ function writeNoteToSong(maxTime) {
     if (game.unspawnNotes.length>0)
         NoteTime = game.unspawnNotes[game.unspawnNotes.length-1].strumTime;
     maxTime = Math.max(NoteTime,maxTime);
-    if (PlayState.SONG.format == "psych_v1_convert") {
+    if (PlayState.SONG.notes.length>2) {
         return PlayState.SONG.notes.copy();
     }
     var PB = getVar("D3Main").get("getLV")("sectionBeats");

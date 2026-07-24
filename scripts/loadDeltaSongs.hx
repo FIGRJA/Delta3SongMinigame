@@ -9,7 +9,7 @@ import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 
 // import std.StringTools;
 
-var curStepCrochet:Int;
+var curStepCrochet:Int = 50;
 var DeltaRuneCode:HScript;
 var songTxt:FlxText;
 var StausLoad = [true,true,true]; // lead,drums,vocal,lyric
@@ -30,7 +30,7 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 	// PlayState.instance.clearNotesBefore(0);
 	// PlayState.instance.setSongTime(0);
 	//curStepCrochet = 60 / PlayState.SONG.bpm * 1000 / 4.0;
-	curStepCrochet = 50;
+	//curStepCrochet = 50;
 	// var file:String = getVar("load_delta_notes");
 	// var index = getVar("load_delta_notes_index");
 	if (file != null) {
@@ -312,7 +312,7 @@ function scr_rhythmgame_addnote(timming, types, sus, ?spec ) {
 	game.unspawnNotes.push(daNote);
 
 	if (sus > 0) {
-		var roundSus:Int = Math.round(sus / curStepCrochet);
+		var roundSus:Int = Std.int(sus / curStepCrochet);
 		// debugPrint(curStepCrochet);
 		for (susNote in 0...roundSus) {
 			var boOld:Note = unspawnNotes[Std.int(unspawnNotes.length - 1)];

@@ -57,9 +57,9 @@ void DoFog(inout vec4 SrcColour, float fogval)
 uniform vec2 resolution ;//
 const float scan_line_amount = 0.3;
 const float warp_amount = 0.7;
-const float noise_amount = 0.06;
+uniform float noise_amount ;//= 0.07;
 const float interference_amount = 0.25;
-const float grille_amount = 0.3;
+const float grille_amount = 0.6;
 const float grille_size = .2;
 const float vignette_amount = 0.7;
 const float vignette_intensity = 0.6;

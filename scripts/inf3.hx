@@ -1,20 +1,32 @@
 if (PlayState.SONG.stage!="D3Main") return;
 //package scripts;
+import backend.Controls;
+var Control = Controls.instance;
+
 
 var isAllowed:Bool = game.songName == "tutorialus----(infinity)";
 
 
-function setVF(Var,Fun) {
+function setVF(Var,Fun,?AsFun) {
+    AsFun = AsFun==null?Fun:AsFun;
 	if (getVar(Var).exists(Fun))
-		this.set(Fun,getVar(Var).get(Fun));
+		this.set(AsFun,getVar(Var).get(Fun));
 	
 }
 
 var notes =[];
 function onCreatePost() {
+    isAllowed = game.songName == "tutorialus----(infinity)";
     if (!isAllowed)
 		return;
+
+	game.cpuControlled = true;
     setVF("load_delta_notes","addFastNote");
+    setVF("D3Main","onCreate","reloadSongs");
+    setVF("D3Main","onSectionHit","reloadBPM");
+    setVF("D3Main","getLV","getLVD3");
+    setVF("D3Main","setLV","setLVD3");
+    setVF("D3Main","getSong");
     var maxTime = 32842;
     debugPrint("hi test 3 "+maxTime);
     notes = game.unspawnNotes.copy();
@@ -43,9 +55,10 @@ function onCreatePost() {
 function onStartCountdowns() {
     if (!isAllowed)
 		return;
-setVF("D3Main","onCreate");
+    setLVD3("susiRofls",false);
+//setVF("D3Main","onCreate");
     //var maxTime = game.inst.length;
-    debugPrint(game.unspawnNotes.length);
+    //debugPrint(game.unspawnNotes.length);
     notes = game.unspawnNotes.copy();
     //notes = game.unspawnNotes.copy();
     //game.endCallback = onEndSong;
@@ -53,38 +66,84 @@ setVF("D3Main","onCreate");
     game.startCountdown();
     Conductor.songPosition = -3000;
 }
+var kek = false;
 function onUpdate(e) {
+    isAllowed = game.songName == "tutorialus----(infinity)";
     if (!isAllowed)
 		return;
     //debugPrint( game.inst.length);
     if (FlxG.sound.music.time +(e*1000)> game.inst.length)
         onEndSong();
-}
-function onEndSong() {
-    if (!isAllowed)
-		return;
-        Conductor.songPosition = 0;
-        //setSongTime(0);
-        //FlxG.sound.music.stop();
-        FlxG.sound.music.time = 0;
-        FlxG.sound.music.play();
-        game.vocals.time = 0;
-        game.vocals.play();
-        debugPrint(notes.length);
-
+    if ((Control.PAUSE||Control.ACCEPT)&&!kek){
+        PlayState.SONG.song = "songChart";
+        kek = true;
         game.unspawnNotes = [];
-        for (n in notes){
-            //if (n.strumTime<3000){
-            if (!n.isSustainNote)
-                addFastNote((n.strumTime)/1000,n.noteData,(n.sustainLength+n.strumTime)/1000,n.animSuffix == '-alt',n.noteType);
-                //notes.push(n);
-            //}
-        }
-        game.unspawnNotes.sort(function(a, b) {
-			return a.strumTime - b.strumTime;
-		});
-        //game.unspawnNotes = notes.copy();
-        //onCreate();
+        //FlxTween.num(Conductor.songPosition, Conductor.songPosition-3000, 2,  null,num -> Conductor.songPosition = num );
+        FlxTween.num(1, 0, 2,  null,num ->  game.inst.volume = num );
+        FlxTween.num(1, 0, 2,  null,num ->  game.vocals.volume = num );
+        new FlxTimer().start(2,()->{
+            svP();
+        });
+    }
+}
+
+function svP() 
+{
+    Conductor.songPosition = -2000;
+    new FlxTimer().start(2,()->{
+        //game.note = [];
+        try {
+            game.inst.loadEmbedded(getSong(getLVD3("moddir"),PlayState.SONG.gameOverLoop));
+            game.vocals.loadEmbedded(getSong(getLVD3("moddir"),PlayState.SONG.gameOverEnd));
+            FlxG.sound.music = game.inst;
+            //FlxG.sound.music.onComplete = 
+        } catch (e:Dynamic) {trace(e);}
+        startSong();
+        //game.inst.time = 0;
+        //game.inst.play();
+        //game.vocals.time = 0;
+        //game.vocals.play();
+    });
+        reloadBPM();
+    game.cpuControlled = false;
+    FlxG.sound.music.stop();
+    game.vocals.stop();
+    game.canResync = false;
+
+    PlayState.SONG.song = "practice";//song name
+    PlayState.SONG.format = "deltarun 3 MiniGame" +"^"+ "play";// mod name + dificult
+    game.songName = "practice";
+    game.unspawnNotes = [];
+    reloadSongs();
+    game.startCountdown();
+    //isAllowed = false;
+}
+
+function onEndSong() {
+    if (!isAllowed){
+		return;}
+    Conductor.songPosition = 0;
+    //setSongTime(0);
+    //FlxG.sound.music.stop();
+    FlxG.sound.music.time = 0;
+    FlxG.sound.music.play();
+    game.vocals.time = 0;
+    game.vocals.play();
+    debugPrint(notes.length);
+
+    game.unspawnNotes = [];
+    for (n in notes){
+        //if (n.strumTime<3000){
+        if (!n.isSustainNote)
+            addFastNote((n.strumTime)/1000,n.noteData,(n.sustainLength+n.strumTime)/1000,n.animSuffix == '-alt',n.noteType);
+            //notes.push(n);
+        //}
+    }
+    game.unspawnNotes.sort(function(a, b) {
+        return a.strumTime - b.strumTime;
+    });
+    //game.unspawnNotes = notes.copy();
+    //onCreate();
 }
 
 
