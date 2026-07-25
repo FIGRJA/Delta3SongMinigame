@@ -3,27 +3,31 @@
 		86,
 		-44
 	],
+	"preload": {
+		"images/smoke": 3,
+		"images/stagecurtains": 2,
+		"images/spotlight": 3,
+		"images/stagefront": 3,
+		"images/stageback": 3,
+		"images/stage_light": 2
+	},
 	"_editorMeta": {
 		"boyfriend": "kris",
-		"gf": "susi",
-		"dad": "ralsei"
+		"dad": "ralsei",
+		"gf": "susi"
 	},
-	"preload": {
-		"images/stagecurtains": 2,
-		"images/smoke": 3,
-		"images/spotlight": 3,
-		"images/stage_light": 2,
-		"images/stageback": 3,
-		"images/stagefront": 3
-	},
+	"boyfriend": [
+		313,
+		-120
+	],
+	"stageUI": "",
 	"girlfriend": [
 		119,
 		-135
 	],
-	"stageUI": "",
-	"boyfriend": [
-		313,
-		-120
+	"camera_girlfriend": [
+		151,
+		-148
 	],
 	"defaultZoom": 1.45,
 	"objects": [
@@ -72,6 +76,28 @@
 			"type": "sprite"
 		},
 		{
+			"x": 17,
+			"y": 12,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_bg_old_1",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "bgOld",
+			"antialiasing": true,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 0,
+			"type": "sprite"
+		},
+		{
 			"x": 14,
 			"y": -7,
 			"scale": [
@@ -83,7 +109,7 @@
 			"filters": 3,
 			"color": "3c6498",
 			"angle": 0,
-			"name": "over",
+			"name": "overL",
 			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
@@ -171,14 +197,14 @@
 			"filters": 3,
 			"color": "FFFFFF",
 			"angle": 0,
-			"name": "sprite1",
+			"name": "DarkOverlay",
 			"antialiasing": true,
 			"flipY": false,
 			"scroll": [
 				1,
 				1
 			],
-			"alpha": 0.6,
+			"alpha": 0.3,
 			"type": "sprite"
 		},
 		{
@@ -202,7 +228,7 @@
 			"filters": 3,
 			"color": "FFFFFF",
 			"angle": 0,
-			"name": "sprite2",
+			"name": "catwalk",
 			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
@@ -224,7 +250,7 @@
 			"filters": 3,
 			"color": "FFFFFF",
 			"angle": 0,
-			"name": "sprite3",
+			"name": "catwalksB",
 			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
@@ -235,19 +261,15 @@
 			"type": "sprite"
 		}
 	],
-	"camera_girlfriend": [
-		151,
-		-148
-	],
-	"camera_speed": 1,
-	"directory": "",
 	"opponent": [
 		499,
 		-127
 	],
+	"directory": "",
+	"camera_speed": 1,
+	"hide_girlfriend": false,
 	"camera_opponent": [
 		-340,
 		-39
-	],
-	"hide_girlfriend": false
+	]
 }

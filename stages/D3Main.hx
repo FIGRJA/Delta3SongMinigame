@@ -16,6 +16,7 @@ import backend.CacheSystem;
 import psychlua.ModchartSprite;
 import lime.graphics.opengl.GL;
 import tjson.TJSON;
+import Reflect;
 
 function setVF(Var,Fun) {
 	if (getVar(Var).exists(Fun))
@@ -41,8 +42,6 @@ var bmpDistant:FlxBackdrop;
 var bmpDistant4:FlxBackdrop;
 var maskBG:FlxSprite = new ModchartSprite(4,-10);
 var plSplash:Array = [];
-var plSplashKris:Array = [];
-var plSplashSusi:Array = [];
 var krisMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var susiMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var krisMute:FlxSprite = new ModchartSprite(-55, -195);
@@ -119,12 +118,32 @@ function getLV(L) {
 	return this.interp.locals.get(L).r;	
 }
 function setLV(L,r) {
-	var V = this.interp.locals.get(L);
-	if (V==null){
-		debugPrint("err set like "+L);
-		return;
+	if (L.split(".").length==1){
+		var V = this.interp.locals.get(L);
+		if (V==null){
+			debugPrint("err set like "+L);
+			return;
+		}
+		V.r = r;
 	}
-	V.r = r;
+	else{
+		try{
+		var V = L.split(".");
+		V.reverse();
+			refSet(this.interp.locals.get(V.pop()).r,V,r);
+		} catch (e:Dynamic) {trace(e);}
+	}
+}
+function refSet(o,V,r) {
+	if (V.length==1){
+		trace(Reflect.field(o,V[0]));
+		Reflect.setField(o,V[0],r);
+		trace(Reflect.field(o,V[0]));
+	}else{
+		var ov = V.pop();
+		refSet(Reflect.field(o,op),V,r);
+	}
+	
 }
 function onCreate() // PlayState.SONG.bpm = 0.1;
 {
@@ -281,7 +300,7 @@ function onCreatePost() {
 	FlxG.cameras.insert(susiNoteCam, 1, false);
 	FlxG.cameras.insert(krisNoteCam, 2, false);
 	FlxG.cameras.insert(ralseiNoteCam, 3, false);
-	var SPCamY = FlxG.random.bool(1)?60:0;
+	var SPCamY = FlxG.random.bool(10)?60:0;
 	var createCamSP = (camera:FlxCamera,inZ:Int,x:Int,y:Int)->{
 		camera.height += SPCamY;
 		camera.scroll.y -= SPCamY/0.35;
@@ -737,13 +756,16 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	if (ClientPrefs.getGameplaySetting('botplay')){
 		getVar("bgLight").alpha = 0;
 		getVar("bgDark").alpha = 1;
+	}else if (FlxG.random.bool(42)&&SPCamY>0){
+		getVar("bgLight").alpha = 0;
+		getVar("bgOld").alpha = 1;
 	}
 	game.botplayTxt.font = Paths.getPath("fronts/fnt_main.ttf");
 	game.botplayTxt.cameras = [krisNoteCam];
 	game.botplayTxt.x = -180;
 	game.botplayTxt.y = 80;
 	game.botplayTxt.size = 65;
-	game.botplayTxt.color = 0x0579C7;
+	game.botplayTxt.color = SPcameras[1][4];
 
 }
 
@@ -1117,7 +1139,7 @@ function onUpdate(e) {
 			// debugPrint(anim);
 			game.gf.animation.play(anim, true);
 
-			noteSplash((anim=="singUP")+1,0xFF5757);
+			noteSplash(Std.int(anim=="singUP")+1,0xFF5757);
 		}
 	}
 
@@ -1292,7 +1314,7 @@ function onEndSong() {
 	if (game.chartingMode||PlayState.SONG.format == "psych_v1_convert")
 		return;
 	game.songScore = songScore;
-	if (!ClientPrefs.getGameplaySetting('practice') && !ClientPrefs.getGameplaySetting('botplay')) {
+	if (!ClientPrefs.getGameplaySetting('practice') && !ClientPrefs.getGameplaySetting('botplay') && (game.endingSong||(game.songName != "practice"))) {
 		var daSong = PlayState.SONG.song + PlayState.SONG.format.split("^").join();
 		// trace(daSong);
 		if (Highscore.songScores.exists(daSong)) {

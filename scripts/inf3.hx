@@ -4,7 +4,7 @@ import backend.Controls;
 var Control = Controls.instance;
 
 
-var isAllowed:Bool = game.songName == "tutorialus----(infinity)";
+var isAllowed:Bool = game.songName == "tutorialus-- --(infinity)";
 
 
 function setVF(Var,Fun,?AsFun) {
@@ -16,7 +16,7 @@ function setVF(Var,Fun,?AsFun) {
 
 var notes =[];
 function onCreatePost() {
-    isAllowed = game.songName == "tutorialus----(infinity)";
+    isAllowed = game.songName == "tutorialus-- --(infinity)";
     if (!isAllowed)
 		return;
     game.botplayTxt.visible = true;
@@ -68,7 +68,7 @@ function onStartCountdowns() {
 var kek = false;
 var BAlpha = 1;
 function onUpdate(e) {
-    isAllowed = game.songName == "tutorialus----(infinity)";
+    isAllowed = game.songName == "tutorialus-- --(infinity)";
     if (!isAllowed)
 		return;
     setLVD3("susiRofls",false);
@@ -101,6 +101,7 @@ function svP()
     new FlxTimer().start(2,()->{
         //game.note = [];
         try {
+            setLVD3("SCORE.text","lox");
             game.inst.loadEmbedded(getSong(getLVD3("moddir"),PlayState.SONG.gameOverLoop));
             game.vocals.loadEmbedded(getSong(getLVD3("moddir"),PlayState.SONG.gameOverEnd));
             FlxG.sound.music = game.inst;
