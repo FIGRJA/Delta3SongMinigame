@@ -131,6 +131,7 @@ function onCreate() // PlayState.SONG.bpm = 0.1;
 	//
 	if (isMenuChart)
 		return;
+	trace("hii");
 	//Conductor.offset = -1500; fucking Antonymph
 if (PlayState.SONG.format != "psych_v1_convert")
 	for (mod in loadSongsLists()) for (song in mod[1].songs) {
@@ -171,6 +172,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 			SONG = song;
 			//setVar("SONG",SONG);
 			setVar("statusLoad",statusLoad);
+			break;
 		}
 	}
 else
@@ -192,8 +194,6 @@ else
 	//	for (note in game.unspawnNotes){
 	//		
 	//	}
-	game.showRating = false;
-	game.showComboNum = false;
 }
 var clear = function() {
 	GL.clearColor(0, 0, 0, 0); 
@@ -226,6 +226,8 @@ function getSong(mod,song) {
 function onCreatePost() {
 	if (isMenuChart)
 		return;
+	game.showRating = false;
+	game.showComboNum = false;
 
 		//trace(PlayState.SONG.format);
 	if (PlayState.SONG.format == "psych_v1_convert"){
@@ -861,8 +863,8 @@ function onSpawnNote(daNote) {
 	// daNote.rgbShader.mult = 0.5;
 	// daNote.noteHoldSplash.alpha = 0;
 	rawType = daNote.noteData;
-	trace(rawType);
-	trace(daNote.noteType);
+	//trace(rawType);
+	//trace(daNote.noteType);
 
 	daNote.scale.set(2.9,3.5);
 	//daNote.origins.set();
@@ -975,7 +977,7 @@ function onSpawnNote(daNote) {
 		//if (rawType == 2) {
 		//	daNote.color = 0x00FF37;
 		//}
-		if (!daNote.isSustainNote){
+		if (!daNote.isSustainNote&&daNote.sustainLength==0){
 			//daNote.visible = ralsClap;
 
 			daNote.offsetX = -42;
@@ -984,7 +986,7 @@ function onSpawnNote(daNote) {
 			daNote.scale.y = 1.4;
 			daNote.noteData = 2;
 		}
-		if (daNote.sustainLength>0){
+		else if (daNote.sustainLength>0){
 			daNote.visible = false;
 			daNote.correctionOffset = 0;
 			//daNote.offsetY = -80;
@@ -1064,7 +1066,7 @@ function onUpdate(e) {
 		}
 		if (i.noteType =="vocal"){
 			//if (i.strumTime+500 >= Conductor.songPosition)
-				DadDead = !i.isSustainNote;
+				DadDead = !i.isSustainNote&&i.sustainLength==0;
 			//if(i.noteData ==2&&!i.isSustainNote){
 			//	fn += 1;
 			//}else{
@@ -1154,6 +1156,8 @@ function opponentNoteHit(daNote) {
 	else
 		noteSplash(daNote.noteData+4,0xEDF100,true);
 	if (ralsClap){
+		plSplash[daNote.noteData+4][0].scale.x *= 3;
+		plSplash[daNote.noteData+4][1].scale.x *= 3;
 		game.dad.stunned = true;
 		game.dad.playAnim("idle-alt", true);
 	}
