@@ -8,7 +8,7 @@ var isAllowed:Bool = game.songName == "tutorialus----(infinity)";
 
 
 function setVF(Var,Fun,?AsFun) {
-    AsFun = AsFun==null?Fun:AsFun;
+    AsFun ??= Fun;
 	if (getVar(Var).exists(Fun))
 		this.set(AsFun,getVar(Var).get(Fun));
 	
@@ -19,7 +19,7 @@ function onCreatePost() {
     isAllowed = game.songName == "tutorialus----(infinity)";
     if (!isAllowed)
 		return;
-
+    game.botplayTxt.visible = true;
 	game.cpuControlled = true;
     setVF("load_delta_notes","addFastNote");
     setVF("D3Main","onCreate","reloadSongs");
@@ -28,7 +28,7 @@ function onCreatePost() {
     setVF("D3Main","setLV","setLVD3");
     setVF("D3Main","getSong");
     var maxTime = 32842;
-    debugPrint("hi test 3 "+maxTime);
+    //debugPrint("hi test 3 "+maxTime);
     notes = game.unspawnNotes.copy();
     game.unspawnNotes = [];
     for (n in notes){
@@ -55,7 +55,6 @@ function onCreatePost() {
 function onStartCountdowns() {
     if (!isAllowed)
 		return;
-    setLVD3("susiRofls",false);
 //setVF("D3Main","onCreate");
     //var maxTime = game.inst.length;
     //debugPrint(game.unspawnNotes.length);
@@ -67,24 +66,33 @@ function onStartCountdowns() {
     Conductor.songPosition = -3000;
 }
 var kek = false;
+var BAlpha = 1;
 function onUpdate(e) {
     isAllowed = game.songName == "tutorialus----(infinity)";
     if (!isAllowed)
 		return;
+    setLVD3("susiRofls",false);
     //debugPrint( game.inst.length);
     if (FlxG.sound.music.time +(e*1000)> game.inst.length)
         onEndSong();
     if ((Control.PAUSE||Control.ACCEPT)&&!kek){
-        PlayState.SONG.song = "songChart";
+        PlayState.SONG.song = "songChart";//mini rofls ))
         kek = true;
         game.unspawnNotes = [];
         //FlxTween.num(Conductor.songPosition, Conductor.songPosition-3000, 2,  null,num -> Conductor.songPosition = num );
+        FlxTween.num(1, 0, 2,  null,num ->  BAlpha = num );
         FlxTween.num(1, 0, 2,  null,num ->  game.inst.volume = num );
         FlxTween.num(1, 0, 2,  null,num ->  game.vocals.volume = num );
         new FlxTimer().start(2,()->{
+            game.botplayTxt.visible = false;
             svP();
         });
     }
+}
+function onUpdatePost(e) {
+    if (!isAllowed)
+		return;
+    game.botplayTxt.alpha = BAlpha;
 }
 
 function svP() 
@@ -129,7 +137,7 @@ function onEndSong() {
     FlxG.sound.music.play();
     game.vocals.time = 0;
     game.vocals.play();
-    debugPrint(notes.length);
+    //debugPrint(notes.length);
 
     game.unspawnNotes = [];
     for (n in notes){

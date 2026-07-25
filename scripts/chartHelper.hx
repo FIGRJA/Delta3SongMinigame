@@ -80,7 +80,7 @@ function writeNoteToSong(maxTime) {
     ///trace(Reflect.fields(this));
     ///trace(Reflect.fields(this.interp));
     ///trace(Reflect.fields(this.interp.locals.get("PB")));
-    ///trace(this.interp.locals.get("PB").r);
+    ///trace(this.interp.binops);
     //trace(getVar("D3Main").get("getThis")().interp.locals);
 	//PlayState.SONG.notes[0].sectionNotes = [];
 	//PlayState.SONG.notes[0].bpm = PlayState.SONG.bpm;

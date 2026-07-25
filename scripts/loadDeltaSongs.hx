@@ -300,11 +300,12 @@ function scr_rhythmgame_addnote(timming, types, sus, ?spec ) {
 	var daNote:Note = new Note(timming, types, oldNote);
 	// daNote.mustPress = mustPress;
 	daNote.noteType = typeTample;
-	if (spec != null) {
+	spec ??= 0;
+	//if (spec != null) {
 		daNote.animSuffix = spec == 1 ? '-alt' : "";
 		daNote.extraData.set("lolTag", spec);
 		// debugPrint(timming+typeTample+spec );
-	}
+	//}
 	// daNote.noteType = typeNote;
 	daNote.scrollFactor.set(1,1);
 	daNote.sustainLength = sus;

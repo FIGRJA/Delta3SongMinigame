@@ -40,8 +40,9 @@ var ralseiNoteCam:FlxCamera;
 var bmpDistant:FlxBackdrop;
 var bmpDistant4:FlxBackdrop;
 var maskBG:FlxSprite = new ModchartSprite(4,-10);
-var plSplashKris:Array = [[new FlxSprite(-39,185),new FlxSprite(-20,315),new FlxSprite(-39,185),new FlxSprite(-18,315)],[new FlxSprite(78,185),new FlxSprite(97,315),new FlxSprite(78,185),new FlxSprite(97,315)]];
-var plSplashSusi:Array = [[new FlxSprite(-39,185),new FlxSprite(-20,315),new FlxSprite(-39,185),new FlxSprite(-18,315)],[new FlxSprite(78,185),new FlxSprite(97,315),new FlxSprite(78,185),new FlxSprite(97,315)]];
+var plSplash:Array = [];
+var plSplashKris:Array = [];
+var plSplashSusi:Array = [];
 var krisMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var susiMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var krisMute:FlxSprite = new ModchartSprite(-55, -195);
@@ -118,7 +119,12 @@ function getLV(L) {
 	return this.interp.locals.get(L).r;	
 }
 function setLV(L,r) {
-	this.interp.locals.set(L,{cons: false,r: r});	
+	var V = this.interp.locals.get(L);
+	if (V==null){
+		debugPrint("err set like "+L);
+		return;
+	}
+	V.r = r;
 }
 function onCreate() // PlayState.SONG.bpm = 0.1;
 {
@@ -145,14 +151,17 @@ if (PlayState.SONG.format != "psych_v1_convert")
 			// PlayState.SONG.format = "DELTA-ponos";
 			if (index == null)
 				continue;
+			song.speed ??= 123.75;//1.1
+			song.sectionBeats ??= 4;
 			PlayState.SONG.bpm = song.bpm;
 			Conductor.bpm = song.bpm;
+			
 			//PlayState.SONG.speed = song.speed!=null?song.speed/150:1.1;
-			PlayState.SONG.speed = song.speed!=null?(4/450 * song.speed):1.1;
-			sectionBeats = song.sectionBeats!=null?song.sectionBeats:4;
+			PlayState.SONG.speed = 4/450 * song.speed;
+			sectionBeats = song.sectionBeats;
 			PlayState.SONG.gameOverLoop = song.songMain;
 			PlayState.SONG.gameOverEnd  = song.songPlay;
-			debugPrint(song.songMain);
+			//debugPrint(song.songMain);
 			//PlayState.SONG.speed = 1;
 			//game.songSpeed = 1.1;
 			moddir = mod[2];
@@ -250,6 +259,7 @@ function onCreatePost() {
 	//game.camFollow.y = 0;
 	//game.camHUD.scroll.x += 100;
 	game.noteKillOffset = 0;
+    game.botplayTxt.text = "autoplay";
 	// getVar("load_delta_notes").call("loadSong",["scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",2]);
 	// PlayState.SONG.bpm = 148;
 	// Conductor.bpm = 148;
@@ -436,7 +446,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 		i.y = ClientPrefs.data.downScroll?415:-100;
 		
 		i.visible = false;
-		gog += 1;
+
 		var fakeNS = new FlxSprite(i.x,i.y);
 		//fakeNS.x = 0;
 		//fakeNS.y = 440;
@@ -449,6 +459,21 @@ var transferAB = getShader("Dglsl/shd_underwater");
 		fakeNS.color = i.color;
 		//i.add(fakeNS);
 		insert(1,fakeNS);
+		var spl1 = new FlxSprite(i.x+16,i.y-230);
+		var spl2 = new FlxSprite(i.x+35,i.y-101);
+		spl1.loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
+		spl2.loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
+		spl1.camera = i.camera;
+		spl2.camera = i.camera;
+		spl1.flipY = !ClientPrefs.data.downScroll;
+		spl2.flipY = !ClientPrefs.data.downScroll;
+		spl1.y += ClientPrefs.data.downScroll?0:-280;
+		spl2.y += ClientPrefs.data.downScroll?0:-410;
+		insert(members.indexOf(game.noteGroup),spl1);
+		insert(members.indexOf(game.noteGroup)+1,spl2);
+		plSplash.push([spl1,spl2]);
+		//(gog%3==0?plSplashKris:plSplashSusi).push([spl1,spl2]);
+		gog += 1;
 	}
 	var gog:Int = 0;
 	for (i in opponentStrums) {
@@ -472,6 +497,20 @@ var transferAB = getShader("Dglsl/shd_underwater");
 		if (gog == 1)
 			i.visible = false;
 			//i.x = -400;
+
+		var spl1 = new FlxSprite(i.x+14+gog,i.y-205);
+		var spl2 = new FlxSprite(i.x+33+gog,i.y-76);
+		spl1.loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
+		spl2.loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
+		spl1.camera = i.camera;
+		spl2.camera = i.camera;
+		spl1.flipY = !ClientPrefs.data.downScroll;
+		spl2.flipY = !ClientPrefs.data.downScroll;
+		spl1.y += ClientPrefs.data.downScroll?0:-280;
+		spl2.y += ClientPrefs.data.downScroll?0:-410;
+		insert(members.indexOf(game.noteGroup),spl1);
+		insert(members.indexOf(game.noteGroup)+1,spl2);
+		plSplash.push([spl1,spl2]);
 		gog += 1;
 	}
 	var fakeNSR = new FlxSprite(opponentStrums.members[0].x+30,opponentStrums.members[0].y+40);
@@ -484,66 +523,14 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	SPcameras[2][4] = opponentStrums.members[2].color;
 
 
-	plSplashKris[0][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
-	plSplashKris[0][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
-	plSplashKris[1][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
-	plSplashKris[1][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
-	plSplashKris[0][2].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
-	plSplashKris[0][3].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
-	plSplashKris[1][2].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
-	plSplashKris[1][3].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
-	plSplashKris[0][0].camera = krisNoteCam;
-	plSplashKris[0][1].camera = krisNoteCam;
-	plSplashKris[1][0].camera = krisNoteCam;
-	plSplashKris[1][1].camera = krisNoteCam;
-	plSplashKris[0][2].camera = krisNoteCam;
-	plSplashKris[0][3].camera = krisNoteCam;
-	plSplashKris[1][2].camera = krisNoteCam;
-	plSplashKris[1][3].camera = krisNoteCam;
-	plSplashKris[0][0].flipY = !ClientPrefs.data.downScroll;
-	plSplashKris[0][1].flipY = !ClientPrefs.data.downScroll;
-	plSplashKris[1][0].flipY = !ClientPrefs.data.downScroll;
-	plSplashKris[1][1].flipY = !ClientPrefs.data.downScroll;
-	plSplashKris[0][0].y += ClientPrefs.data.downScroll?0:-280;
-	plSplashKris[0][1].y += ClientPrefs.data.downScroll?0:-410;
-	plSplashKris[1][0].y += ClientPrefs.data.downScroll?0:-280;
-	plSplashKris[1][1].y += ClientPrefs.data.downScroll?0:-410;
-	plSplashKris[0][2].y += ClientPrefs.data.downScroll?0:-280;
-	plSplashKris[0][3].y += ClientPrefs.data.downScroll?0:-410;
-	plSplashKris[1][2].y += ClientPrefs.data.downScroll?0:-280;
-	plSplashKris[1][3].y += ClientPrefs.data.downScroll?0:-410;
-	insert(members.indexOf(game.noteGroup),plSplashKris[0][0]);
-	insert(members.indexOf(game.noteGroup)+1,plSplashKris[0][1]);
-	insert(members.indexOf(game.noteGroup),plSplashKris[1][0]);
-	insert(members.indexOf(game.noteGroup)+1,plSplashKris[1][1]);
-	//insert(members.indexOf(game.noteGroup)+1,plSplashKris[0][2]);
-	//insert(members.indexOf(game.noteGroup)+1,plSplashKris[0][3]);
-	//insert(members.indexOf(game.noteGroup)+1,plSplashKris[1][2]);
-	//insert(members.indexOf(game.noteGroup)+1,plSplashKris[1][3]);
-	noteSplash(0);
-	noteSplash(1);
-	plSplashSusi[0][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
-	plSplashSusi[0][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
-	plSplashSusi[1][0].loadGraphic(Paths.image("sp/spr_rhythmgame_chart_mask_0"));
-	plSplashSusi[1][1].loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
-	plSplashSusi[0][0].camera = susiNoteCam;
-	plSplashSusi[0][1].camera = susiNoteCam;
-	plSplashSusi[1][0].camera = susiNoteCam;
-	plSplashSusi[1][1].camera = susiNoteCam;
-	plSplashSusi[0][0].flipY = !ClientPrefs.data.downScroll;
-	plSplashSusi[0][1].flipY = !ClientPrefs.data.downScroll;
-	plSplashSusi[1][0].flipY = !ClientPrefs.data.downScroll;
-	plSplashSusi[1][1].flipY = !ClientPrefs.data.downScroll;
-	plSplashSusi[0][0].y += ClientPrefs.data.downScroll?0:-280;
-	plSplashSusi[0][1].y += ClientPrefs.data.downScroll?0:-410;
-	plSplashSusi[1][0].y += ClientPrefs.data.downScroll?0:-280;
-	plSplashSusi[1][1].y += ClientPrefs.data.downScroll?0:-410;
-	insert(members.indexOf(game.noteGroup),plSplashSusi[0][0]);
-	insert(members.indexOf(game.noteGroup)+1,plSplashSusi[0][1]);
-	insert(members.indexOf(game.noteGroup),plSplashSusi[1][0]);
-	insert(members.indexOf(game.noteGroup)+1,plSplashSusi[1][1]);
-	susiPressed(0,0x000000);
-	susiPressed(1,0x000000);
+	noteSplash(0,0x000000);
+	noteSplash(1,0x000000);
+	noteSplash(2,0x000000);
+	noteSplash(3,0x000000);
+	noteSplash(0+4,0x000000);
+	noteSplash(1+4,0x000000);
+	noteSplash(2+4,0x000000);
+	noteSplash(3+4,0x000000);
 	
 	krisMissBack.loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
 	krisMissBack.color = 0xFF0000;
@@ -710,7 +697,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	//    PreSpawnNote(no);
 	// }
 	susiRofls = FlxG.random.bool(10);
-	debugPrint(game.songName);
+	//debugPrint(game.songName);
 	if (game.songName == "practice"){
 		susiRofls = false;
 	}
@@ -1128,7 +1115,7 @@ function onUpdate(e) {
 			// debugPrint(anim);
 			game.gf.animation.play(anim, true);
 
-			susiPressed(anim=="singUP",0xFF5757);
+			noteSplash((anim=="singUP")+1,0xFF5757);
 		}
 	}
 
@@ -1162,7 +1149,10 @@ function opponentNoteHit(daNote) {
 			note.color = 0xFBAE1F;
 			note.alpha = 1;
 		}
+		noteSplash(daNote.noteData+4,0xEDF100);
 	}
+	else
+		noteSplash(daNote.noteData+4,0xEDF100,true);
 	if (ralsClap){
 		game.dad.stunned = true;
 		game.dad.playAnim("idle-alt", true);
@@ -1214,9 +1204,7 @@ function goodNoteHit(daNote) {
 				},15);
 			}
 			songScore += Std.int(krisCombo.text)>=32?10:0;
-			noteSplash(daNote.noteData==3);
-			plSplashKris[daNote.noteData==3][0].color = color2;
-			plSplashKris[daNote.noteData==3][0].alpha = 1;
+			noteSplash(daNote.noteData,color2);
 			for (note in daNote.tail){
 				note.color = color;
 				note.alpha = 1;
@@ -1231,9 +1219,7 @@ function goodNoteHit(daNote) {
 		var co = 10-(songScore-0.99)%10;
 		songScore +=co+20;
 	} else {
-		noteSplash(daNote.noteData==3,true);
-		plSplashKris[daNote.noteData==3][0].color =  0xEDF100;
-		plSplashKris[daNote.noteData==3][0].alpha = 1;
+		noteSplash(daNote.noteData,0xEDF100,true);
 		//songScore += 60 / PlayState.SONG.bpm *10 / 4.0;
 		songScore += 0.5;
 		daNote.parent.visible = true;
@@ -1260,7 +1246,7 @@ function susiGoodHit(daNote) {
 	else if (daNote.rating=="good")
 		color2 = 0xE8E8E8;
 	
-	susiPressed(daNote.noteData-1,color2);
+	noteSplash(daNote.noteData,color2);
 	// game.showRating = !game.showRating;
 	// game.showComboNum = !game.showComboNum;
 	game.vocals.volume = bob;
@@ -1269,30 +1255,19 @@ function susiGoodHit(daNote) {
 	game.totalNotesHit = rating;
 }
 
-function susiPressed(key:Int,color) {
-	plSplashSusi[key][0].color = color;
-	plSplashSusi[key][0].scale.x = 1.3;
-	plSplashSusi[key][1].scale.x = 1.3*2;
-	FlxTween.cancelTweensOf(plSplashSusi[key][0]);
-	FlxTween.tween(plSplashSusi[key][0], {"scale.x": 0}, 0.18
-	 ,{
-		onUpdate:()->{plSplashSusi[key][1].scale.x=plSplashSusi[key][0].scale.x*2;},   
-		onComplete:()->{plSplashSusi[key][1].scale.x=plSplashSusi[key][0].scale.x;}   
-	});
-}
+
 var tw = [false,false];
-function noteSplash(key:Int,?mini=false) {
+function noteSplash(key:Int,color,?mini=false) {
 		tw[key] = mini?tw[key]+1:0;
 		var mim = tw[key]>2;
-		if (mim||!mini)FlxTween.cancelTweensOf(plSplashKris[key][0]);
+		if (mim||!mini)FlxTween.cancelTweensOf(plSplash[key][0]);
 		if (!mim && mini) return;
-		plSplashKris[key][0].color = 0xFFFFFF;
-		plSplashKris[key][0].alpha = 0.3;
-		plSplashKris[key][0].scale.x = mini?0.6:1.4;
-		plSplashKris[key][1].scale.x = (mini?0.6:1.4)*1.9;
-		var t = FlxTween.tween(plSplashKris[key][0], {"scale.x": 0}, mim?0.07:0.18 ,{
-            onUpdate:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x*1.9;},   
-            onComplete:()->{plSplashKris[key][1].scale.x=plSplashKris[key][0].scale.x;}   
+		plSplash[key][0].color = color;
+		plSplash[key][0].scale.x = mini?0.6:1.4;
+		plSplash[key][1].scale.x = (mini?0.6:1.4)*1.9;
+		var t = FlxTween.tween(plSplash[key][0], {"scale.x": 0}, mim?0.07:0.18 ,{
+            onUpdate:()->{plSplash[key][1].scale.x=plSplash[key][0].scale.x*1.9;},   
+            onComplete:()->{plSplash[key][1].scale.x=plSplash[key][0].scale.x;}   
         });
 
 		//debugPrint(t);
