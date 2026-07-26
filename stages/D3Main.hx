@@ -40,7 +40,7 @@ var RalsIcon:FlxSprite = new ModchartSprite(442, -115);
 var ralseiNoteCam:FlxCamera;
 var bmpDistant:FlxBackdrop;
 var bmpDistant4:FlxBackdrop;
-var maskBG:FlxSprite = new ModchartSprite(4,-10);
+var ralsSnote:FlxSprite ;
 var plSplash:Array = [];
 var krisMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var susiMissBack:FlxSprite = new ModchartSprite(-190, -200);
@@ -538,6 +538,13 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	fakeNSR.makeGraphic(250,7,0xFFDA7727);
 	fakeNSR.camera = ralseiNoteCam;
 	insert(1,fakeNSR);
+	ralsSnote = new FlxSprite(opponentStrums.members[0].x+30,opponentStrums.members[0].y+46);
+	ralsSnote.loadGraphic(Paths.image("sp/spr_musical_notes_0"));//not found original image (
+	ralsSnote.camera = ralseiNoteCam;
+	ralsSnote.scale.set(3,3);
+	ralsSnote.updateHitbox();
+	ralsSnote.alpha = 0;
+	insert(1,ralsSnote);
 
 	SPcameras[0][4] = playerStrums.members[2].color;
 	SPcameras[1][4] = playerStrums.members[3].color;
@@ -1166,6 +1173,7 @@ function onUpdatePost(e){
     //    context.clear(0, 0, 0, 0);  // очищаем с прозрачностью
     //}
 }
+var RTimerAl ;
 function opponentNoteHit(daNote) {
 	if (!daNote.isSustainNote) {
 		ralsCombo.text = Std.int(ralsCombo.text) + 1;
@@ -1174,15 +1182,28 @@ function opponentNoteHit(daNote) {
 			note.alpha = 1;
 		}
 		noteSplash(daNote.noteData+4,0xEDF100);
+		if (RTimerAl!=null)
+			RTimerAl.cancel();
+		FlxTween.tween(ralsSnote, {alpha: 1}, 0.2);
 	}
-	else
+	else{
 		noteSplash(daNote.noteData+4,0xEDF100,true);
+		if (RTimerAl!=null)
+			RTimerAl.cancel();
+		RTimerAl = FlxTween.tween(ralsSnote, {alpha: 0}, 0.5 ,{
+            startDelay: 0.1});
+	}
 	if (ralsClap){
 		plSplash[daNote.noteData+4][0].scale.x *= 3;
 		plSplash[daNote.noteData+4][1].scale.x *= 3;
 		game.dad.stunned = true;
 		game.dad.playAnim("idle-alt", true);
+		if (RTimerAl!=null)
+			RTimerAl.cancel();
+		RTimerAl = FlxTween.tween(ralsSnote, {alpha: 0}, 0.2 ,{
+            startDelay: 0.2});
 	}
+	FlxTween.tween(ralsSnote,{x: opponentStrums.members[daNote.noteData].x+15},0.08);
 	//trace(daNote.strumTime+" "+daNote.isSustainNote);
 }
 function opponentNoteHitPost(daNote) {
