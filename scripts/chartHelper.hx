@@ -74,6 +74,7 @@ function writeNoteToSong(maxTime) {
         NoteTime = game.unspawnNotes[game.unspawnNotes.length-1].strumTime;
     maxTime = Math.max(NoteTime,maxTime);
     if (PlayState.SONG.notes.length>2) {
+        trace("skip write");
         return PlayState.SONG.notes.copy();
     }
     var PB = getVar("D3Main").get("getLV")("sectionBeats");
@@ -213,10 +214,10 @@ Helper = ()->{
                 }
                 state.maxTime = FlxG.sound.music.length;
 			    state.prevEndInput.max = FlxMath.roundDecimal(state.maxTime/1000,2);
-                state._cacheSections();
                 //if (!songEx){
                 PlayState.SONG.notes = unspawnNotes.copy();
                 PlayState.SONG.events = eventNotes.copy();
+                state._cacheSections();
                 //trace("test");
                     //songEx = true;
                 //}

@@ -488,8 +488,8 @@ var transferAB = getShader("Dglsl/shd_underwater");
 		spl2.camera = i.camera;
 		spl1.flipY = !ClientPrefs.data.downScroll;
 		spl2.flipY = !ClientPrefs.data.downScroll;
-		spl1.y += ClientPrefs.data.downScroll?0:-280;
-		spl2.y += ClientPrefs.data.downScroll?0:-410;
+		spl1.y += ClientPrefs.data.downScroll?0:250;
+		spl2.y += ClientPrefs.data.downScroll?0:120;
 		insert(members.indexOf(game.noteGroup),spl1);
 		insert(members.indexOf(game.noteGroup)+1,spl2);
 		plSplash.push([spl1,spl2]);
@@ -527,8 +527,8 @@ var transferAB = getShader("Dglsl/shd_underwater");
 		spl2.camera = i.camera;
 		spl1.flipY = !ClientPrefs.data.downScroll;
 		spl2.flipY = !ClientPrefs.data.downScroll;
-		spl1.y += ClientPrefs.data.downScroll?0:-280;
-		spl2.y += ClientPrefs.data.downScroll?0:-410;
+		spl1.y += ClientPrefs.data.downScroll?0:250;
+		spl2.y += ClientPrefs.data.downScroll?0:120;
 		insert(members.indexOf(game.noteGroup),spl1);
 		insert(members.indexOf(game.noteGroup)+1,spl2);
 		plSplash.push([spl1,spl2]);
@@ -544,6 +544,8 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	ralsSnote.scale.set(3,3);
 	ralsSnote.updateHitbox();
 	ralsSnote.alpha = 0;
+	ralsSnote.y += ClientPrefs.data.downScroll?0:-80;
+	//ralsSnote.flipY = !ClientPrefs.data.downScroll;
 	insert(1,ralsSnote);
 
 	SPcameras[0][4] = playerStrums.members[2].color;
@@ -796,6 +798,8 @@ function onSectionHit(){
 		var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
 		bmpDistant.spacing.y = distant*sectionBeats-10;
 		bmpDistant4.spacing.y = distant-10;
+		bmpDistant4.x = 0;
+		bmpDistant.x = 0;
 	}
 	//game.stepsToDo = sectionBeats*4;
 }
