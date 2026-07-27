@@ -57,6 +57,7 @@ var SCOREText:FlxText = new FlxText(345, 675, 0, "SCORE", 25, true);
 var L1 = MusicBeatState.getVariables().get("L1");
 var L2 = MusicBeatState.getVariables().get("L2");
 var L3 = MusicBeatState.getVariables().get("L3");
+var StageOverlay = MusicBeatState.getVariables().get("overL");
 var susiRofls:Bool = false;
 var songScore = 0;
 var BPix = 5*1/0.35;
@@ -303,7 +304,7 @@ function onCreatePost() {
 	var SPCamY = FlxG.random.bool(10)?60:0;
 	var createCamSP = (camera:FlxCamera,inZ:Int,x:Int,y:Int)->{
 		camera.height += SPCamY;
-		camera.scroll.y -= SPCamY/0.35;
+		camera.scroll.y += SPCamY/(ClientPrefs.data.downScroll?-0.35:1);
 
 		var bitmapData:BitmapData = new BitmapData(camera.width*2+BPix, camera.height*2+BPix, true, 0x00FFFFFF);
 		//bitmapData.draw(camera.canvas);
@@ -568,6 +569,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	krisMissBack.scale.y = 7;
 	krisMissBack.alpha = 0;
 	krisMissBack.cameras = [krisNoteCam];
+	krisMissBack.flipY = !ClientPrefs.data.downScroll;
 	krisMissBack.updateHitbox();
 	add(krisMissBack);
 	susiMissBack.loadGraphic(Paths.image("sp/spr_whitegradientdown_rhythm_0"));
@@ -576,6 +578,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	susiMissBack.scale.y = 7;
 	susiMissBack.alpha = 0;
 	susiMissBack.cameras = [susiNoteCam];
+	susiMissBack.flipY = !ClientPrefs.data.downScroll;
 	susiMissBack.updateHitbox();
 	add(susiMissBack);
 
@@ -833,6 +836,7 @@ function onSongStart() {
 
 var tmpTweenkris:FlxTween;
 var tmpTweensusi:FlxTween;
+var tmpTweenGlobal:FlxTween = null;
 var tmpMissKris:Int = 0;
 var tmpMissSusi:Int = 0;
 
@@ -845,6 +849,7 @@ function noteMiss(daNote) {
 		game.vocals.volume = 1;
 		return;
 	}
+	var NeedOver = true;
 	// debugPrint("danote");
 	if (daNote.gfNote) {
 		game.totalPlayed--;
@@ -857,6 +862,7 @@ function noteMiss(daNote) {
 			tmpTweensusi.cancel();
 		tmpTweensusi = FlxTween.tween(susiMissBack, {alpha: 0}, 0.5);
 		susiCombo.text = "0";
+		NeedOver = !susiMute.alpha>0;
 	} else {
 		if (ClientPrefs.data.shaders)
 			FlxTimer.loop(1.8/30,(t)->{
@@ -869,6 +875,14 @@ function noteMiss(daNote) {
 			tmpTweenkris.cancel();
 		tmpTweenkris = FlxTween.tween(krisMissBack, {alpha: 0}, 0.5);
 		krisCombo.text = "0";
+		NeedOver = !krisMute.alpha>0;
+	}
+	if (NeedOver){
+		StageOverlay.alpha = 1;
+		StageOverlay.color = 0xCF0000;
+		if (tmpTweenGlobal != null)
+			tmpTweenGlobal.cancel();
+		tmpTweenGlobal = FlxTween.tween(StageOverlay, {alpha: 0}, 0.5);
 	}
 	for (mo in [[tmpMissKris, krisMute], [tmpMissSusi, susiMute]]) {
 		if (mo[0] == 3) {
