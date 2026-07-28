@@ -10,6 +10,9 @@ import mikolka.vslice.StickerSubState;
 import mikolka.vslice.freeplay.FreeplayState;
 import flixel.addons.transition.FlxTransitionableState;
 
+import mobile.objects.TouchZone;
+import mobile.objects.ScrollableObject;
+
 function setVF(Var,Fun) {
 	if (getVar(Var).exists(Fun))
 		this.set(Fun,getVar(Var).get(Fun));
@@ -46,6 +49,7 @@ function onUpdate(e) {
 		playSnd("crowd_cheer_single");
 		CustomSubstate.openCustomSubstate('END', true);}
 }
+var curAction:Int = 0;
 
 function onCustomSubstateCreate(name) {
 	isPause = name == "DeltaPause";
@@ -101,19 +105,88 @@ function onCustomSubstateCreate(name) {
 		}
 		inst.fadeIn(2);
 	} catch (e:Dynamic) {}
+	if (true){
+		var button = new TouchZone( 0, (FlxG.height/2),  FlxG.width/2,  100);
+		button.cameras = [pauseBG];
+		button.alpha = 0.3;
+
+		var scroll = new ScrollableObject(0.02, 0, 0, FlxG.width/2, FlxG.height, button);
+		scroll.alpha = 0.3;
+		scroll.cameras = [pauseBG];
+		scroll.onPartialScroll.add(delta ->
+		{
+			curAction -= delta;
+			updateText(true);
+		});
+		scroll.onFullScrollSnap.add(() -> {curAction = Std.int(curAction);updateText();});
+		//scroll.onFullScroll.add(delta ->
+		//{
+		//	if (diffAction == null)
+		//		curAction -= delta;
+		//	else
+		//		curDiffAction -= delta;
+		//	timer = 0.001;
+		//});
+		scroll.onTap.add(() ->
+		{
+			pressAccept();
+		});
+		customSubstate.add(scroll);
+		customSubstate.add(button);
+	}
 }
 
-var curAction:Int = 0;
 
 function onCustomSubstateCreatePost(name) {
 	if (!isPause)
 		return;
 	FlxTween.tween(pauseBG, {x: -120, alpha: 1}, 0.2, {ease: FlxEase.circOut});
-	for (i in 0...freeAction.length) {
-		FlxTween.tween(freeAction[i], {y: 450 + i * 100 - curAction * 100, alpha: 1 - (Math.abs(curAction - i) / 4)}, 0.2, {ease: FlxEase.circOut});
-	}
+	updateText();
 }
 
+function pressAccept() {
+	playSnd("coin");
+	switch (freeAction[Std.int(curAction)].text) {
+		case "restart":
+			FlxTransitionableState.skipNextTransIn = false;
+			FlxTransitionableState.skipNextTransOut = false;
+			MusicBeatState.startTransition();
+		// PlayState.nextReloadAll = true;
+		case "toMenu":
+			PlayState.SONG.song = "songChart";
+			// FlxG.sound.music.destroy();
+			MusicBeatState.startTransition();
+		// PlayState.nextReloadAll = true;
+		case "exit":
+			CustomSubstate.closeCustomSubstate();
+			PlayState.deathCounter = 0;
+			PlayState.seenCutscene = false;
+
+			PlayState.instance.canResync = false;
+			PlayState.changedDifficulty = false;
+			PlayState.chartingMode = false;
+			FlxG.camera.followLerp = 0;
+			if (FlxG.sound.music != null) {
+				FlxG.sound.music.pause();
+				PlayState.instance.vocals.pause();
+			}
+			openSubState(new StickerSubState(null, (sticker) -> FreeplayState.build(null, sticker)));
+	}
+	inst.fadeOut(1);
+}
+function updateText(?Simply=false) {
+	curAction = Math.abs(freeAction.length + curAction) % freeAction.length;
+	if (Simply)
+		for (i in 0...freeAction.length) {
+			freeAction[i].y = 450 + i * 100 - curAction * 100;
+			freeAction[i].alpha = 1 - (Math.abs(Std.int(curAction) - i) / 4);
+		}
+	else
+		for (i in 0...freeAction.length) {
+			FlxTween.tween(freeAction[i], {y: 450 + i * 100 - curAction * 100, alpha: 1 - (Math.abs(curAction - i) / 4)}, 0.2, {ease: FlxEase.circOut});
+		}
+	
+}
 function onCustomSubstateUpdate(name, e) {
 	if (!isPause)
 		return;
@@ -140,54 +213,30 @@ function onCustomSubstateUpdate(name, e) {
 		});
 	}
 	if (Control.ACCEPT) {
-
-		playSnd("coin");
-		switch (freeAction[curAction].text) {
-			case "restart":
-                FlxTransitionableState.skipNextTransIn = false;
-			    FlxTransitionableState.skipNextTransOut = false;
-				MusicBeatState.startTransition();
-			// PlayState.nextReloadAll = true;
-			case "toMenu":
-				PlayState.SONG.song = "songChart";
-				// FlxG.sound.music.destroy();
-				MusicBeatState.startTransition();
-			// PlayState.nextReloadAll = true;
-			case "exit":
-				CustomSubstate.closeCustomSubstate();
-				PlayState.deathCounter = 0;
-				PlayState.seenCutscene = false;
-
-				PlayState.instance.canResync = false;
-				PlayState.changedDifficulty = false;
-				PlayState.chartingMode = false;
-				FlxG.camera.followLerp = 0;
-				if (FlxG.sound.music != null) {
-					FlxG.sound.music.pause();
-					PlayState.instance.vocals.pause();
-				}
-				openSubState(new StickerSubState(null, (sticker) -> FreeplayState.build(null, sticker)));
-		}
-		inst.fadeOut(1);
+		pressAccept();
+		updateText();
 	}
 	if (Control.UI_UP) {
 		curAction -= 1;
 		timer = 0.15;
+		updateText();
 		playSnd("bump");
 	}
 	if (Control.UI_DOWN) {
 		curAction += 1;
 		timer = 0.15;
+		updateText();
 		playSnd("bump");
 	}
-	curAction = Math.abs(freeAction.length + curAction) % freeAction.length;
+	if (FlxG.mouse.wheel != 0){
+		curAction -= FlxG.mouse.wheel;
+		//timer = 0.04;
+		updateText(true);
+		playSnd("bump");
+	}
 	// debugPrint("                                                           "+curAction);
-	if (timer > 0)
-		for (i in 0...freeAction.length) {
-			FlxTween.tween(freeAction[i], {y: 450 + i * 100 - curAction * 100, alpha: 1 - (Math.abs(curAction - i) / 4)}, 0.2, {ease: FlxEase.circOut});
-
-			// freeAction[i].y = ;
-		}
+	//if (timer > 0)
+		
 }
 
 function onCustomSubstateDestroy(name) {

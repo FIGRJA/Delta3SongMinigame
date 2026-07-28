@@ -14,6 +14,9 @@ import mikolka.vslice.StickerSubState;
 import mikolka.vslice.freeplay.FreeplayState;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 
+import mobile.objects.TouchZone;
+import mobile.objects.ScrollableObject;
+
 import tjson.TJSON;
 var isAllowed:Bool = PlayState.SONG.song == "songChart";
 var practicN = "practice"+"deltarun 3 MiniGame"+"play";
@@ -30,8 +33,10 @@ var backed:FlxBackdrop;
 var AlbumCover:FlxSprite = new FlxSprite(1070,60);
 var inst:FlxSound = new FlxSound();
 var freePlay:FlxSound = new FlxSound();
-var curAction:Int = 0;
 var freeAction:Array = [];
+var curAction:Int = 0;
+var diffAction:Array;
+var curDiffAction:Int = 0;
 var timer:Float;
 var menu:FlxCamera = new FlxCamera(0, 0, 1280, 720, 1);
 var modInfoText:FlxText;
@@ -230,6 +235,45 @@ function onCreate() {
 	};
 	game.skipCountdown = true;
 	limitD = glitchAr.length;
+
+	if (true){
+		var button = new TouchZone( 0, (FlxG.height/2),  FlxG.width/2,  100);
+		button.cameras = [menu];
+		button.alpha = 0.3;
+
+		var scroll = new ScrollableObject(0.02, 0, 0, FlxG.width/2, FlxG.height, button);
+		scroll.alpha = 0.3;
+		scroll.cameras = [menu];
+		scroll.onPartialScroll.add(delta ->
+		{
+			
+			if (diffAction == null)
+				curAction -= delta;
+			else
+				curDiffAction -= delta;
+			//timer = 0.1;
+			updateText(true);
+		});
+		scroll.onFullScrollSnap.add(() -> {
+			curAction = Std.int(curAction);
+			updateText();
+		});
+		//scroll.onFullScroll.add(delta ->
+		//{
+		//	if (diffAction == null)
+		//		curAction -= delta;
+		//	else
+		//		curDiffAction -= delta;
+		//	timer = 0.001;
+		//});
+		scroll.onTap.add(() ->
+		{
+			pressAccept();
+			updateText();
+		});
+		add(scroll);
+		add(button);
+	}
 }
 
 function formatIntToString(val:Int, count:Int) {
@@ -397,19 +441,7 @@ function getAlbumCover(mod,cover) {
 function onCreatePosts() {
 	if (!isAllowed)
 		return;
-	for (i in 0...freeAction.length) {
-		FlxTween.tween(freeAction[i][1], {y: 350 + (i - curAction) * 100, x: 150 + (i - curAction) * 20, alpha: 1 - (Math.abs(curAction - i) / 4)}, 0.2,
-			{ease: FlxEase.circOut});
-	}
-	modInfoText.text = freeAction[curAction][0][0].name;
-	
-	var bg = getAlbumCover(freeAction[curAction][0][2],freeAction[curAction][2].album);
-	AlbumCover.loadGraphic(bg);
-	AlbumCover.visible = bg != null;
-	//trace(120/AlbumCover.width+" 	"+90/AlbumCover.height);
-	var scale = 200/(AlbumCover.width>AlbumCover.height?AlbumCover.width:AlbumCover.height);
-	AlbumCover.scale.set(scale,scale);
-	AlbumCover.updateHitbox();
+	updateText();
 	game.startingSong = false;
 
         FlxG.sound.music.pause();
@@ -420,8 +452,116 @@ function onSongStart() {
 		return;
 }
 
-var diffAction:Array;
-var curDiffAction:Int = 0;
+function pressAccept() {
+	if (diffAction == null) {
+		curAction = Std.int(curAction);
+		playSnd("coin");
+		diffAction = [];
+
+		inst.fadeOut(2, 0.1);
+		for (diff in freeAction[Std.int(curAction)][0][1].dificulties) {
+			// debugPrint(diff);
+			var action = new FlxText(0, 0, 700, diff.name, 100, true);
+			action.font = Paths.getPath("fronts/fnt_main.ttf");
+			action.cameras = [menu];
+			// action.angle = 10;
+			// action.screenCenter(0x11);//XY
+			action.x = 150 + diffAction.length * 30;
+			action.y = diffAction.length * 100 + 350;
+			action.alpha = 1 - (diffAction.length / 4);
+			action.antialiasing = false;
+			action.alignment = "left";
+			add(action);
+			FlxTween.tween(action, {x: 550 + diffAction.length * 20, alpha: 1 - (diffAction.length / 4)}, 0.2, {ease: FlxEase.circOut});
+			diffAction.push(action);
+		}
+		for (i in 0...freeAction.length) {
+			FlxTween.tween(freeAction[i][1], {y: 350 + (i - curAction) * 100, x: 400-38*freeAction[Std.int(curAction)][1].text.length -Math.abs(i - curAction) * 30, alpha: 1 - (Math.abs(curAction - i) / 4)},
+				0.2, {ease: FlxEase.circOut});
+		}
+		try {
+			//FlxG.sound.music.destroy();
+			//FlxG.sound.list.clear();
+			//debugPrint("mods/"+freeAction[Std.int(curAction)][0][2]+"/mus/"+freeAction[Std.int(curAction)][2].songMain+".ogg");
+			//debugPrint(CacheSystem.loadSound("mods/"+freeAction[Std.int(curAction)][0][2]+"/mus/"+freeAction[Std.int(curAction)][2].songMain+".ogg",true,freeAction[Std.int(curAction)][2].songMain+', PATH: mus'+freeAction[Std.int(curAction)][0][2]));
+			//freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[Std.int(curAction)][0][2]+"/mus/"+freeAction[Std.int(curAction)][2].songMain+".ogg",false,freeAction[Std.int(curAction)][2].songMain), true);
+			//trace(Paths.formatToSongPath(freeAction[Std.int(curAction)][2].name)+'/Inst, PATH: mus');
+			//debugPrint(getTmpScore()>0?(freeAction[Std.int(curAction)][2].prew==null?freeAction[Std.int(curAction)][2].songMain:freeAction[Std.int(curAction)][2].prew):(freeAction[Std.int(curAction)][2].prewCh==null?freeAction[Std.int(curAction)][2].songPlay:freeAction[Std.int(curAction)][2].prewCh));
+			var songT = freeAction[Std.int(curAction)][2];
+			freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[Std.int(curAction)][0][2]+"/mus/"+(getTmpScore()>0?((songT.prew==null||songT.prew=="NONE")?songT.songMain:songT.prew):((songT.prewCh==null||songT.prewCh=="NONE")?songT.songPlay:songT.prewCh))+".ogg",true,Paths.formatToSongPath(songT.name)+'/Inst, PATH: mus'), true);
+			freePlay.volume = 0;
+			freePlay.play();
+			freePlay.fadeOut(2,1);
+			FlxG.sound.list.add(freePlay);
+		} catch (e:Dynamic) {}
+	} else {
+		setStaticVar("test",curAction);
+		inst.fadeOut(0.5);
+		PlayState.SONG.song = freeAction[Std.int(curAction)][2].name;
+		PlayState.SONG.format = freeAction[Std.int(curAction)][0][0].name +"^"+ diffAction[curDiffAction].text;
+		MusicBeatState.resetState();
+	}
+}
+function updateText(?Simpy=false) {
+
+	curAction = Math.abs(freeAction.length + curAction) % freeAction.length;
+	if (diffAction != null)
+		curDiffAction = Math.abs(diffAction.length + curDiffAction) % diffAction.length;
+	// debugPrint("                                                           "+curAction);
+	songScoreText.text = formatIntToString(getTmpScore(), 6);
+
+	var bg = getAlbumCover(freeAction[Std.int(curAction)][0][2],freeAction[Std.int(curAction)][2].album);
+	AlbumCover.loadGraphic(bg);
+	AlbumCover.visible = bg != null;
+	//trace(120/AlbumCover.width+" 	"+90/AlbumCover.height);
+	var scale = 200/(AlbumCover.width>AlbumCover.height?AlbumCover.width:AlbumCover.height);
+	AlbumCover.scale.set(scale,scale);
+	AlbumCover.updateHitbox();
+	//AlbumCover.width = 120;
+	//AlbumCover.height = 90;
+	modInfoText.text = freeAction[Std.int(curAction)][0][0].name;
+	if (Simpy)
+		SetText();
+	else
+		tweenText();
+	
+}
+function tweenText() {
+	if (diffAction == null)
+		for (i in 0...freeAction.length)
+			FlxTween.tween(freeAction[i][1], {y: 350 + (i - curAction) * 100, x: 150 + (i - curAction) * 20, alpha: 1 - (Math.abs(Std.int(curAction) - i) / 4)},
+				0.2, {ease: FlxEase.circOut});
+	else {
+		for (i in 0...freeAction.length)
+			FlxTween.tween(freeAction[i][1], {y: 350 + (i - curAction) * 100, x: 400-38*freeAction[Std.int(curAction)][1].text.length -Math.abs(i - curAction) * 30, alpha: 1 - (Math.abs(Std.int(curAction) - i) / 4)},
+				0.2, {ease: FlxEase.circOut});
+		for (i in 0...diffAction.length)
+			FlxTween.tween(diffAction[i],
+				{y: 350 + (i - curDiffAction) * 100, x: 550 + (i - curDiffAction) * 20, alpha: 1 - (Math.abs(Std.int(curDiffAction) - i) / 4)}, 0.2,
+				{ease: FlxEase.circOut});
+	}
+}
+function SetText() {
+	if (diffAction == null)
+		for (i in 0...freeAction.length){
+			freeAction[i][1].y = 350 + (i - curAction) * 100;
+			freeAction[i][1].x = 150 + (i - curAction) * 20;
+			freeAction[i][1].alpha = 1 - (Math.abs(Std.int(curAction) - i) / 4);
+		}
+	else {
+		for (i in 0...freeAction.length){
+			freeAction[i][1].y = 350 + (i - curAction) * 100;
+			freeAction[i][1].x = 400-38*freeAction[Std.int(curAction)][1].text.length -Math.abs(i - curAction) * 30;
+			freeAction[i][1].alpha = 1 - (Math.abs(Std.int(curAction) - i) / 4);
+		}
+		for (i in 0...diffAction.length){
+			diffAction[i].y = 350 + (i - curDiffAction) * 100;
+			diffAction[i].x = 550 + (i - curDiffAction) * 20;
+			diffAction[i].alpha = 1 - (Math.abs(Std.int(curDiffAction) - i) / 4);
+		}
+	}
+	
+}
 function onUpdate(e) {
 	if (!isAllowed)
 		return;
@@ -453,12 +593,12 @@ function onUpdate(e) {
 	if (Control.BACK) {
 		if (diffAction != null) {
 			playSnd("splat");
-			onCreatePosts();
 			for (diff in diffAction) {
 				diff.destroy();
 			}
 			diffAction = null;
 			curDiffAction = 0;
+			updateText();
 
 			inst.fadeOut(2, 1);
 			freePlay.fadeOut(1, 0);
@@ -477,60 +617,8 @@ function onUpdate(e) {
 		}
 	}
 	if (Control.ACCEPT) {
-		if (diffAction == null) {
-			playSnd("coin");
-			diffAction = [];
-
-			inst.fadeOut(2, 0.1);
-			for (diff in freeAction[curAction][0][1].dificulties) {
-				// debugPrint(diff);
-				var action = new FlxText(0, 0, 700, diff.name, 100, true);
-				action.font = Paths.getPath("fronts/fnt_main.ttf");
-				action.cameras = [menu];
-				// action.angle = 10;
-				// action.screenCenter(0x11);//XY
-				action.x = 150 + diffAction.length * 30;
-				action.y = diffAction.length * 100 + 350;
-				action.alpha = 1 - (diffAction.length / 4);
-				action.antialiasing = false;
-				action.alignment = "left";
-				add(action);
-				FlxTween.tween(action, {x: 550 + diffAction.length * 20, alpha: 1 - (diffAction.length / 4)}, 0.2, {ease: FlxEase.circOut});
-				diffAction.push(action);
-			}
-			for (i in 0...freeAction.length) {
-				FlxTween.tween(freeAction[i][1], {y: 350 + (i - curAction) * 100, x: 400-38*freeAction[curAction][1].text.length -Math.abs(i - curAction) * 30, alpha: 1 - (Math.abs(curAction - i) / 4)},
-					0.2, {ease: FlxEase.circOut});
-			}
-			try {
-				//FlxG.sound.music.destroy();
-				//FlxG.sound.list.clear();
-				//debugPrint("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg");
-				//debugPrint(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",true,freeAction[curAction][2].songMain+', PATH: mus'+freeAction[curAction][0][2]));
-				//freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+freeAction[curAction][2].songMain+".ogg",false,freeAction[curAction][2].songMain), true);
-				//trace(Paths.formatToSongPath(freeAction[curAction][2].name)+'/Inst, PATH: mus');
-				//debugPrint(getTmpScore()>0?(freeAction[curAction][2].prew==null?freeAction[curAction][2].songMain:freeAction[curAction][2].prew):(freeAction[curAction][2].prewCh==null?freeAction[curAction][2].songPlay:freeAction[curAction][2].prewCh));
-				var songT = freeAction[curAction][2];
-				freePlay.loadEmbedded(CacheSystem.loadSound("mods/"+freeAction[curAction][0][2]+"/mus/"+(getTmpScore()>0?((songT.prew==null||songT.prew=="NONE")?songT.songMain:songT.prew):((songT.prewCh==null||songT.prewCh=="NONE")?songT.songPlay:songT.prewCh))+".ogg",true,Paths.formatToSongPath(songT.name)+'/Inst, PATH: mus'), true);
-				freePlay.volume = 0;
-				freePlay.play();
-				freePlay.fadeOut(2,1);
-				FlxG.sound.list.add(freePlay);
-			} catch (e:Dynamic) {}
-		} else {
-			setStaticVar("test",curAction);
-			inst.fadeOut(0.5);
-			PlayState.SONG.song = freeAction[curAction][2].name;
-			PlayState.SONG.format = freeAction[curAction][0][0].name +"^"+ diffAction[curDiffAction].text;
-			MusicBeatState.resetState();
-		}
-		// switch(freeAction[curAction].text){
-		//    case "play":
-		//        PlayState.SONG.song = "karaoke";
-		//        MusicBeatState.resetState();
-		//	//PlayState.nextReloadAll = true;
-		//    case "exit":
-		// }
+		pressAccept();
+		updateText();
 	}
 	if (Control.UI_UP) {
 		if (diffAction == null)
@@ -538,6 +626,7 @@ function onUpdate(e) {
 		else
 			curDiffAction -= 1;
 		timer = 0.12;
+		updateText();
 		playSnd("bump");
 	}
 	if (Control.UI_DOWN) {
@@ -546,6 +635,16 @@ function onUpdate(e) {
 		else
 			curDiffAction += 1;
 		timer = 0.12;
+		updateText();
+		playSnd("bump");
+	}
+	if (FlxG.mouse.wheel != 0){
+		if (diffAction == null)
+			curAction -= FlxG.mouse.wheel;
+		else
+			curDiffAction -= FlxG.mouse.wheel;
+		//timer = 0.04;
+		updateText(true);
 		playSnd("bump");
 	}
 	if (Control.NOTE_RIGHT){
@@ -553,40 +652,11 @@ function onUpdate(e) {
 		timer = 0.05;
 		playSnd("crowd_cheer_single");
 	}
-	curAction = Math.abs(freeAction.length + curAction) % freeAction.length;
-	if (diffAction != null)
-		curDiffAction = Math.abs(diffAction.length + curDiffAction) % diffAction.length;
-	// debugPrint("                                                           "+curAction);
-	songScoreText.text = formatIntToString(getTmpScore(), 6);
-	if (timer > 0) {
-		var bg = getAlbumCover(freeAction[curAction][0][2],freeAction[curAction][2].album);
-		AlbumCover.loadGraphic(bg);
-		AlbumCover.visible = bg != null;
-		//trace(120/AlbumCover.width+" 	"+90/AlbumCover.height);
-		var scale = 200/(AlbumCover.width>AlbumCover.height?AlbumCover.width:AlbumCover.height);
-		AlbumCover.scale.set(scale,scale);
-		AlbumCover.updateHitbox();
-		//AlbumCover.width = 120;
-		//AlbumCover.height = 90;
-		modInfoText.text = freeAction[curAction][0][0].name;
-		if (diffAction == null)
-			for (i in 0...freeAction.length)
-				FlxTween.tween(freeAction[i][1], {y: 350 + (i - curAction) * 100, x: 150 + (i - curAction) * 20, alpha: 1 - (Math.abs(curAction - i) / 4)},
-					0.2, {ease: FlxEase.circOut});
-		else {
-			for (i in 0...freeAction.length)
-				FlxTween.tween(freeAction[i][1], {y: 350 + (i - curAction) * 100, x: 400-38*freeAction[curAction][1].text.length -Math.abs(i - curAction) * 30, alpha: 1 - (Math.abs(curAction - i) / 4)},
-					0.2, {ease: FlxEase.circOut});
-			for (i in 0...diffAction.length)
-				FlxTween.tween(diffAction[i],
-					{y: 350 + (i - curDiffAction) * 100, x: 550 + (i - curDiffAction) * 20, alpha: 1 - (Math.abs(curDiffAction - i) / 4)}, 0.2,
-					{ease: FlxEase.circOut});
-		}
-	}
+	
 }
 
 function getTmpScore() {
-	var path = freeAction[curAction][2].name + freeAction[curAction][0][0].name + freeAction[curAction][0][1].dificulties[curDiffAction].name;
+	var path = freeAction[Std.int(curAction)][2].name + freeAction[Std.int(curAction)][0][0].name + freeAction[Std.int(curAction)][0][1].dificulties[curDiffAction].name;
 	// debugPrint(Highscore.songScores.exists(path));
 	//debugPrint(path);
 	if (Highscore.songScores.exists(path))
@@ -595,7 +665,7 @@ function getTmpScore() {
 }
 
 function resetSong(?path) {
-	if (path == null ) path =freeAction[curAction][2].name + freeAction[curAction][0][0].name + freeAction[curAction][0][1].dificulties[curDiffAction].name;
+	if (path == null ) path =freeAction[Std.int(curAction)][2].name + freeAction[Std.int(curAction)][0][0].name + freeAction[Std.int(curAction)][0][1].dificulties[curDiffAction].name;
 	//debugPrint(path);
 	Highscore.setScore(path,0);
 	Highscore.setRating(path,0);
