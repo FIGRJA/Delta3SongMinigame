@@ -32,13 +32,13 @@
     * [ ]  рейтинг
     * [ ]  sounds
     * [ ]  ? безраничный слой (относительный центра)
-    * [ ]  mobile support
+    * [X]  mobile support
   * [ ]  pausing
     * [X]  custom pause
     * [X]  buttons
     * [ ]  mobile support
     * [ ]  title song
-    * [ ]  отчсёт
+    * [X]  отчсёт
 * [ ]  songs Menu
   * [ ]  autoDetecting
     * [X]  ERS
@@ -51,7 +51,7 @@
   * [X]  MemoryCheat (use static Array in PlayState as ModchartVarible)
   * [ ]  ShowRating
   * [ ]  coolScore
-  * [ ]  mobile support
+  * [X]  mobile support
   * [X]  сортировка
   * [ ]  ? категории
 * [ ]  Chart Editor
@@ -95,7 +95,7 @@
     * [X]  convert NoteData
     * [ ]  fixLongSize
   * [ ]  example mod
-    * [ ]  GSAF5
+    * [X]  GSAF5
     * [ ]  ? port DDLFRE CMMM
 
 ## issuse

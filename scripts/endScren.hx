@@ -8,6 +8,7 @@ import backend.MusicBeatState;
 import Reflect;
 
 
+import mobile.objects.TouchZone;
 function setVF(Var,Fun) {
 	if (getVar(Var).exists(Fun))
 		this.set(Fun,getVar(Var).get(Fun));
@@ -20,6 +21,7 @@ var backed;
 var isShader = false;
 var song = PlayState.SONG.song.split("\n").join().split("\r").join();
 var isThis = false;
+var back = new TouchZone( 0, 0,  FlxG.width, FlxG.height,0xFFFF0000);
 var songs = {
     "bump":                 [0.5,Paths.sound("snd_bump")],
     "closet_impact":        [0.3,Paths.sound("snd_closet_impact")],
@@ -91,6 +93,9 @@ function onCustomSubstateCreate(name) {
 	backed.camera = camEnd;
 	customSubstate.add(backed);
 
+	//back.alpha = 0.3;
+	back.camera = camEnd;
+	customSubstate.add(back);
     
 }
 
@@ -147,7 +152,7 @@ function onCustomSubstateUpdate(n, e) {
 	if (isShader)
 	    sideTerminalB2.setFloat("time",TimeUp);
 
-    if (Control.ACCEPT &&isEnd)
+    if ((Control.ACCEPT||back.justPressed)&&isEnd)
         TW(8);
 		//MusicBeatState.resetState();
     if (COOLText!=null){

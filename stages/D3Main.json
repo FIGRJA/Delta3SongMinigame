@@ -4,12 +4,8 @@
 		-44
 	],
 	"preload": {
-		"images/smoke": 3,
-		"images/stagecurtains": 2,
-		"images/spotlight": 3,
-		"images/stagefront": 3,
-		"images/stageback": 3,
-		"images/stage_light": 2
+		"images/sp/": 3,
+		"images/anim/tv": 3
 	},
 	"_editorMeta": {
 		"boyfriend": "kris",
@@ -24,10 +20,6 @@
 	"girlfriend": [
 		119,
 		-135
-	],
-	"camera_girlfriend": [
-		151,
-		-148
 	],
 	"defaultZoom": 1.45,
 	"objects": [
@@ -208,6 +200,138 @@
 			"type": "sprite"
 		},
 		{
+			"x": 30,
+			"y": 118,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_spotlight_0",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "spod1L",
+			"antialiasing": true,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
+			"x": 551,
+			"y": 118,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_spotlight_0",
+			"flipX": true,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "spod1R",
+			"antialiasing": true,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
+			"x": 30,
+			"y": 40,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_spotlight_0",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "spod2L",
+			"antialiasing": true,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
+			"x": 551,
+			"y": 40,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_spotlight_0",
+			"flipX": true,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "spod2R",
+			"antialiasing": true,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
+			"x": 30,
+			"y": -40,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_spotlight_0",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "spod3L",
+			"antialiasing": true,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
+			"x": 551,
+			"y": -40,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_spotlight_0",
+			"flipX": true,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "spod3R",
+			"antialiasing": true,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
 			"type": "gf"
 		},
 		{
@@ -260,6 +384,10 @@
 			"alpha": 1,
 			"type": "sprite"
 		}
+	],
+	"camera_girlfriend": [
+		151,
+		-148
 	],
 	"opponent": [
 		499,

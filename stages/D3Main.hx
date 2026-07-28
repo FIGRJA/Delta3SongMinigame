@@ -787,11 +787,16 @@ function onEvent(N,v1,v2,T) {
 				var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
 				bmpDistant.spacing.y = distant*sectionBeats-10;
 				bmpDistant4.spacing.y = distant-10;
+				var mustH = 0.45 * (50) * (game.songSpeed);
+				for (n in game.notes)
+					if (n.isSustainNote)
+						n.scale.y = mustH/n.height;
 			}
 		FlxTween.tween(bmpDistant,{alpha:1},v2,{
 			onUpdate: T,
 			onComplete: T
 		});
+
 	}
 	
 }
@@ -861,6 +866,14 @@ function noteMiss(daNote) {
 		if (tmpTweensusi != null)
 			tmpTweensusi.cancel();
 		tmpTweensusi = FlxTween.tween(susiMissBack, {alpha: 0}, 0.5);
+		FlxTween.color(SusiBaner,0.5,0xFFCF0000,playerStrums.members[2].color,{
+			onUpdate: ()->{SPcameras[0][4]=SusiBaner.color;}
+		});
+		for (n in game.notes){
+			if (n.noteType == "drum"){
+				FlxTween.color(n,0.5,0xFFCF0000,playerStrums.members[n.noteData].color);
+			}
+		}
 		susiCombo.text = "0";
 		NeedOver = !susiMute.alpha>0;
 	} else {
@@ -874,6 +887,14 @@ function noteMiss(daNote) {
 		if (tmpTweenkris != null)
 			tmpTweenkris.cancel();
 		tmpTweenkris = FlxTween.tween(krisMissBack, {alpha: 0}, 0.5);
+		FlxTween.color(KrisBaner,0.5,0xFFCF0000,playerStrums.members[3].color,{
+			onUpdate: ()->{SPcameras[1][4]=KrisBaner.color;}
+		});
+		for (n in game.notes){
+			if (n.noteType == "lead"){
+				FlxTween.color(n,0.5,0xFFCF0000,playerStrums.members[n.noteData].color);
+			}
+		}
 		krisCombo.text = "0";
 		NeedOver = !krisMute.alpha>0;
 	}
