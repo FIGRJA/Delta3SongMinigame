@@ -12,6 +12,7 @@ import backend.Mods;
 import backend.CacheSystem;
 import backend.ui.PsychUIBox;
 import backend.ui.PsychUICheckBox;
+import backend.ui.PsychUINumericStepper;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 import states.editors.ChartingState;
 
@@ -180,6 +181,10 @@ var animationsS = [ "singDOWN","singUP","singUP-alt","singDOWN-alt", "singUP-alt
 var animationsK = [ "singLEFT", "singRIGHT","singRIGHT-alt","singLEFT","singRIGHT-alt","singRIGHT-alt"];
 var animationsR = [ "singUP-hold","idle-alt", "singRIGHT-alt", "idle-alt"];
 
+var hitsoundSusie = new PsychUINumericStepper(10, 20, 0.2, 0, 0, 1, 1);
+var hitsoundRalsei = new PsychUINumericStepper(10 + 100, 20, 0.2, 0, 0, 1, 1);
+var hitsoundSign = new PsychUINumericStepper(10 + 200, 20, 0.1, 0.4, 0, 1, 1);
+
 function notDance() {
     for (ch in previewCharaters.members){
         if (ch.animation.finished){
@@ -188,15 +193,18 @@ function notDance() {
     }
     //need ralsei only
 }
-function dance(note) {
+function dance(note,newN:Bool) {
     if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)){//ralsei
         previewCharaters.members[2].animation.play(animationsR[(note.songData[2]>0?0:1)], !(note.songData[2]>0));
+        FlxG.sound.play(Paths.sound('hitsound'), hitsoundRalsei.value*(newN?1:hitsoundSign.value));
     }
     else if (note.songData[1]>=(statusLoad[0]?3:0)){//drums
         previewCharaters.members[1].animation.play(animationsS[note.songData[1]-(statusLoad[0]?3:0)+(Std.int(note.songData[3]=="Alt Animation")*3)], true);
+        FlxG.sound.play(Paths.sound('hitsound'), hitsoundSusie.value);
     }
     else {//lead
         previewCharaters.members[0].animation.play(animationsK[note.songData[1]+(Std.int(note.songData[3]=="Alt Animation")*3)], true);
+        FlxG.sound.play(Paths.sound('hitsound'), FlxG.state.hitsoundPlayerStepper.value*(newN?0:hitsoundSign.value));
     }
 }
 
@@ -214,16 +222,18 @@ Helper = ()->{
         if (Type.getClassName(Type.getClass(FlxG.state))=="states.editors.ChartingState"){
             var state =  FlxG.state;
             if (lyricBox==null){
-                lyricBox = new PsychUIBox((FlxG.width/2)+200, 338, 440, 100, ['lyric','custom settings(x)']);
+                lyricBox = new PsychUIBox((FlxG.width/2)+200, 338, 440, 100, ['lyric','custom settings']);
                 lyricBox.scrollFactor.set();
                 lyricBox.cameras = [state.camUI];
                 state.add(lyricBox);
+                
+                var tab_group = lyricBox.getTab('lyric').menu;
 
                 lyricText = new FlxText(10, 5, 470, statusLoad[2]?'test '+eventNotes.length+'\ntext 1.2.3':"no vocal\nno lyric", 30);
                 lyricText.scrollFactor.set();
                 lyricText.font = Paths.getPath("fronts/fnt_main.ttf");
                 lyricText.antialiasing = false;
-                lyricBox.getTab('lyric').menu.add(lyricText);
+                tab_group.add(lyricText);
 
                 var charakters = ["kris","susi","ralsei"];
                 for (i in 0...3){
@@ -233,8 +243,17 @@ Helper = ()->{
                     TBox.tabHeight = 0;
                     TBox.selectedTab = null;
                     TBox.getTab(charakters[i]).menu.add(char);
-                    lyricBox.getTab('lyric').menu.add(TBox);
+                    tab_group.add(TBox);
                 }
+
+                tab_group = lyricBox.getTab('custom settings').menu;
+
+                tab_group.add(hitsoundSusie);
+		        tab_group.add(new FlxText(hitsoundSusie.x, hitsoundSusie.y - 15, 100, 'Hitsound (Susie):'));
+                tab_group.add(hitsoundRalsei);
+		        tab_group.add(new FlxText(hitsoundRalsei.x, hitsoundRalsei.y - 15, 100, 'Hitsound (Ralsei):'));
+                tab_group.add(hitsoundSign);
+		        tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 100, 'Hitsound Sign:'));
                // lyricBox.getTab('lyric').menu.add(previewCharaters);
             }
             if (FlxG.sound.music.length<1000){
@@ -323,7 +342,7 @@ Helper = ()->{
                             }
                             //lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
                             else {
-                                dance(note);
+                                dance(note,Conductor.songPosition > note.strumTime && lastTime <= note.strumTime);
                                 if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&note.get_hasSustain()&&statusLoad[2]){
                                 if(!lyricUpdated){
                                     try{

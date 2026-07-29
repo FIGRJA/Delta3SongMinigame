@@ -60,7 +60,7 @@
     * [X]  lyric preview
     * [ ]  *true* lyric
     * [ ]  custom settings
-      * [ ]  split OppHitSound
+      * [X]  split OppHitSound
       * [X]  preview characters
       * [ ]  save as ***other* file/s**
       * [ ]  conver from DLLFRE
