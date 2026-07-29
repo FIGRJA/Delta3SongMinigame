@@ -248,6 +248,8 @@ Helper = ()->{
 
                 tab_group = lyricBox.getTab('custom settings').menu;
 
+                state.hitsoundOpponentStepper.alpha = 0.3;
+
                 tab_group.add(hitsoundSusie);
 		        tab_group.add(new FlxText(hitsoundSusie.x, hitsoundSusie.y - 15, 100, 'Hitsound (Susie):'));
                 tab_group.add(hitsoundRalsei);
@@ -255,6 +257,9 @@ Helper = ()->{
                 tab_group.add(hitsoundSign);
 		        tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 100, 'Hitsound Sign:'));
                // lyricBox.getTab('lyric').menu.add(previewCharaters);
+                var cursor = new FlxSprite();
+                cursor.loadGraphic(Paths.image("spr_rhythmgame_editor_mouse_0"));
+               FlxG.mouse.load(cursor.pixels);
             }
             if (FlxG.sound.music.length<1000){
                 //trace(getSong("mus/"+songI+".ogg"));
