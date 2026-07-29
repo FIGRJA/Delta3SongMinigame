@@ -36,7 +36,7 @@
   * [ ]  pausing
     * [X]  custom pause
     * [X]  buttons
-    * [ ]  mobile support
+    * [X]  mobile support
     * [ ]  title song
     * [X]  отчсёт
 * [ ]  songs Menu

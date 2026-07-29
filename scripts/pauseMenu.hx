@@ -112,12 +112,14 @@ function onCustomSubstateCreate(name) {
 		inst.fadeIn(2);
 	} catch (e:Dynamic) {}
 	if (true){
-		var button = new TouchZone( 0, (FlxG.height/2),  FlxG.width/2,  100);
+		var button = new TouchZone( 40, (FlxG.height/2)+100,  (FlxG.width/2),  100);
 		button.cameras = [pauseBG];
-		button.alpha = 0.3;
+		button.alpha = 0.03;
+		button.angle = 10;
 
-		var scroll = new ScrollableObject(0.02, 0, 0, FlxG.width/2, FlxG.height, button);
+		var scroll = new ScrollableObject(0.02, 40, 100, (FlxG.width/2), FlxG.height, button);
 		scroll.alpha = 0.3;
+		scroll.angle = 10;
 		scroll.cameras = [pauseBG];
 		scroll.onPartialScroll.add(delta ->
 		{

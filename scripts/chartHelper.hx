@@ -255,7 +255,7 @@ Helper = ()->{
                 tab_group.add(hitsoundRalsei);
 		        tab_group.add(new FlxText(hitsoundRalsei.x, hitsoundRalsei.y - 15, 100, 'Hitsound (Ralsei):'));
                 tab_group.add(hitsoundSign);
-		        tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 100, 'Hitsound Sign:'));
+		        tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 100, 'HitSign (multuply):'));
                // lyricBox.getTab('lyric').menu.add(previewCharaters);
                 var cursor = new FlxSprite();
                 cursor.loadGraphic(Paths.image("spr_rhythmgame_editor_mouse_0"));
