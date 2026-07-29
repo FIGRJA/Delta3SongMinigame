@@ -772,6 +772,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 		getVar("bgLight").alpha = 0;
 		getVar("bgOld").alpha = 1;
 	}
+	getVar("bgDL").alpha = PlayState.chartingMode;
 	game.botplayTxt.font = Paths.getPath("fronts/fnt_main.ttf");
 	game.botplayTxt.cameras = [krisNoteCam];
 	game.botplayTxt.x = -180;
@@ -790,7 +791,7 @@ function onEvent(N,v1,v2,T) {
 				var mustH = 0.45 * (50) * (game.songSpeed);
 				for (n in game.notes)
 					if (n.isSustainNote)
-						n.scale.y = mustH/n.height;
+						n.scale.y = mustH/n.frameHeight;
 			}
 		FlxTween.tween(bmpDistant,{alpha:1},v2,{
 			onUpdate: T,
@@ -1371,7 +1372,7 @@ function onKeyPresss(key:Int) {
 }
 
 function onEndSong() {
-	if (game.chartingMode||PlayState.SONG.format == "psych_v1_convert")
+	if (PlayState.chartingMode||PlayState.SONG.format == "psych_v1_convert")
 		return;
 	game.songScore = songScore;
 	if (!ClientPrefs.getGameplaySetting('practice') && !ClientPrefs.getGameplaySetting('botplay') && (game.endingSong||(game.songName != "practice"))) {

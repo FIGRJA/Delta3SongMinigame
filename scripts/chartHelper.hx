@@ -5,11 +5,13 @@ import Type;
 import Reflect;
 import Array;
 import flixel.FlxG;
+import flixel.group.FlxTypedSpriteGroup;
 import flixel.text.FlxText.FlxTextFormat;
 import flixel.text.FlxText.FlxTextFormatMarkerPair;
 import backend.Mods;
 import backend.CacheSystem;
 import backend.ui.PsychUIBox;
+import backend.ui.PsychUICheckBox;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 import states.editors.ChartingState;
 
@@ -173,6 +175,32 @@ var lyricText;
 var lastTime = 0;
 var section = 0;
 var e = 0;
+var previewCharaters = new FlxTypedSpriteGroup();
+var animationsS = [ "singDOWN","singUP","singUP-alt","singDOWN-alt", "singUP-alt"];
+var animationsK = [ "singLEFT", "singRIGHT","singRIGHT-alt","singLEFT-alt","singRIGHT-alt","singRIGHT-alt"];
+var animationsR = [ "singUP-hold","idle-alt", "singRIGHT-alt", "idle-alt"];
+
+function notDance() {
+    //for (ch in previewCharaters.members){
+    //    if (ch.animation.finished){
+    //        ch.animation.play("idle",true);
+    //    }
+    //}
+    //need ralsei only
+    if (previewCharaters.members[2].animation.finished)
+        previewCharaters.members[2].animation.play("idle",false);
+}
+function dance(note) {
+    if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)){//ralsei
+        previewCharaters.members[2].animation.play(animationsR[(note.songData[2]>0?0:1)], !(note.songData[2]>0));
+    }
+    else if (note.songData[1]>=(statusLoad[0]?3:0)){//drums
+        previewCharaters.members[1].animation.play(animationsS[note.songData[1]-(statusLoad[0]?3:0)+(Std.int(note.songData[3]=="Alt Animation")*3)], true);
+    }
+    else {//lead
+        previewCharaters.members[0].animation.play(animationsK[note.songData[1]+(note.songData[3]=="Alt Animation"*3)], true);
+    }
+}
 
 var RedE = new FlxTextFormatMarkerPair(new FlxTextFormat(0xAF0000), "'");
 var Green = new FlxTextFormatMarkerPair(new FlxTextFormat(0x00FF15), "'");
@@ -184,18 +212,32 @@ Helper = ()->{
 
         ChartingState.GRID_PLAYERS = Std.int(statusLoad[0])+Std.int(statusLoad[1])+Std.int(statusLoad[2]);
         ChartingState.GRID_COLUMNS_PER_PLAYER = Math.max((statusLoad[0]?2:0),Math.max((statusLoad[1]?3:0),(statusLoad[2]?3:0)));
+        ChartingState.keysArray[8] = 57;//flxKey of 'nine'
         if (Type.getClassName(Type.getClass(FlxG.state))=="states.editors.ChartingState"){
             var state =  FlxG.state;
             if (lyricBox==null){
                 lyricBox = new PsychUIBox((FlxG.width/2)+200, 338, 440, 100, ['lyric','custom settings(x)']);
                 lyricBox.scrollFactor.set();
                 lyricBox.cameras = [state.camUI];
+                state.add(lyricBox);
+
                 lyricText = new FlxText(10, 5, 470, statusLoad[2]?'test '+eventNotes.length+'\ntext 1.2.3':"no vocal\nno lyric", 30);
                 lyricText.scrollFactor.set();
                 lyricText.font = Paths.getPath("fronts/fnt_main.ttf");
                 lyricText.antialiasing = false;
                 lyricBox.getTab('lyric').menu.add(lyricText);
-                state.add(lyricBox);
+
+                var prewCharac:PsychUICheckBox;
+                prewCharac = new PsychUICheckBox(10, 10, 'preview play', 100, function() previewCharaters.visible = prewCharac.checked);
+                previewCharaters.visible = false;
+                prewCharac.checked = false;
+                lyricBox.getTab('custom settings(x)').menu.add(prewCharac);
+                var charakters = ["kris","susi","ralsei"];
+                for (i in 0...3){
+                    var char = new Character(i*120 + 30,100,charakters[i],i==0);
+                    previewCharaters.add(char);
+                }
+                lyricBox.getTab('lyric').menu.add(previewCharaters);
             }
             if (FlxG.sound.music.length<1000){
                 //trace(getSong("mus/"+songI+".ogg"));
@@ -262,7 +304,7 @@ Helper = ()->{
             //}
             var lyricUpdated = false;
             if (lastTime != Conductor.songPosition){
-                if(statusLoad[2]){
+                //if(statusLoad[2]){
                     for (note in state.curRenderedNotes.members.concat(state.behindRenderedNotes.members))
                     {
                         if(note == null) continue;
@@ -282,18 +324,21 @@ Helper = ()->{
                                 }
                             }
                             //lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
-                            else if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&note.get_hasSustain()){
+                            else {
+                                dance(note);
+                                if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&note.get_hasSustain()&&statusLoad[2]){
                                 if(!lyricUpdated){
                                     try{
                                     singWord(note,Conductor.songPosition>lastTime);
                                     lyricUpdated = true;
                                     }catch (e:Dynamic){trace(e);}
-                                }
+                                }}
                             }
                         }
                         //if (note.mustPress)trace(note.songData);
                     }
-                }
+                    notDance();
+                //}
             }
             lastTime = Conductor.songPosition;
         }else{

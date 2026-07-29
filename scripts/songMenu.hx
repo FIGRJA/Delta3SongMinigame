@@ -66,7 +66,7 @@ function onCreate() {
 	//};
 
 	PlayState.SONG.bpm = 0.001;
-
+	PlayState.chartingMode = false;
 	backed = new FlxBackdrop();
 	backed.antialiasing = false;
 	// backed.loadGraphic(Paths.image("anim/tv"));

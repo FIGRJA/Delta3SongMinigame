@@ -3,23 +3,27 @@
 		86,
 		-44
 	],
-	"preload": {
-		"images/sp/": 3,
-		"images/anim/tv": 3
-	},
 	"_editorMeta": {
 		"boyfriend": "kris",
-		"dad": "ralsei",
-		"gf": "susi"
+		"gf": "susi",
+		"dad": "ralsei"
 	},
+	"preload": {
+		"images/anim/tv": 3,
+		"images/sp/": 3
+	},
+	"girlfriend": [
+		119,
+		-135
+	],
+	"stageUI": "",
 	"boyfriend": [
 		313,
 		-120
 	],
-	"stageUI": "",
-	"girlfriend": [
-		119,
-		-135
+	"camera_girlfriend": [
+		151,
+		-148
 	],
 	"defaultZoom": 1.45,
 	"objects": [
@@ -68,6 +72,28 @@
 			"type": "sprite"
 		},
 		{
+			"x": 13,
+			"y": -6,
+			"scale": [
+				2,
+				2
+			],
+			"image": "bg/spr_dw_teevie_rhythm_bg_0",
+			"flipX": false,
+			"filters": 3,
+			"color": "FFFFFF",
+			"angle": 0,
+			"name": "bgDL",
+			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 0,
+			"type": "sprite"
+		},
+		{
 			"x": 17,
 			"y": 12,
 			"scale": [
@@ -80,7 +106,7 @@
 			"color": "FFFFFF",
 			"angle": 0,
 			"name": "bgOld",
-			"antialiasing": true,
+			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -124,7 +150,7 @@
 			"color": "FFFFFF",
 			"angle": 0,
 			"name": "L1",
-			"antialiasing": false,
+			"antialiasing": true,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -146,7 +172,7 @@
 			"color": "FFFFFF",
 			"angle": 0,
 			"name": "L2",
-			"antialiasing": false,
+			"antialiasing": true,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -168,7 +194,7 @@
 			"color": "FFFFFF",
 			"angle": 0,
 			"name": "L3",
-			"antialiasing": false,
+			"antialiasing": true,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -212,7 +238,7 @@
 			"color": "FFFFFF",
 			"angle": 0,
 			"name": "spod1L",
-			"antialiasing": true,
+			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -234,7 +260,7 @@
 			"color": "FFFFFF",
 			"angle": 0,
 			"name": "spod1R",
-			"antialiasing": true,
+			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -256,7 +282,7 @@
 			"color": "FFFFFF",
 			"angle": 0,
 			"name": "spod2L",
-			"antialiasing": true,
+			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -278,7 +304,7 @@
 			"color": "FFFFFF",
 			"angle": 0,
 			"name": "spod2R",
-			"antialiasing": true,
+			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -300,7 +326,7 @@
 			"color": "FFFFFF",
 			"angle": 0,
 			"name": "spod3L",
-			"antialiasing": true,
+			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -322,7 +348,7 @@
 			"color": "FFFFFF",
 			"angle": 0,
 			"name": "spod3R",
-			"antialiasing": true,
+			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -385,19 +411,15 @@
 			"type": "sprite"
 		}
 	],
-	"camera_girlfriend": [
-		151,
-		-148
-	],
+	"camera_speed": 1,
+	"directory": "",
 	"opponent": [
 		499,
 		-127
 	],
-	"directory": "",
-	"camera_speed": 1,
-	"hide_girlfriend": false,
 	"camera_opponent": [
 		-340,
 		-39
-	]
+	],
+	"hide_girlfriend": false
 }

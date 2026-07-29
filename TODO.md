@@ -61,7 +61,7 @@
     * [ ]  *true* lyric
     * [ ]  custom settings
       * [ ]  split OppHitSound
-      * [ ]  preview characters
+      * [X]  preview characters
       * [ ]  save as ***other* file/s**
       * [ ]  conver from DLLFRE
   * [X]  3 players
@@ -91,9 +91,9 @@
     * [X]  changeBPM/PerBPM
     * [ ]  cusomanimations
     * [X]  lyric
-  * [ ]  notes
+  * [X]  notes
     * [X]  convert NoteData
-    * [ ]  fixLongSize
+    * [X]  fixLongSize
   * [ ]  example mod
     * [X]  GSAF5
     * [ ]  ? port DDLFRE CMMM
