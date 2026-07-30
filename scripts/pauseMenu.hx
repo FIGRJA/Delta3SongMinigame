@@ -51,7 +51,6 @@ function onUpdate(e) {
 		CustomSubstate.openCustomSubstate('END', true);}
 }
 var curAction:Int = 0;
-
 function onCustomSubstateCreate(name) {
 	isPause = name == "DeltaPause";
 	if (!isPause)
@@ -86,8 +85,9 @@ function onCustomSubstateCreate(name) {
 	backed.animation.play('pog', true);
 	backed.camera = pauseBG;
 	customSubstate.add(backed);
-
-	for (act in ["restart", PlayState.SONG.format != "psych_v1_convert"?"toMenu":"!⚠custom⚠!", "exit"]) {
+	var listAct = ["restart", PlayState.SONG.format != "psych_v1_convert"?"toMenu":"!⚠custom⚠!", "exit"];
+	if (Control.mobileC) listAct.insert(2,"toCE");
+	for (act in listAct) {
 		var action = new FlxText(0, 0, 500, act, 130, true);
 		action.font = Paths.getPath("fronts/fnt_main.ttf");
 		action.cameras = [pauseBG];
@@ -111,14 +111,14 @@ function onCustomSubstateCreate(name) {
 		}
 		inst.fadeIn(2);
 	} catch (e:Dynamic) {}
-	if (true){
+	if (Control.mobileC){
 		var button = new TouchZone( 40, (FlxG.height/2)+100,  (FlxG.width/2),  100);
 		button.cameras = [pauseBG];
 		button.alpha = 0.03;
 		button.angle = 10;
 
 		var scroll = new ScrollableObject(0.02, 40, 100, (FlxG.width/2), FlxG.height, button);
-		scroll.alpha = 0.3;
+		//scroll.alpha = 0.3;
 		scroll.angle = 10;
 		scroll.cameras = [pauseBG];
 		scroll.onPartialScroll.add(delta ->
@@ -165,6 +165,8 @@ function pressAccept() {
 			// FlxG.sound.music.destroy();
 			MusicBeatState.startTransition();
 		// PlayState.nextReloadAll = true;
+		case "toCE":
+			game.openChartEditor();
 		case "exit":
 			CustomSubstate.closeCustomSubstate();
 			PlayState.deathCounter = 0;

@@ -280,7 +280,7 @@ function onCreatePost() {
 	//game.moveCamera(false);
 	//game.camFollow.y = 0;
 	//game.camHUD.scroll.x += 100;
-	game.noteKillOffset = 0;
+	game.noteKillOffset = 140;
     game.botplayTxt.text = "autoplay";
 	// getVar("load_delta_notes").call("loadSong",["scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",2]);
 	// PlayState.SONG.bpm = 148;
@@ -779,7 +779,6 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	game.botplayTxt.y = 80;
 	game.botplayTxt.size = 65;
 	game.botplayTxt.color = SPcameras[1][4];
-
 }
 
 function onEvent(N,v1,v2,T) {
@@ -994,7 +993,9 @@ function onSpawnNote(daNote) {
 		daNote.blockHit = true;
 		daNote.ratingDisabled = true;
 		daNote.hitsoundDisabled = true;
-		daNote.extraData.set("hit", FlxG.random.int(Conductor.safeZoneOffset*(acurateDrums/100), Conductor.safeZoneOffset * (1.6*(100-acurateDrums)/100)) - Conductor.safeZoneOffset);
+		daNote.extraData.set("hit", FlxG.random.int(Conductor.safeZoneOffset*(acurateDrums/100), Conductor.safeZoneOffset * (0.6*(100-acurateDrums)/100)));
+		trace(daNote.extraData.get("hit"));
+		trace(daNote.strumTime);
 		//if (susiRofls)
 		//	daNote.extraData.set("hit", 1000);
 		// daNote.reloadNote();
@@ -1087,6 +1088,8 @@ var TimeUp = 0;
 function onUpdate(e) {
 	if (isMenuChart)
 		return;
+
+	game.noteKillOffset = 100;
 	TimeUp +=e;
 	//debugPrint(ralseiNoteCam.canvas.graphics);
 	if (ClientPrefs.data.shaders)

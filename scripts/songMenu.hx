@@ -237,18 +237,18 @@ function onCreate() {
 	game.skipCountdown = true;
 	limitD = glitchAr.length;
 
-	if (true){
+	if (Control.mobileC){
 		var button = new TouchZone( 70, (FlxG.height/2),  FlxG.width/1.5,  100);
 		button.cameras = [menu];
-		button.alpha = 0.3;
+		//button.alpha = 0.3;
 		var back = new TouchZone(-930,0,  1000, FlxG.height,0xFFFF2C2C);
 		back.cameras = [menu];
-		back.alpha = 0.3;
+		back.alpha = 0.1;
 		add(back);
 		butArray.push(back);
 
 		var scroll = new ScrollableObject(0.02, 70, 0, FlxG.width/1.5, FlxG.height, button);
-		scroll.alpha = 0.3;
+		//scroll.alpha = 0.3;
 		scroll.cameras = [menu];
 		scroll.onPartialScroll.add(delta ->
 		{
@@ -601,7 +601,7 @@ function onUpdate(e) {
 		}
 	}
 
-	if (Control.BACK||butArray[0].justPressed) {
+	if (Control.BACK||butArray[0]?.justPressed) {
 		if (diffAction != null) {
 			
 			playSnd("splat");

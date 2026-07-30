@@ -146,6 +146,7 @@ function onCreatePost() {
     //songV = getVar("SONG").songPlay;
     unspawnNotes = writeNoteToSong(FlxG.sound.music.length);
     eventNotes = writeEvents();
+    //setVF("D3Main","getSong");
     //PlayState.SONG.notes = [];
     ChartingState.GRID_PLAYERS = 2;
     ChartingState.GRID_COLUMNS_PER_PLAYER = 4;
@@ -159,11 +160,12 @@ function onCreatePost() {
 }
 
 function getSong(song) {
-
+    var name = "/mus/"+song+".ogg";
+	if (song.indexOf(".mp3")>0)
+		name = "/"+song;
 	for (i in Mods.getModDirectories()){
-        var path = "mods/"+i+"/";
-        if (NativeFileSystem.exists(path+song))
-            return path+song;
+        if (NativeFileSystem.exists("mods/"+i+name))
+            return "mods/"+i+name;
     }
     
 }
@@ -179,7 +181,7 @@ var e = 0;
 var previewCharaters = new FlxTypedSpriteGroup();
 var animationsS = [ "singDOWN","singUP","singUP-alt","singDOWN-alt", "singUP-alt"];
 var animationsK = [ "singLEFT", "singRIGHT","singRIGHT-alt","singLEFT","singRIGHT-alt","singRIGHT-alt"];
-var animationsR = [ "singUP-hold","idle-alt", "singRIGHT-alt", "idle-alt"];
+var animationsR = [ "singUP","idle-alt", "singRIGHT-alt", "idle-alt"];
 
 var hitsoundSusie = new PsychUINumericStepper(10, 20, 0.2, 0, 0, 1, 1);
 var hitsoundRalsei = new PsychUINumericStepper(10 + 100, 20, 0.2, 0, 0, 1, 1);
@@ -194,16 +196,17 @@ function notDance() {
     //need ralsei only
 }
 function dance(note,newN:Bool) {
-    if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)){//ralsei
-        previewCharaters.members[2].animation.play(animationsR[(note.songData[2]>0?0:1)], !(note.songData[2]>0));
+    if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&statusLoad[2]){//ralsei
+        //trace((animationsR[Std.int(note.songData[2]>0?0:1)])+(newN?"":"-hold"));
+        previewCharaters.members[2].animation.play((animationsR[Std.int(note.songData[2]>0?0:1)])+(newN?"":"-hold"), newN);
         FlxG.sound.play(Paths.sound('hitsound'), hitsoundRalsei.value*(newN?1:hitsoundSign.value));
     }
-    else if (note.songData[1]>=(statusLoad[0]?3:0)){//drums
-        previewCharaters.members[1].animation.play(animationsS[note.songData[1]-(statusLoad[0]?3:0)+(Std.int(note.songData[3]=="Alt Animation")*3)], true);
+    else if (note.songData[1]>=(statusLoad[0]?3:0)&&statusLoad[1]){//drums
+        previewCharaters.members[1].playAnim(animationsS[note.songData[1]-(statusLoad[0]?3:0)+(Std.int(note.songData[3]=="Alt Animation")*3)], true);
         FlxG.sound.play(Paths.sound('hitsound'), hitsoundSusie.value);
     }
     else {//lead
-        previewCharaters.members[0].animation.play(animationsK[note.songData[1]+(Std.int(note.songData[3]=="Alt Animation")*3)], true);
+        previewCharaters.members[0].playAnim(animationsK[note.songData[1]+(Std.int(note.songData[3]=="Alt Animation")*3)], true);
         FlxG.sound.play(Paths.sound('hitsound'), FlxG.state.hitsoundPlayerStepper.value*(newN?0:hitsoundSign.value));
     }
 }
@@ -246,24 +249,25 @@ Helper = ()->{
                     tab_group.add(TBox);
                 }
 
-                tab_group = lyricBox.getTab('custom settings').menu;
+               tab_group = lyricBox.getTab('custom settings').menu;
 
-                state.hitsoundOpponentStepper.alpha = 0.3;
+               state.hitsoundOpponentStepper.alpha = 0.3;
 
-                tab_group.add(hitsoundSusie);
-		        tab_group.add(new FlxText(hitsoundSusie.x, hitsoundSusie.y - 15, 100, 'Hitsound (Susie):'));
-                tab_group.add(hitsoundRalsei);
-		        tab_group.add(new FlxText(hitsoundRalsei.x, hitsoundRalsei.y - 15, 100, 'Hitsound (Ralsei):'));
-                tab_group.add(hitsoundSign);
-		        tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 100, 'HitSign (multuply):'));
+               tab_group.add(hitsoundSusie);
+		       tab_group.add(new FlxText(hitsoundSusie.x, hitsoundSusie.y - 15, 100, 'Hitsound (Susie):'));
+               tab_group.add(hitsoundRalsei);
+		       tab_group.add(new FlxText(hitsoundRalsei.x, hitsoundRalsei.y - 15, 100, 'Hitsound (Ralsei):'));
+               tab_group.add(hitsoundSign);
+		       tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 130, 'HitSign (for BIG fps):'));
                // lyricBox.getTab('lyric').menu.add(previewCharaters);
-                var cursor = new FlxSprite();
-                cursor.loadGraphic(Paths.image("spr_rhythmgame_editor_mouse_0"));
-               FlxG.mouse.load(cursor.pixels);
+               var cursor = new FlxSprite();
+               cursor.loadGraphic(Paths.image("spr_rhythmgame_editor_mouse_0"));
+               //cursor.antialiasing = true;
+               FlxG.mouse.load(cursor.pixels,2);
             }
             if (FlxG.sound.music.length<1000){
                 //trace(getSong("mus/"+songI+".ogg"));
-                FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+PlayState.SONG.gameOverLoop+".ogg"),true,"nice Try"));
+                FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(getSong(PlayState.SONG.gameOverLoop),true,"nice Try"));
                 
                 if (FlxG.sound.music.length<1000) {
                     if (lyricBox!=null){
@@ -286,7 +290,7 @@ Helper = ()->{
                     //songEx = true;
                 //}
                 //trace("h3");
-                state.vocals.loadEmbedded(CacheSystem.loadSound(getSong("mus/"+PlayState.SONG.gameOverEnd+".ogg"),true,"nice Try"));
+                state.vocals.loadEmbedded(CacheSystem.loadSound(getSong(PlayState.SONG.gameOverEnd),true,"nice Try"));
                 state.updateAudioVolume();
                 state.setPitch();
                 //trace("test");
