@@ -30,7 +30,7 @@ if ((!Highscore.songScores.exists(practicN)||Highscore.songScores.get(practicN)<
 }
 var Control = Controls.instance;
 var backed:FlxBackdrop;
-var AlbumCover:FlxSprite = new FlxSprite(1070,60);
+var AlbumCover:FlxSprite = new FlxSprite((FlxG.width)-210,60);
 var inst:FlxSound = new FlxSound();
 var freePlay:FlxSound = new FlxSound();
 var freeAction:Array = [];
@@ -38,7 +38,7 @@ var curAction:Int = 0;
 var diffAction:Array;
 var curDiffAction:Int = 0;
 var timer:Float;
-var menu:FlxCamera = new FlxCamera(0, 0, 1280, 720, 1);
+var menu:FlxCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
 var modInfoText:FlxText;
 var songScoreText:FlxText;
 var butArray = [];
@@ -193,7 +193,7 @@ function onCreate() {
 	} catch (e:Dynamic) {}
 
 
-	modInfoText = new FlxText(700, 0, 580, "", 60, true);
+	modInfoText = new FlxText((FlxG.width)-580, 0, 580, "", 60, true);
 	modInfoText.font = Paths.getPath("fronts/fnt_main.ttf");
 	modInfoText.cameras = [menu];
 	modInfoText.antialiasing = false;
@@ -206,7 +206,7 @@ function onCreate() {
 	AlbumCover.height = 90;
 	add(AlbumCover);
 
-	songScoreText = new FlxText(700, 660, 580, "000000", 60, true);
+	songScoreText = new FlxText((FlxG.width)-580, 660, 580, "000000", 60, true);
 	songScoreText.font = Paths.getPath("fronts/fnt_main.ttf");
 	songScoreText.cameras = [menu];
 	songScoreText.antialiasing = false;
