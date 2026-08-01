@@ -63,7 +63,7 @@
       * [X]  split OppHitSound
       * [X]  preview characters
       * [ ]  save as ***other* file/s**
-      * [ ]  conver from DLLFRE
+      * [X]  conver from DLLFRE
   * [X]  3 players
   * [X]  3 normal icons players
   * [X]  load music from mus
@@ -97,6 +97,15 @@
   * [ ]  example mod
     * [X]  GSAF5
     * [ ]  ? port DDLFRE CMMM
+* [ ]  PlayerCard as songMenu
+  * [ ]  new player
+  * [ ]  customCard
+    * [ ]  inject songList
+    * [ ]  inject song score
+    * [ ]  inject albumArt
+    * [ ]  playeble songs
+    * [ ]  inject stars as notes/time
+    * [ ]  inject song preview
 
 ## issuse
 

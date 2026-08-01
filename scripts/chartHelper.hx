@@ -11,6 +11,7 @@ import flixel.text.FlxText.FlxTextFormatMarkerPair;
 import backend.Mods;
 import backend.CacheSystem;
 import backend.ui.PsychUIBox;
+import backend.ui.PsychUIButton;
 import backend.ui.PsychUICheckBox;
 import backend.ui.PsychUINumericStepper;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
@@ -48,6 +49,7 @@ var statusLoad = [true,true,true];
 //    // Примитивные типы
 //    return a == b;
 //}
+
 
 function writeEvents() {
     var eventsL = [];
@@ -112,7 +114,7 @@ function writeNoteToSong(maxTime) {
 		var simpleNote:Arry<Dynamic> = [0.0, 0, 0.0];
 		simpleNote[0] = note.strumTime;
 		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 3+((statusLoad[1]?3:0)) : 0) + (note.noteType == "drum" ? 3 : 0);
-		simpleNote[2] = note.sustainLength;
+		simpleNote[2] = Math.min(note.noteType == "vocal"?1:0,note.sustainLength);
 		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : null;
         //trace(simpleNote+note.noteType);
 
@@ -160,6 +162,7 @@ function onCreatePost() {
 }
 
 function getSong(song) {
+    if (song == null) return;
     var name = "/mus/"+song+".ogg";
 	if (song.indexOf(".mp3")>0)
 		name = "/"+song;
@@ -210,7 +213,56 @@ function dance(note,newN:Bool) {
         FlxG.sound.play(Paths.sound('hitsound'), FlxG.state.hitsoundPlayerStepper.value*(newN?0:hitsoundSign.value));
     }
 }
-
+var DLLFREmap = [["lead",0],["drum",0],["drum",1],["lead",1],[""],["vocal",0],["vocal",1],["vocal",2]];
+function DLLFRE2DSE() {
+    try{
+    var SuperSimpleNotes = [];
+    var notes = [];
+    var simpleNote = [];
+    for (sec in PlayState.SONG.notes){
+        //trace("1");
+        notes = [];
+        for (note in sec.sectionNotes) {
+        //trace("2");
+            var noteType = DLLFREmap[note[1]][0];
+            var noteData = DLLFREmap[note[1]][1];
+        //trace(noteType+" "+noteData);
+            simpleNote[0] = note[0];
+            simpleNote[1] = noteData + (noteType == "vocal" ? 3+((statusLoad[1]?3:0)) : 0) + (noteType == "drum" ? 3 : 0);
+            simpleNote[2] = note[2];
+        //trace("a");
+            simpleNote[3] = ((note[3] == "botplayNote-gf-alt")||(note[3] == "Alt Animation")) ? "Alt Animation" : null;
+            notes.push(simpleNote.copy());
+        }
+        //trace("3");
+        SuperSimpleNotes.push({
+            sectionNotes: notes,
+            bpm: sec.bpm,
+            mustHitSection: true,
+            gfSection: false,
+            altAnim: false,
+            changeBPM: sec.changeBPM,
+            sectionBeats: sec.sectionBeats
+        });
+    }
+        //trace("4");
+    PlayState.SONG.notes = SuperSimpleNotes;
+    for (e in PlayState.SONG.events){
+        for (v in e[1]){
+            if (v[0].indexOf("Lyrics")>=0){
+                v[0]="ill make lyric";
+                v[2]=null;
+            }
+        }
+    }
+    FlxG.state.reloadNotes();
+}catch (e:Dynamic) {
+        trace(e);
+        //FlxG.signals.preUpdate.remove(Helper);
+        if (lyricText!=null)
+            lyricText.text = "i'm ...\n"+e;
+    }
+}
 var RedE = new FlxTextFormatMarkerPair(new FlxTextFormat(0xAF0000), "'");
 var Green = new FlxTextFormatMarkerPair(new FlxTextFormat(0x00FF15), "'");
 Helper = ()->{
@@ -259,7 +311,10 @@ Helper = ()->{
 		       tab_group.add(new FlxText(hitsoundRalsei.x, hitsoundRalsei.y - 15, 100, 'Hitsound (Ralsei):'));
                tab_group.add(hitsoundSign);
 		       tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 130, 'HitSign (for BIG fps):'));
+		       tab_group.add(new PsychUIButton(10,50,"DLLFRE2DSE",DLLFRE2DSE,70,20));
                // lyricBox.getTab('lyric').menu.add(previewCharaters);
+
+
                var cursor = new FlxSprite();
                cursor.loadGraphic(Paths.image("spr_rhythmgame_editor_mouse_0"));
                //cursor.antialiasing = true;

@@ -302,9 +302,9 @@ function TW(a) {
     if (a == 7){  
             playSnd("drumroll"); 
         new FlxTimer().start(1.2,()->{
-            var RT = genText("FC "+(Std.int(game.ratingPercent*1000)/10)+" - ","center",(FlxG.width/8)-30,120);
+            var RT = genText("FC "+(Std.int(game.ratingPercent*1000)/10)+" - ","center",(FlxG.width/8)-40,120);
             Rating = getTVRating(game.ratingPercent*100);
-            COOLText = new FlxText((FlxG.width/2)+30, 467, 0, Rating[0], 90, true);
+            COOLText = new FlxText((FlxG.width/2)+40, 467, 0, Rating[0], 90, true);
             COOLText.font = Paths.getPath("fronts/fnt_main.ttf");
             COOLText.cameras = [camEnd];
             COOLText.camera= camEnd;

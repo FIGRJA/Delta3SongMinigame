@@ -51,9 +51,9 @@ var krisCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
 var ralsCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
 var wordCombo:FlxText = new FlxText(-115, 265, 350, "COMBO", 90, true);
 var maxCombo:FlxText = new FlxText((FlxG.width/2)+320, 647, 0, "000000", 60, true);
-var maxComboText:FlxText = new FlxText((FlxG.width/2)+217, 675, 0, "MAX COMBO", 25, true);
+var maxComboText:FlxText = new FlxText((FlxG.width/2)+217, 675, 0, "MAX COMBO", 30, true);
 var SCORE:FlxText = new FlxText((FlxG.width/2)-460, 647, 0, "000000", 60, true);
-var SCOREText:FlxText = new FlxText((FlxG.width/2)-295, 675, 0, "SCORE", 25, true);
+var SCOREText:FlxText = new FlxText((FlxG.width/2)-295, 675, 0, "SCORE", 30, true);
 var L1 = MusicBeatState.getVariables().get("L1");
 var L2 = MusicBeatState.getVariables().get("L2");
 var L3 = MusicBeatState.getVariables().get("L3");
@@ -778,6 +778,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	game.botplayTxt.x = -180;
 	game.botplayTxt.y = 80;
 	game.botplayTxt.size = 65;
+	game.botplayTxt.scrollFactor.set(1,1);
 	game.botplayTxt.color = SPcameras[1][4];
 }
 
