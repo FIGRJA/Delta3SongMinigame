@@ -19,6 +19,7 @@ var blueC = new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF1800CF), "&&");
 
 // var r = ~/-/g;
 function onEvent(N, v1, v2, T) {
+	if (N!="ill make lyric") return;
 	// v1 = v1*0.9;
 	// StringTools.replace(v2,"-"," ");
 	v2 = v2.split("-").join("- ");

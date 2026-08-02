@@ -114,7 +114,7 @@ function writeNoteToSong(maxTime) {
 		var simpleNote:Arry<Dynamic> = [0.0, 0, 0.0];
 		simpleNote[0] = note.strumTime;
 		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 3+((statusLoad[1]?3:0)) : 0) + (note.noteType == "drum" ? 3 : 0);
-		simpleNote[2] = Math.min(note.noteType == "vocal"?1:0,note.sustainLength);
+		simpleNote[2] = note.sustainLength;
 		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : null;
         //trace(simpleNote+note.noteType);
 
@@ -201,6 +201,7 @@ function notDance() {
 function dance(note,newN:Bool) {
     if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&statusLoad[2]){//ralsei
         //trace((animationsR[Std.int(note.songData[2]>0?0:1)])+(newN?"":"-hold"));
+        previewCharaters.members[2].idleSuffix = note.songData[2]>0?"":"-alt";
         previewCharaters.members[2].animation.play((animationsR[Std.int(note.songData[2]>0?0:1)])+(newN?"":"-hold"), newN);
         FlxG.sound.play(Paths.sound('hitsound'), hitsoundRalsei.value*(newN?1:hitsoundSign.value));
     }
@@ -229,7 +230,7 @@ function DLLFRE2DSE() {
         //trace(noteType+" "+noteData);
             simpleNote[0] = note[0];
             simpleNote[1] = noteData + (noteType == "vocal" ? 3+((statusLoad[1]?3:0)) : 0) + (noteType == "drum" ? 3 : 0);
-            simpleNote[2] = note[2];
+            simpleNote[2] = Math.max((noteType == "vocal"?100:0),note[2]);
         //trace("a");
             simpleNote[3] = ((note[3] == "botplayNote-gf-alt")||(note[3] == "Alt Animation")) ? "Alt Animation" : null;
             notes.push(simpleNote.copy());
@@ -300,25 +301,26 @@ Helper = ()->{
                     TBox.getTab(charakters[i]).menu.add(char);
                     tab_group.add(TBox);
                 }
+                previewCharaters.members[1].skipDance = true;
 
-               tab_group = lyricBox.getTab('custom settings').menu;
+                tab_group = lyricBox.getTab('custom settings').menu;
 
-               state.hitsoundOpponentStepper.alpha = 0.3;
+                state.hitsoundOpponentStepper.alpha = 0.3;
 
-               tab_group.add(hitsoundSusie);
-		       tab_group.add(new FlxText(hitsoundSusie.x, hitsoundSusie.y - 15, 100, 'Hitsound (Susie):'));
-               tab_group.add(hitsoundRalsei);
-		       tab_group.add(new FlxText(hitsoundRalsei.x, hitsoundRalsei.y - 15, 100, 'Hitsound (Ralsei):'));
-               tab_group.add(hitsoundSign);
-		       tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 130, 'HitSign (for BIG fps):'));
-		       tab_group.add(new PsychUIButton(10,50,"DLLFRE2DSE",DLLFRE2DSE,70,20));
+                tab_group.add(hitsoundSusie);
+		        tab_group.add(new FlxText(hitsoundSusie.x, hitsoundSusie.y - 15, 100, 'Hitsound (Susie):'));
+                tab_group.add(hitsoundRalsei);
+		        tab_group.add(new FlxText(hitsoundRalsei.x, hitsoundRalsei.y - 15, 100, 'Hitsound (Ralsei):'));
+                tab_group.add(hitsoundSign);
+		        tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 130, 'HitSign (for BIG fps):'));
+		        tab_group.add(new PsychUIButton(10,50,"DLLFRE2DSE",DLLFRE2DSE,70,20));
                // lyricBox.getTab('lyric').menu.add(previewCharaters);
 
 
-               var cursor = new FlxSprite();
-               cursor.loadGraphic(Paths.image("spr_rhythmgame_editor_mouse_0"));
-               //cursor.antialiasing = true;
-               FlxG.mouse.load(cursor.pixels,2);
+                var cursor = new FlxSprite();
+                cursor.loadGraphic(Paths.image("spr_rhythmgame_editor_mouse_0"));
+                //cursor.antialiasing = true;
+                FlxG.mouse.load(cursor.pixels,2);
             }
             if (FlxG.sound.music.length<1000){
                 //trace(getSong("mus/"+songI+".ogg"));
@@ -418,8 +420,8 @@ Helper = ()->{
                         }
                         //if (note.mustPress)trace(note.songData);
                     }
-                if (previewCharaters.members[2].animation.finished)
-                    previewCharaters.members[2].animation.play("idle",false);
+                if (previewCharaters.members[2].animation.finished&&!(previewCharaters.members[2].idleSuffix=="-alt"))
+                    previewCharaters.members[2].animation.play("idle"+previewCharaters.members[2].idleSuffix,true);
                 //}
             }
             if (lastTime > Conductor.songPosition)
@@ -548,8 +550,6 @@ function onEventS2(T,v1, v2) {//try new method
 
 function onEventS(T,v1, v2) {
     trace(v1);
-	v2 = v2.split("-").join("- ");
-	v1 = v1.split("-").join("- ");
     //if (RstrinNEXT.length>0){
     //    Rstrin = RstrinNEXT;
     //    word = 0;
@@ -565,6 +565,8 @@ function onEventS(T,v1, v2) {
     }
 	if (v2 == null ||v2 == "null" ||v2.length<=2)
 		v2 = v1;
+	v2 = v2.split("-").join("- ");
+	v1 = v1.split("-").join("- ");
 	var d1 = v1.split(" ").join("").split("-").join("");
 	var d2 = v2.split(" ");
 	var g = -1;

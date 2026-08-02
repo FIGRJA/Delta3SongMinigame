@@ -51,9 +51,9 @@ var krisCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
 var ralsCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
 var wordCombo:FlxText = new FlxText(-115, 265, 350, "COMBO", 90, true);
 var maxCombo:FlxText = new FlxText((FlxG.width/2)+320, 647, 0, "000000", 60, true);
-var maxComboText:FlxText = new FlxText((FlxG.width/2)+217, 675, 0, "MAX COMBO", 30, true);
+var maxComboText:FlxText = new FlxText((FlxG.width/2)+203, 675, 0, "MAX COMBO", 30, true);
 var SCORE:FlxText = new FlxText((FlxG.width/2)-460, 647, 0, "000000", 60, true);
-var SCOREText:FlxText = new FlxText((FlxG.width/2)-295, 675, 0, "SCORE", 30, true);
+var SCOREText:FlxText = new FlxText((FlxG.width/2)-300, 675, 0, "SCORE", 30, true);
 var L1 = MusicBeatState.getVariables().get("L1");
 var L2 = MusicBeatState.getVariables().get("L2");
 var L3 = MusicBeatState.getVariables().get("L3");
@@ -995,8 +995,8 @@ function onSpawnNote(daNote) {
 		daNote.ratingDisabled = true;
 		daNote.hitsoundDisabled = true;
 		daNote.extraData.set("hit", FlxG.random.int(Conductor.safeZoneOffset*(acurateDrums/100), Conductor.safeZoneOffset * (0.6*(100-acurateDrums)/100)));
-		trace(daNote.extraData.get("hit"));
-		trace(daNote.strumTime);
+		//trace(daNote.extraData.get("hit"));
+		//trace(daNote.strumTime);
 		//if (susiRofls)
 		//	daNote.extraData.set("hit", 1000);
 		// daNote.reloadNote();

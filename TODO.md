@@ -49,11 +49,9 @@
   * [ ]  ? multiSL
   * [X]  music Preview
   * [X]  MemoryCheat (use static Array in PlayState as ModchartVarible)
-  * [ ]  ShowRating
   * [ ]  coolScore
   * [X]  mobile support
   * [X]  сортировка
-  * [ ]  ? категории
 * [ ]  Chart Editor
   * [ ]  customWindow
     * [X]  show It
@@ -62,7 +60,7 @@
     * [ ]  custom settings
       * [X]  split OppHitSound
       * [X]  preview characters
-      * [ ]  save as ***other* file/s**
+      * [ ]  save as ***other* file/s** (?.neo)
       * [X]  conver from DLLFRE
   * [X]  3 players
   * [X]  3 normal icons players
