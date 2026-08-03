@@ -438,8 +438,8 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	game.iconP2.visible = false;
 	game.scoreTxt.visible = false;
 	
-	if (PlayState.SONG.format != "psych_v1_convert")
-		game.endCallback = ()->{game.endingSong=true;onEndSong();};
+	if (!PlayState.chartingMode)
+		game.endCallback = ()->{game.endingSong=true;onEndSongs();};
 
 	var gog:Int = 0;
 	for (i in playerStrums) {
@@ -914,7 +914,7 @@ function noteMiss(daNote) {
 			// runTimer(1,"pog");
 			mo[1].alpha = 1;
 			if (tmpMissKris == 3)	
-				new FlxTimer().start(2,()->{onEndSong();});
+				new FlxTimer().start(2,()->{onEndSongs();});
 		}
 	}
 }
@@ -1375,8 +1375,8 @@ function onKeyPresss(key:Int) {
 	
 }
 
-function onEndSong() {
-	if (PlayState.chartingMode||PlayState.SONG.format == "psych_v1_convert")
+function onEndSongs() {
+	if (PlayState.chartingMode)
 		return;
 	game.songScore = songScore;
 	if (!ClientPrefs.getGameplaySetting('practice') && !ClientPrefs.getGameplaySetting('botplay') && (game.endingSong||(game.songName != "practice"))) {
@@ -1399,7 +1399,8 @@ function onEndSong() {
 		}
 	}
 		CustomSubstate.openCustomSubstate('END', true);
-		PlayState.SONG.song = "songChart";
+		if(PlayState.SONG.format != "psych_v1_convert")
+			PlayState.SONG.song = "songChart";
 
 	//FlxG.sound.music.destroy();
 	//MusicBeatState.startTransition();

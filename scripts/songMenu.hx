@@ -309,6 +309,149 @@ function readNEOHead(_File) {
 	return TJSON.parse(s);
 }
 
+function findERS(result,path,i) {
+	if (NativeFileSystem.isDirectory(path + "/SongCharts")){
+		var dir = NativeFileSystem.readDirectory(path + "/SongCharts/");
+		var ok = false;
+		var s = '{
+			"dificulties":[
+				{
+					"name":"play ERS",
+					"prefix":"music_timing_customsong",
+					"postfix":".txt",
+					"dir":"SongCharts/"
+				}
+			],
+			"songs":[';
+		for (n in dir){
+			if (n.indexOf("music_timing_customsong_info")==0){
+				if (ok) s = s + ",";
+				ok = true;
+				var data:Array<String> = File.getContent(path + "/SongCharts/"+n).split("\n");
+				s = s+'{\n';
+				s = s+'	"name":"'+data[9]+'",\n';
+				s = s+'	"nameFile":"",\n';
+				s = s+'	"bpm":'+data[3]+',\n';
+				s = s+'	"speed":'+data[4]+',\n';
+				s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
+				s = s+'	"songPlay":"'+data[1].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
+				s = s+'	"prewCh":"'+data[6].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
+				s = s+'	"prew":"'+data[7].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
+				s = s+'	"album":'+data[11]+',\n';
+				s = s+'	"index":"'+n.split("customsong_info")[1].split(".")[0]+'",\n';
+				s = s+'	"hxModule":null,\n';
+				s = s+'	"dynamic_solo":false\n';
+				s = s+'}\n';
+			}
+		}
+		if (ok){
+			s = s + "]}";
+			//debugPrint(s);
+			//debugPrint(i);
+			var list = TJSON.parse(s);
+			var pack = TJSON.parse('{"name":"'+i+'"}');
+			result.push([pack, list,i]);
+		}
+	}
+}
+
+function findNEO(result,path,i) {
+	var s = "";
+	var IsE = false; 
+	var h = ()->{
+		if (!IsE){
+			s = '{
+				"dificulties":[
+					{
+						"name":"play NEO",
+						"prefix":"",
+						"postfix":"",
+						"dir":""
+					}
+				],
+				"songs":[';
+			IsE = true;
+		}
+	}
+	for (n in NativeFileSystem.readDirectory(path)){
+		if (n.indexOf(".neo")>0){
+			if (IsE) s = s + ",";
+				
+			h();
+			var data = readNEOHead(path+"/"+n);
+			//debugPrint(data);
+			s = s+'{';
+			s = s+'	"name":"'+n.split(".neo").join("")+'",';
+			s = s+'	"nameFile":"'+n+'",';
+			s = s+'	"bpm":'+data.BPM+',';
+			s = s+'	"speed":'+data.Note_speed+',';
+			s = s+'	"songMain":"'+data.Music_file_no_guitar.split(".")[0]+'",';
+			s = s+'	"songPlay":"'+data.Music_file.split(".")[0]+'",';
+			s = s+'	"prewCh":"'+data.Menu_preview.split(".")[0]+'",';
+			s = s+'	"prew":"'+data.Menu_preview.split(".")[0]+'",';
+			s = s+'	"album":'+data.Album+',';
+			s = s+'	"index":"",';
+			s = s+'	"hxModule":null,';
+			s = s+'	"dynamic_solo":false';
+			s = s+'}';
+		}
+	}
+	if (IsE){
+		s = s + "]}";
+		var list = TJSON.parse(s);
+		//debugPrint(list);
+		var pack = TJSON.parse('{"name":"'+i+'"}');
+		result.push([pack, list,i]);
+	}
+}
+function findMIDI(result,path,i) {
+	var s = "";
+	var IsE = false; 
+	var h = ()->{
+		if (!IsE){
+			s = '{
+				"dificulties":[
+					{
+						"name":"play MIDI",
+						"prefix":"",
+						"postfix":"",
+						"dir":""
+					}
+				],
+				"songs":[';
+			IsE = true;
+		}
+	}
+	for (n in NativeFileSystem.readDirectory(path)){
+		if (n.indexOf(".mid")>0&&NativeFileSystem.exists(path+"/mus/"+n.split(".mid").join("")+".ogg")){
+			if (IsE) s = s + ",";
+				
+			h();
+			var data = readNEOHead(path+"/"+n.split(".mid").join("")+".txt");
+			//debugPrint(data);
+			s = s+'{';
+			s = s+'	"name":"'+n.split(".mid").join("")+'",';
+			s = s+'	"nameFile":"'+n+'",';
+			s = s+'	"bpm":0,';
+			s = s+'	"speed":120,';
+			s = s+'	"songMain":"'+n.split(".mid").join("")+'.ogg",';
+			s = s+'	"songPlay":"'+n.split(".mid").join("")+'.ogg",';
+			s = s+'	"album":../'+n.split(".mid").join("")+',';
+			s = s+'	"index":"",';
+			s = s+'	"hxModule":null,';
+			s = s+'	"dynamic_solo":false';
+			s = s+'}';
+		}
+	}
+	if (IsE){
+		s = s + "]}";
+		var list = TJSON.parse(s);
+		//debugPrint(list);
+		var pack = TJSON.parse('{"name":"'+i+'"}');
+		result.push([pack, list,i]);
+	}
+}
+
 function loadSongsLists() {
 	//return getVar("D3Main").call("loadSongsLists",[]);
 	var result:Array = [];
@@ -318,107 +461,22 @@ function loadSongsLists() {
 	//for (i in Mods.getModDirectories()) {
 	for (i in list.enabled) {
 		var path = "mods/" + i;
-		if (NativeFileSystem.exists(path + "/songList.json") && NativeFileSystem.exists(path + "/pack.json")) {
-			// debugPrint(path);
+		if (NativeFileSystem.exists(path + "/songList.json") ) {
+			// debugPrint(path);&& 
 			try {
 				var list = DialogueBoxPsych.parseDialogue(path + "/songList.json"); // dymmy haxe.Json
-				var pack = DialogueBoxPsych.parseDialogue(path + "/pack.json"); // dymmy haxe.Json
+				if (NativeFileSystem.exists(path + "/pack.json"))
+					var pack = DialogueBoxPsych.parseDialogue(path + "/pack.json"); // dymmy haxe.Json
+				else
+					var pack = TJSON.parse('{"name":"'+i+'"}');
 				result.push([pack, list,i]);
 			} catch (e:Dynamic) {
 				debugPrint(e, FlxColor.BLACK);
 			}
 		}
-		else if (NativeFileSystem.isDirectory(path + "/SongCharts")){
-			var dir = NativeFileSystem.readDirectory(path + "/SongCharts/");
-			var ok = false;
-			var s = '{
-				"dificulties":[
-					{
-						"name":"play ERS",
-						"prefix":"music_timing_customsong",
-						"postfix":".txt",
-						"dir":"SongCharts/"
-					}
-				],
-				"songs":[';
-			for (n in dir){
-				if (n.indexOf("music_timing_customsong_info")==0){
-					if (ok) s = s + ",";
-					ok = true;
-					var data:Array<String> = File.getContent(path + "/SongCharts/"+n).split("\n");
-					s = s+'{\n';
-					s = s+'	"name":"'+data[9]+'",\n';
-					s = s+'	"nameFile":"",\n';
-					s = s+'	"bpm":'+data[3]+',\n';
-					s = s+'	"speed":'+data[4]+',\n';
-					s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
-					s = s+'	"songPlay":"'+data[1].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
-					s = s+'	"prewCh":"'+data[6].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
-					s = s+'	"prew":"'+data[7].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
-					s = s+'	"album":'+data[11]+',\n';
-					s = s+'	"index":"'+n.split("customsong_info")[1].split(".")[0]+'",\n';
-					s = s+'	"hxModule":null,\n';
-					s = s+'	"dynamic_solo":false\n';
-					s = s+'}\n';
-				}
-			}
-			if (ok){
-				s = s + "]}";
-				//debugPrint(s);
-				//debugPrint(i);
-				var list = TJSON.parse(s);
-				var pack = TJSON.parse('{"name":"'+i+'"}');
-				result.push([pack, list,i]);
-			}
-		}
-		var s = "";
-		var IsE = false; 
-		var h = ()->{
-			if (!IsE){
-				s = '{
-					"dificulties":[
-						{
-							"name":"play NEO",
-							"prefix":"",
-							"postfix":"",
-							"dir":""
-						}
-					],
-					"songs":[';
-				IsE = true;
-			}
-		}
-		for (n in NativeFileSystem.readDirectory(path)){
-			if (n.indexOf(".neo")>0){
-				if (IsE) s = s + ",";
-					
-				h();
-				var data = readNEOHead(path+"/"+n);
-				//debugPrint(data);
-				s = s+'{';
-				s = s+'	"name":"'+n.split(".neo").join("")+'",';
-				s = s+'	"nameFile":"'+n+'",';
-				s = s+'	"bpm":'+data.BPM+',';
-				s = s+'	"speed":'+data.Note_speed+',';
-				s = s+'	"songMain":"'+data.Music_file_no_guitar.split(".")[0]+'",';
-				s = s+'	"songPlay":"'+data.Music_file.split(".")[0]+'",';
-				s = s+'	"prewCh":"'+data.Menu_preview.split(".")[0]+'",';
-				s = s+'	"prew":"'+data.Menu_preview.split(".")[0]+'",';
-				s = s+'	"album":'+data.Album+',';
-				s = s+'	"index":"",';
-				s = s+'	"hxModule":null,';
-				s = s+'	"dynamic_solo":false';
-				s = s+'}';
-			}
-		}
-		if (IsE){
-			s = s + "]}";
-			var list = TJSON.parse(s);
-			//debugPrint(list);
-			var pack = TJSON.parse('{"name":"'+i+'"}');
-			result.push([pack, list,i]);
-		}
-
+		findERS(result,path,i);
+		findNEO(result,path,i);
+		//findMIDI(result,path,i);
 		
 	}
 	return result;

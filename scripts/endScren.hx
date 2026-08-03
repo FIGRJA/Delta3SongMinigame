@@ -15,6 +15,7 @@ function setVF(Var,Fun) {
 	
 }
 
+var isEnd = false;
 var Control = Controls.instance;
 var camEnd:FlxCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
 var backed;
@@ -138,7 +139,6 @@ var COOLText = null;
 var Rating ;
 var a = 0;
 var TimeUp = 0;
-var isEnd = false;
 function onCustomSubstateUpdate(n, e) {
 	if (!isThis)
 		return;
@@ -167,6 +167,22 @@ function onCustomSubstateUpdate(n, e) {
 function onCustomSubstateDestroy(n) {
 	if (!isThis)
 		return;
+
+    if(PlayState.SONG.format == "psych_v1_convert")
+        new FlxTimer().start(0.1,()->{
+        var realVR = ClientPrefs.data.vsliceResults;
+        ClientPrefs.data.vsliceResults = false;
+        game.updateTime = false;
+        FlxG.sound.music.volume = 0;
+
+        game.vocals.volume = 0;
+        game.vocals.pause();
+        game.opponentVocals.volume = 0;
+        game.opponentVocals.pause();
+        game.endSong();
+        trace("hi");
+        ClientPrefs.data.vsliceResults = realVR;
+    });
 }
 
 function genText_(str,a,?x=0,?y=0,?size=60) {
@@ -335,7 +351,16 @@ function TW(a) {
                 FlxTween.num(0.8, 0.1, 0.2*l,  null,num -> sideTerminalB2.data.noise_amount.value = [num] );
                 FlxTween.num(1, 0, 0.2*l,  null,num -> camEnd.alpha = num );
             });
-        new FlxTimer().start(0.80*l,()->{camEnd.filters = [];MusicBeatState.resetState();});
+        
+        new FlxTimer().start(0.80*l,()->{
+            camEnd.filters = [];
+            if(PlayState.SONG.format != "psych_v1_convert"){
+                MusicBeatState.resetState();
+            }
+            else{
+                CustomSubstate.closeCustomSubstate();
+            }
+        });
     }
 
 
@@ -344,4 +369,7 @@ function TW(a) {
 	//	//MusicBeatState.resetState();
     //});
 }
-function onDestroy() {}
+function onDestroy() {
+                trace("hi2");
+    ClientPrefs.data.vsliceResults = realVR;
+}
