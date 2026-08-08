@@ -2,6 +2,8 @@
 import mikolka.vslice.freeplay.DifficultySprite;
 import mikolka.compatibility.freeplay.FreeplaySongData;
 import mikolka.compatibility.freeplay.FreeplayHelpers;
+import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
+import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Json;
 import backend.StageData;
 import backend.Highscore;
 import backend.Song;
@@ -21,6 +23,28 @@ function readNEOHead(_File) {
 	}
 	s += "}";
 	return TJSON.parse(s);
+}
+
+var songs = [];
+var ExMap:Map = [""=>""];
+var GlobalID = 0;
+
+function GenCapsule(SongName,diffs,week,?prewA,?prewB){
+    var data = new FreeplaySongData(GlobalID, SongName, "bf", FlxColor.fromRGB(0, 0, 0));
+    GlobalID += 1;
+    data.songDifficulties = diffs;
+    data.songWeekName = week;
+    //data.isNew = true;
+    Reflect.setField(data,"currentDifficulty",diffs[0]);//это пиздец...
+    var External = {
+        "diff" : data.currentDifficulty,
+        "diffs" : data.songDifficulties,
+        "rank" : data.scoringRank,
+        "prewA" : prewA,
+        "prewB" : prewB
+    };
+    ExMap.set(SongName,External);
+    songs.push([data,External]);
 }
 
 function findERS(result,path,i) {
@@ -167,11 +191,10 @@ function findMIDI(result,path,i) {
 }
 
 function loadSongsLists() {
-	//return getVar("D3Main").call("loadSongsLists",[]);
-	var result:Array = [];
 
 	Mods.updateModList();
 	var list = Mods.parseList();
+    var modName = "";
 	//for (i in Mods.getModDirectories()) {
 	for (i in list.enabled) {
 		var path = "mods/" + i;
@@ -180,51 +203,68 @@ function loadSongsLists() {
 			try {
 				var list = DialogueBoxPsych.parseDialogue(path + "/songList.json"); // dymmy haxe.Json
 				if (NativeFileSystem.exists(path + "/pack.json"))
-					var pack = DialogueBoxPsych.parseDialogue(path + "/pack.json"); // dymmy haxe.Json
+					modName = DialogueBoxPsych.parseDialogue(path + "/pack.json").name; // dymmy haxe.Json
 				else
-					var pack = TJSON.parse('{"name":"'+i+'"}');
-				result.push([pack, list,i]);
+					modName = i;
+                var diffs = [];
+                for (diff in list.dificulties){
+                    diffs.push(diff.name);
+                }
+                for (song in list.songs){
+                    GenCapsule(song.name,diffs,modName);
+                }
 			} catch (e:Dynamic) {
 				debugPrint(e, FlxColor.BLACK);
 			}
 		}
-		findERS(result,path,i);
-		findNEO(result,path,i);
+		//findERS(result,path,i);
+		//findNEO(result,path,i);
 		//findMIDI(result,path,i);
 		
 	}
-	return result;
 }
-var songs = [];
-function init() {
-    var data = new FreeplaySongData(0, "tutorialus    (infinity)", "bf", FlxColor.fromRGB(0, 0, 0));
-    data.songDifficulties = ["play"];
-    data.isNew = true;
-    Reflect.setField(data,"currentDifficulty","play");//это пиздец...
-    var External = {
-        "diff" : data.currentDifficulty,
-        "rank" : data.scoringRank
-    };
-
-    songs.push([data,External]);
-}
-
 var isUpdatad = false;
+var testet = 0;
+var lastcursong = -1;
+var FreePlayState ;
+function init() {
+    loadSongsLists();
+    //var m = 1;
+    //for (i in ["tutorialus    (infinity)","practice"]){
+    //    var data = new FreeplaySongData(m, i, "bf", FlxColor.fromRGB(0, 0, 0));
+    //    m -= 1;
+    //    data.songDifficulties = ["play"];
+    //    data.songWeekName = "test";
+    //    data.isNew = true;
+    //    Reflect.setField(data,"currentDifficulty","play");//это пиздец...
+    //    var External = {
+    //        "diff" : data.currentDifficulty,
+    //        "diffs" : data.songDifficulties,
+    //        "rank" : data.scoringRank,
+    //        "prew" : "musPPPP"
+    //    };
+    //    ExMap.set(i,External);
+//
+    //    songs.push([data,External]);
+    //}
+}
+
 function introDone() {
     if(isUpdatad) return;
+    FreePlayState = backingCard.instance;
     for (data in songs){
-        backingCard.instance.songs.push(data[0]);
+        FreePlayState.songs.push(data[0]);
     }
-    backingCard.instance.diffIdsTotal = ["play ERS","play NEO","play"];
-    for (diffId in backingCard.instance.diffIdsTotal)
+    FreePlayState.diffIdsTotal = ["play ERS","play NEO","play"];
+    for (diffId in FreePlayState.diffIdsTotal)
 		{
 			//ModsHelper.loadModDir(diffIdsTotalModBinds.get(diffId));
 			var diffSprite:DifficultySprite = new DifficultySprite(diffId);
 			diffSprite.difficultyId = diffId;
-			backingCard.instance.grpDifficulties.add(diffSprite);
+			FreePlayState.grpDifficulties.add(diffSprite);
 		}
-    backingCard.instance.changeSelection(0,true);
-    backingCard.instance.changeDiff(0,true);
+    FreePlayState.changeSelection(0,true);
+    FreePlayState.changeDiff(0,true);
     isUpdatad = true;
     
 }
@@ -235,25 +275,31 @@ function onUpdate() {
         if (data[0].currentDifficulty != data[1].diff){
             updateDiffs = true;
             Reflect.setField(data[0],"currentDifficulty", data[1].diff);
-            data[0].songDifficulties = [data[1].diff];
+            data[0].songDifficulties = data[1].diffs;
             data[0].scoringRank = data[1].rank;
+            data[0].difficultyRating = testet;
         }
     }
     if (updateDiffs){
         trace("иди нах");
-        //backingCard.instance.changeDiff(0,true);
+        testet +=1;
+        //FreePlayState.changeDiff(0,true);
+    }
+
+    if (lastcursong != FreePlayState.curSelected&&FreePlayState.curCapsule.songData!=null){
+        lastcursong = FreePlayState.curSelected;
+        trace(ExMap.get(FreePlayState.curCapsule.songData.songId).prew);
     }
     
 }
-FlxG.signals.postUpdate.add(onUpdate);
 function confirm() {
-    var level = backingCard.instance.curCapsule;
-    backingCard.instance.styleData = {"getStartDelay":()->{return 2000;}};
+    var level = FreePlayState.curCapsule;
+    FreePlayState.styleData = {"getStartDelay":()->{return 2000;}};
     new FlxTimer().start(0.1, function(tmr:FlxTimer)
 		{
             try{
                 //freeplay sheat
-                backingCard.instance.persistentUpdate = false;
+                FreePlayState.persistentUpdate = false;
 		        Mods.currentModDirectory = "Delta3SongMinigame";
                 var songLowercase:String = Paths.formatToSongPath("loadCharts");
 		        var poop:String = Highscore.formatSong(songLowercase, 1);
@@ -262,9 +308,9 @@ function confirm() {
                 if(PlayState.SONG == null) throw "Song parsing failed!";
                 PlayState.isStoryMode = false;
                 PlayState.storyDifficulty = 0;
-                var directory = StageData.forceNextDirectory;
-                LoadingState.loadNextDirectory();
-                StageData.forceNextDirectory = directory;
+                //var directory = StageData.forceNextDirectory;
+                //LoadingState.loadNextDirectory();
+                //StageData.forceNextDirectory = directory;
                 LoadingState.loadAndSwitchState(new PlayState(), true);
 			    //new FreeplayHelpers().moveToPlaystate(st, data, "",null);
                 PlayState.SONG.song = level.songData.songId;//song name
@@ -275,7 +321,13 @@ function confirm() {
 		});
     
 }
+
+
+function onCreate(){
+    FlxG.signals.postUpdate.add(onUpdate);
+}
 function applyExitMovers(a,b){
+    //maybe soon 
     if (isUpdatad)
         destroy();
 }

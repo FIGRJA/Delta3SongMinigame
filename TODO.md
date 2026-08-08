@@ -101,7 +101,7 @@
     * [ ]  inject songList
     * [ ]  inject song score
     * [ ]  inject albumArt
-    * [ ]  playeble songs
+    * [X]  playeble songs
     * [ ]  inject stars as notes/time
     * [ ]  inject song preview
 
