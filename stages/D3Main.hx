@@ -44,8 +44,8 @@ var ralsSnote:FlxSprite ;
 var plSplash:Array = [];
 var krisMissBack:FlxSprite = new ModchartSprite(-190, -200);
 var susiMissBack:FlxSprite = new ModchartSprite(-190, -200);
-var krisMute:FlxSprite = new ModchartSprite(-55, -195);
-var susiMute:FlxSprite = new ModchartSprite(-55, -195);
+var krisMute:FlxSprite = new ModchartSprite(-48, -185);
+var susiMute:FlxSprite = new ModchartSprite(-48, -185);
 var susiCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
 var krisCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
 var ralsCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
@@ -647,8 +647,9 @@ var transferAB = getShader("Dglsl/shd_underwater");
 
 	krisMute.loadGraphic(Paths.image("sp/spr_rhythmgame_mute_0"));
 	// krisMute.color = 0xFF0000;
-	krisMute.scale.x = 3.15;
-	krisMute.scale.y = 3.2;
+	krisMute.scale.x = ((krisNoteCam.width-10)*2)/krisMute.width;
+	krisMute.scale.y = ((krisNoteCam.height-10)*2)/krisMute.height;//3.105;
+	krisMute.scrollFactor.set(1,0);
 	krisMute.antialiasing = false;
 	krisMute.alpha = 0;
 	krisMute.cameras = [krisNoteCam];
@@ -656,8 +657,9 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	add(krisMute);
 	susiMute.loadGraphic(Paths.image("sp/spr_rhythmgame_mute_0"));
 	// susiMute.color = 0xFF0000;
-	susiMute.scale.x = 3.15; // #42
-	susiMute.scale.y = 3.2;
+	susiMute.scale.x = ((susiNoteCam.width-10)*2)/susiMute.width; // #42
+	susiMute.scale.y = ((susiNoteCam.height-10)*2)/susiMute.height;//3.105;
+	susiMute.scrollFactor.set(1,0);
 	susiMute.antialiasing = false;
 	susiMute.alpha = 0;
 	susiMute.cameras = [susiNoteCam];

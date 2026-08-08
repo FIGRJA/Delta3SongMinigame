@@ -3,29 +3,24 @@
 		86,
 		-44
 	],
+	"preload": {
+		"images/sp/": 3,
+		"images/anim/tv": 3
+	},
 	"_editorMeta": {
 		"boyfriend": "kris",
-		"gf": "susi",
-		"dad": "ralsei"
+		"dad": "ralsei",
+		"gf": "susi"
 	},
-	"preload": {
-		"images/anim/tv": 3,
-		"images/sp/": 3
-	},
-	"girlfriend": [
-		119,
-		-135
-	],
-	"stageUI": "",
 	"boyfriend": [
 		313,
 		-120
 	],
-	"camera_girlfriend": [
-		151,
-		-148
+	"stageUI": "",
+	"girlfriend": [
+		119,
+		-135
 	],
-	"defaultZoom": 1.45,
 	"objects": [
 		{
 			"x": 14,
@@ -227,94 +222,6 @@
 		},
 		{
 			"x": 30,
-			"y": 118,
-			"scale": [
-				1,
-				1
-			],
-			"image": "bg/spr_rhythmgame_spotlight_0",
-			"flipX": false,
-			"filters": 3,
-			"color": "FFFFFF",
-			"angle": 0,
-			"name": "spod1L",
-			"antialiasing": false,
-			"flipY": false,
-			"scroll": [
-				1,
-				1
-			],
-			"alpha": 1,
-			"type": "sprite"
-		},
-		{
-			"x": 551,
-			"y": 118,
-			"scale": [
-				1,
-				1
-			],
-			"image": "bg/spr_rhythmgame_spotlight_0",
-			"flipX": true,
-			"filters": 3,
-			"color": "FFFFFF",
-			"angle": 0,
-			"name": "spod1R",
-			"antialiasing": false,
-			"flipY": false,
-			"scroll": [
-				1,
-				1
-			],
-			"alpha": 1,
-			"type": "sprite"
-		},
-		{
-			"x": 30,
-			"y": 40,
-			"scale": [
-				1,
-				1
-			],
-			"image": "bg/spr_rhythmgame_spotlight_0",
-			"flipX": false,
-			"filters": 3,
-			"color": "FFFFFF",
-			"angle": 0,
-			"name": "spod2L",
-			"antialiasing": false,
-			"flipY": false,
-			"scroll": [
-				1,
-				1
-			],
-			"alpha": 1,
-			"type": "sprite"
-		},
-		{
-			"x": 551,
-			"y": 40,
-			"scale": [
-				1,
-				1
-			],
-			"image": "bg/spr_rhythmgame_spotlight_0",
-			"flipX": true,
-			"filters": 3,
-			"color": "FFFFFF",
-			"angle": 0,
-			"name": "spod2R",
-			"antialiasing": false,
-			"flipY": false,
-			"scroll": [
-				1,
-				1
-			],
-			"alpha": 1,
-			"type": "sprite"
-		},
-		{
-			"x": 30,
 			"y": -40,
 			"scale": [
 				1,
@@ -349,6 +256,50 @@
 			"angle": 0,
 			"name": "spod3R",
 			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
+			"x": 548,
+			"y": -108,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_popularity_1",
+			"flipX": false,
+			"filters": 3,
+			"color": "5050FF",
+			"angle": 0,
+			"name": "larity",
+			"antialiasing": true,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 1,
+			"type": "sprite"
+		},
+		{
+			"x": 28,
+			"y": -108,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_popularity_0",
+			"flipX": false,
+			"filters": 3,
+			"color": "5050FF",
+			"angle": 0,
+			"name": "popu",
+			"antialiasing": true,
 			"flipY": false,
 			"scroll": [
 				1,
@@ -411,15 +362,20 @@
 			"type": "sprite"
 		}
 	],
-	"camera_speed": 1,
-	"directory": "",
+	"camera_girlfriend": [
+		151,
+		-148
+	],
+	"defaultZoom": 1.45,
 	"opponent": [
 		499,
 		-127
 	],
+	"directory": "",
+	"camera_speed": 1,
+	"hide_girlfriend": false,
 	"camera_opponent": [
 		-340,
 		-39
-	],
-	"hide_girlfriend": false
+	]
 }

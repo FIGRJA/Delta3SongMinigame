@@ -253,6 +253,7 @@ function DLLFRE2DSE() {
             if (v[0].indexOf("Lyrics")>=0){
                 v[0]="ill make lyric";
                 v[2]=null;
+                e[0] -= 40;
             }
         }
     }

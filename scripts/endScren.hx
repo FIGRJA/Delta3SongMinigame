@@ -22,7 +22,7 @@ var backed;
 var isShader = false;
 var song = PlayState.SONG.song.split("\n").join().split("\r").join();
 var isThis = false;
-var back = new TouchZone( 0, 0,  FlxG.width, FlxG.height,0xFFFF0000);
+var back;
 var songs = {
     "bump":                 [0.5,Paths.sound("snd_bump")],
     "closet_impact":        [0.3,Paths.sound("snd_closet_impact")],
@@ -94,10 +94,12 @@ function onCustomSubstateCreate(name) {
 	backed.camera = camEnd;
 	customSubstate.add(backed);
 
-	//back.alpha = 0.3;
-	back.camera = camEnd;
-	customSubstate.add(back);
-    
+    if (Control.mobileC){
+        back = new TouchZone( 0, 0,  FlxG.width, FlxG.height,0xFFFF0000);
+        //back.alpha = 0.3;
+        back.camera = camEnd;
+        customSubstate.add(back);
+    }
 }
 
 function onCustomSubstateCreatePost(n) {
@@ -152,7 +154,7 @@ function onCustomSubstateUpdate(n, e) {
 	if (isShader)
 	    sideTerminalB2.setFloat("time",TimeUp);
 
-    if ((Control.ACCEPT||back.justPressed)&&isEnd)
+    if ((Control.ACCEPT||back?.justPressed)&&isEnd)
         TW(8);
 		//MusicBeatState.resetState();
     if (COOLText!=null){
@@ -262,9 +264,9 @@ function TW(a) {
     if (a == 1){
         new FlxTimer().start(0.4,()->{
         var RT = genText("MISSED NOTES","left",(FlxG.width/8)-80,40);
-        RT[1].color = 0xFF0000;
+        RT[1].color = 0xFF3434;
         RT = genText(game.songMisses,"right",(FlxG.width/8)+70,40);
-        RT[1].color = 0xFF0000;
+        RT[1].color = 0xFF3434;
         playSnd("punchmed");
         TW(2);
         });
@@ -281,10 +283,10 @@ function TW(a) {
     if (a == 3){
         new FlxTimer().start(0.45,()->{
         var RT = genText("GOLD NOTES","left",(FlxG.width/8)-80,70);
-        RT[1].color = 0xF6FF00;
+        RT[1].color = 0xF9FF46;
         var r = game.ratingsData;
         RT = genText(r[0].hits,"right",(FlxG.width/8)+70,70);
-        RT[1].color = 0xF6FF00;
+        RT[1].color = 0xF9FF46;
         playSnd("punchmed");
         TW(4);
         });

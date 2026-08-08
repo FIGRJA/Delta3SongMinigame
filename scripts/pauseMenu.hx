@@ -55,11 +55,6 @@ function onCustomSubstateCreate(name) {
 	isPause = name == "DeltaPause";
 	if (!isPause)
 		return;
-	back = new TouchZone( 525, -110,  FlxG.width, FlxG.height*1.5,0xFFFF0000);
-	//back.alpha = 0.3;
-	back.angle = -10;
-	back.camera = game.camOther;
-	customSubstate.add(back);
 	timer = 0.2;
 	stunAction = false;
 
@@ -112,6 +107,12 @@ function onCustomSubstateCreate(name) {
 		inst.fadeIn(2);
 	} catch (e:Dynamic) {}
 	if (Control.mobileC){
+		back = new TouchZone( 525, -110,  FlxG.width, FlxG.height*1.5,0xFFFF0000);
+		//back.alpha = 0.3;
+		back.angle = -10;
+		back.camera = game.camOther;
+		customSubstate.add(back);
+
 		var button = new TouchZone( 40, (FlxG.height/2)+100,  (FlxG.width/2),  100);
 		button.cameras = [pauseBG];
 		button.alpha = 0.03;
@@ -205,7 +206,7 @@ function onCustomSubstateUpdate(name, e) {
 		return;
 	}
 	// debugPrint("lol");
-	if (Control.BACK||back.justPressed) {
+	if (Control.BACK||back?.justPressed) {
 
 		playSnd("splat");
 		timer = 4;
