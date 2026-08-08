@@ -1,0 +1,109 @@
+{
+	"version": "1.0.0",
+	"name": "Kris",
+	"ownedChars": [],
+	"showUnownedChars": false,
+	"freeplayStyle": "faith",
+	"freeplayDJ": {
+		"assetPath": "freeplay/freeplay-pico",
+		"text1": "LOL",
+		"text2": "TEST for IT ",
+		"text3": "ZAIBIC",
+		"animations": [
+			{
+				"offsets": [
+					631.7,
+					362.6
+				],
+				"prefix": "pico dj intro",
+				"name": "intro"
+			},
+			{
+				"offsets": [
+					625,
+					360
+				],
+				"prefix": "Pico DJ",
+				"name": "idle"
+			},
+			{
+				"offsets": [
+					625,
+					360
+				],
+				"prefix": "Pico DJ afk",
+				"name": "idleEasterEgg"
+			},
+			{
+				"offsets": [
+					625,
+					360
+				],
+				"prefix": "Pico DJ confirm",
+				"name": "confirm"
+			},
+			{
+				"offsets": [
+					975,
+					260
+				],
+				"prefix": "pico cheer",
+				"name": "fistPump"
+			},
+			{
+				"offsets": [
+					625,
+					360
+				],
+				"prefix": "Pico DJ loss",
+				"name": "loss"
+			},
+			{
+				"offsets": [
+					625,
+					360
+				],
+				"prefix": "Pico DJ to CS",
+				"name": "charSelect"
+			}
+		],
+		"charSelect": {
+			"transitionDelay": 0.45
+		},
+		"cartoon": null,
+		"fistPump": {
+			"loopBadStartFrame": 0,
+			"introBadStartFrame": 0,
+			"introEndFrame": 4,
+			"loopEndFrame": -1,
+			"loopBadEndFrame": -1,
+			"introBadEndFrame": 0,
+			"introStartFrame": 0,
+			"loopStartFrame": 4
+		}
+	},
+	"charSelect": {
+		"gf": {
+			"assetPath": "charSelect/gfChill",
+			"animInfoPath": "charSelect/gfAnimInfo",
+			"visualizer": false
+		},
+		"position": 2
+	},
+	"results": {
+		"great": [],
+		"excellent": [],
+		"music": {
+			"EXCELLENT": "resultsEXCELLENT",
+			"PERFECT": "resultsPERFECT",
+			"GREAT": "resultsNORMAL",
+			"GOOD": "resultsNORMAL",
+			"SHIT": "resultsSHIT",
+			"PERFECT_GOLD": "resultsPERFECT"
+		},
+		"good": [],
+		"loss": [],
+		"perfect": []
+	},
+	"unlocked": true
+}
