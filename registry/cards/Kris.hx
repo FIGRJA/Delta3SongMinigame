@@ -10,10 +10,12 @@ import backend.StageData;
 import backend.Highscore;
 import backend.Song;
 import backend.Mods;
+import backend.Paths;
 import states.LoadingState;
 import tjson.TJSON;
 import Reflect;
-
+Paths.SOUND_EXT = "mp3";
+trace(Paths.SOUND_EXT);
 
 function readNEOHead(_File) {
 	var d = File.getContent(_File);
@@ -33,8 +35,8 @@ var ExMap:Map = [""=>""];
 var GlobalID = 0;
 
 function GenCapsule(SongData){
-	trace(SongData);
-    var data = new FreeplaySongData(GlobalID, SongData.SongName, "gf", FlxColor.fromRGB(0, 0, 0));
+	//trace(SongData);
+    var data = new FreeplaySongData(GlobalID, SongData.SongName, "dad", FlxColor.fromRGB(0, 0, 0));
     GlobalID += 1;
     data.songDifficulties = SongData.diffs;
     data.songWeekName = SongData.modName;
@@ -58,6 +60,12 @@ function GenCapsule(SongData){
 function findERS(path,modName) {
 	if (NativeFileSystem.isDirectory(path + "/SongCharts")){
 		var dir = NativeFileSystem.readDirectory(path + "/SongCharts/");
+		var diffs = ['play ERS'];
+		for (n in dir){
+			if (n.indexOf("_hard")>0){
+			diffs = ['Hard ERS'];
+			}
+		}
 		for (n in dir){
 			if (n.indexOf("music_timing_customsong_info")==0){
 				//if (ok) s = s + ",";
@@ -65,7 +73,7 @@ function findERS(path,modName) {
 				var data:Array<String> = File.getContent(path + "/SongCharts/"+n).split("\n");
 				GenCapsule({
 						"SongName":data[9],
-						"diffs":['play ERS'],
+						"diffs":diffs,
 						"modName":modName,
 						"modDir":path.split("/")[1],
 						"bpm":data[3],
@@ -246,7 +254,7 @@ function introDone() {
     for (data in songs){
         FreePlayState.songs.push(data[0]);
     }
-    FreePlayState.diffIdsTotal = ["play ERS","play NEO","play"];
+    FreePlayState.diffIdsTotal = ["Hard ERS","play ERS","play NEO","play"];
     for (diffId in FreePlayState.diffIdsTotal)
 		{
 			//ModsHelper.loadModDir(diffIdsTotalModBinds.get(diffId));
@@ -278,7 +286,7 @@ function onUpdate() {
 		//FreePlayState.changeDiff(0,true);
     }
 
-    if (lastcursong != FreePlayState.curSelected&&FreePlayState.curCapsule.songData!=null){
+    if ((lastcursong != FreePlayState.curSelected||updateDiffs)&&FreePlayState.curCapsule.songData!=null){
         lastcursong = FreePlayState.curSelected;
 		var curSong = ExMap.get(FreePlayState.curCapsule.songData.songId);
 		var song = "mods/"+curSong.modDir+"/mus/"+(getTmpScore(curSong)>0?curSong.prewA:curSong.prewB)+".ogg";

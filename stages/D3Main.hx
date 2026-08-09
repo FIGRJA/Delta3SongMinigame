@@ -166,6 +166,8 @@ if (PlayState.SONG.format != "psych_v1_convert")
 				for (diff in mod[1].dificulties){
 					if (mod[0].name +"^"+ diff.name == PlayState.SONG.format) {
 						path = "mods/"+mod[2]+"/"+diff.dir + diff.prefix + song.nameFile + diff.postfix;
+						if (index == null)
+							index = diff.postfix;
 					}
 				}
 			}
@@ -1107,11 +1109,12 @@ function onUpdate(e) {
 	//shader_.setFloat("aberation_amount",0.45);
 	//shader_.setFloat("pix",1);
 	//shader_.setFloat("hue",Math.sin(Conductor.songPosition/10000));
-	for (light in [L1, L2, L3]) {
-		//light.y = Math.sin(Conductor.songPosition / 650) * 25 + 230;
-		light.y = Math.sin(TimeUp /0.5) * 25 + 230;
-	}
-
+	try{
+		for (light in [L1, L2, L3]) {
+			//light.y = Math.sin(Conductor.songPosition / 650) * 25 + 230;
+			light.y = Math.sin(TimeUp /0.5) * 25 + 230;
+		}
+	}catch(e:Dynamic){}
 	game.health = 2;
 	// debugPrint(ranSUMI);
 	var DadDead = true;

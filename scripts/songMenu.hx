@@ -313,6 +313,12 @@ function findERS(result,path,i) {
 	if (NativeFileSystem.isDirectory(path + "/SongCharts")){
 		var dir = NativeFileSystem.readDirectory(path + "/SongCharts/");
 		var ok = false;
+		var diffsH = false;
+		for (n in dir){
+			if (n.indexOf("_hard")>0){
+			diffsH = true;
+			}
+		}
 		var s = '{
 			"dificulties":[
 				{
@@ -320,8 +326,14 @@ function findERS(result,path,i) {
 					"prefix":"music_timing_customsong",
 					"postfix":".txt",
 					"dir":"SongCharts/"
-				}
-			],
+				}';
+		s +=diffsH?(',{
+				"name":"Hard ERS",
+				"prefix":"music_timing_customsong",
+				"postfix":"_hard.txt",
+				"dir":"SongCharts/"
+			}'):"";
+		s +='],
 			"songs":[';
 		for (n in dir){
 			if (n.indexOf("music_timing_customsong_info")==0){
@@ -330,7 +342,7 @@ function findERS(result,path,i) {
 				var data:Array<String> = File.getContent(path + "/SongCharts/"+n).split("\n");
 				s = s+'{\n';
 				s = s+'	"name":"'+data[9]+'",\n';
-				s = s+'	"nameFile":"",\n';
+				s = s+'	"nameFile":"'+n.split("customsong_info")[1].split(".")[0]+'",\n';
 				s = s+'	"bpm":'+data[3]+',\n';
 				s = s+'	"speed":'+data[4]+',\n';
 				s = s+'	"songMain":"'+data[0].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
@@ -338,7 +350,7 @@ function findERS(result,path,i) {
 				s = s+'	"prewCh":"'+data[6].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
 				s = s+'	"prew":"'+data[7].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join("")+'",\n';
 				s = s+'	"album":'+data[11]+',\n';
-				s = s+'	"index":"'+n.split("customsong_info")[1].split(".")[0]+'",\n';
+				s = s+'	"index":null,\n';
 				s = s+'	"hxModule":null,\n';
 				s = s+'	"dynamic_solo":false\n';
 				s = s+'}\n';
