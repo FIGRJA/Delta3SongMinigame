@@ -263,11 +263,12 @@ function onUpdate() {
 			var BG = getAlbumCover(curSong.modDir,curSong.album);
 			if (BG!=null){
 				AlbumCover = FreePlayState.albumRoll.newAlbumArt;
-				AlbumCover.loadGraphic(BG );
-				AlbumCover.angle = 10;
-				AlbumCover.offset.set(-60,-110);
+				AlbumCover.replaceFrameGraphic(0,BG );
+				//AlbumCover.loadGraphic(BG );
+				//AlbumCover.angle = 10;
+				//AlbumCover.offset.set(-60,-110);
 				var scale = 280/(AlbumCover.width>AlbumCover.height?AlbumCover.width:AlbumCover.height);
-				AlbumCover.scale.set(scale,scale);
+				//AlbumCover.scale.set(scale,scale);
 				FreePlayState.albumRoll.visible = true;
 				FreePlayState.albumRoll.albumTitle.visible = false;
 				//FreePlayState.albumRoll.applyExitMovers();
