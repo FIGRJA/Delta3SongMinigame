@@ -2,6 +2,7 @@
 if (PlayState.SONG.stage!="D3Main") return;
 import Reflect;
 import backend.Controls;
+import flixel.text.FlxTextBorderStyle;
 
 var CustomControls = {
 	"ANY" : -2,
@@ -235,7 +236,7 @@ function int2str(int) {
 
 
 var isAllowed:Bool = PlayState.SONG.song != "songChart";
-
+var border = Type.createEnum(FlxTextBorderStyle,"OUTLINE"); 
 var keyboardBinds = Controls.instance.keyboardBinds;
 var keySprites = [
     new FlxText(208,100,90,CustomInt2str(keyboardBinds["note_left"][0] ),30),
@@ -251,6 +252,8 @@ function onCreate() {
         sp.camera = game.camGame; 
         sp.font = Paths.getPath("fronts/fnt_main.ttf");
         sp.alignment = s<=1?"right":"left";
+        sp.borderStyle = border;
+        sp.borderSize = 2;
         add(sp);
     }
 }

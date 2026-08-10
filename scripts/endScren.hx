@@ -186,16 +186,23 @@ function onCustomSubstateDestroy(n) {
         ClientPrefs.data.vsliceResults = realVR;
     });
 }
-
+//var border = Type.createEnum(FlxTextBorderStyle,"OUTLINE"); 
+var border = Type.createEnum(FlxTextBorderStyle,"SHADOW_XY",[-10,10]); 
+trace(border);
 function genText_(str,a,?x=0,?y=0,?size=60) {
-    var text = new FlxText(0, 0, 0, str, 15*4, true);
+    var text = new FlxText(0, 0, str.length*7*4, str, 15*4, true);
 	text.font = Paths.getPath("fronts/fnt_main.ttf");
 	text.cameras = [camEnd];
 	text.camera= camEnd;
     text.antialiasing = false;
+    text.autoSize = false;
     text.alignment = a;
     text.x = x*4;
     text.y = y*4;
+    if (a =="right")
+        text.offset.x = str.length*7*4;
+    //text.borderStyle = border;
+    //text.borderSize = 4;
     //text.size = size;
     //text = text.setBorderStyle(FlxTextBorderStyle.SHADOW_XY(1  , 1));
     customSubstate.add(text);
@@ -206,9 +213,9 @@ var textAr = [];
 function genText(str,a,?x=0,?y=0) {
     var text = [];
 
-    text.push(genText_(str,a,x+1,y+1));
+    text.push(genText_(Std.string(str),a,x+1,y+1));
     text[0].color = 0x00102D;
-    text.push(genText_(str,a,x+0,y+0));
+    text.push(genText_(Std.string(str),a,x+0,y+0));
     //text[1].color = color;
     //trace("a");
     textAr.push(text);
@@ -229,18 +236,18 @@ function getTVRating(p) {
 function TW(a) {
 	if (a == 0) {
         var spD = PlayState.SONG.format.split("^");
-        var RB = genText(song+" : "+spD[1]+" \n("+spD[0]+")","left",(FlxG.width/8),0);
+        var RB = genText(song+" : "+spD[1]+" \n("+spD[0]+")","center",(FlxG.width/8),0);
         RB[0].alpha = 0;
         RB[1].alpha = 0;
         FlxTween.tween(RB[0], {alpha: 0.8}, 10 ,{
             startDelay: 0.5,
             onUpdate:()->{RB[1].alpha=RB[0].alpha;},   
         });
-        var RT = genText("~~~~~~ CONCERT RESULTS ~~~~~~","center",(FlxG.width/8)-105,25);
+        var RT = genText("~~~~~~ CONCERT RESULTS ~~~~~~","center",(FlxG.width/8)-150,25);
         Test = RT;
         RT[0].visible=false;
         RT[1].visible=false;
-        FlxTween.tween(RT[0], {x: (FlxG.width/2)-380}, 0.5 ,{
+        FlxTween.tween(RT[0], {x: (FlxG.width/2)-400}, 0.5 ,{
             startDelay: 1,
             onUpdate:()->{
                 RT[1].x=RT[0].x-3;
@@ -265,7 +272,7 @@ function TW(a) {
         new FlxTimer().start(0.4,()->{
         var RT = genText("MISSED NOTES","left",(FlxG.width/8)-80,40);
         RT[1].color = 0xfd3396;
-        RT = genText(game.songMisses,"right",(FlxG.width/8)+70,40);
+        RT = genText(game.songMisses,"right",(FlxG.width/8)+80,40);
         RT[1].color = 0xfd3396;
         playSnd("punchmed");
         TW(2);
@@ -275,7 +282,7 @@ function TW(a) {
         new FlxTimer().start(0.45,()->{
         var RT = genText("NORMAL NOTES","left",(FlxG.width/8)-80,55);
         var r = game.ratingsData;
-        RT = genText(r[1].hits+"+"+(r[2].hits+r[3].hits),"right",(FlxG.width/8)+70,55);
+        RT = genText(r[1].hits+"+"+(r[2].hits+r[3].hits),"right",(FlxG.width/8)+80,55);
         playSnd("punchmed");
         TW(3);
         });
@@ -285,7 +292,7 @@ function TW(a) {
         var RT = genText("GOLD NOTES","left",(FlxG.width/8)-80,70);
         RT[1].color = 0xf8fe08;
         var r = game.ratingsData;
-        RT = genText(r[0].hits,"right",(FlxG.width/8)+70,70);
+        RT = genText(r[0].hits,"right",(FlxG.width/8)+80,70);
         RT[1].color = 0xf8fe08;
         playSnd("punchmed");
         TW(4);
@@ -294,7 +301,7 @@ function TW(a) {
     if (a == 4){
         new FlxTimer().start(0.45,()->{
         var RT = genText("LONGEST COMBO","left",(FlxG.width/8)-80,85);
-        RT = genText(game.maxCombo,"right",(FlxG.width/8)+70,85);
+        RT = genText(game.maxCombo,"right",(FlxG.width/8)+80,85);
         playSnd("punchmed");
         TW(5);
         });
@@ -307,10 +314,14 @@ function TW(a) {
         });
     }
     if (a == 6){
-        var RT = genText(0,"right",(FlxG.width/8)+70,100);
+        var RT = genText(0,"right",(FlxG.width/8)+80,100);
         FlxTimer.loop(60/1500,(t)->{
             RT[0].text = Math.min(game.songScore,t*1000);
-            RT[1].text = Math.min(game.songScore,t*1000);
+            RT[1].text = RT[0].text;
+            RT[0].fieldWidth = RT[0].text.length*7*4;
+            RT[1].fieldWidth = RT[0].fieldWidth;
+            RT[0].offset.x = RT[0].fieldWidth;
+            RT[1].offset.x = RT[0].fieldWidth;
             playSnd("bump");
         },Std.int(game.songScore/1000)+1);
         new FlxTimer().start((game.songScore/1000+1)*60/1500+0.2,()->{

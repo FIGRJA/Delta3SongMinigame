@@ -5,6 +5,7 @@ import openfl.media.Sound;
 import flixel.math.FlxMatrix;
 import flixel.util.FlxTimer;
 import flixel.util.FlxSpriteUtil;
+import flixel.text.FlxTextBorderStyle;
 import flixel.addons.display.FlxBackdrop;
 import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Json;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
@@ -63,6 +64,8 @@ var songScore = 0;
 var BPix = 5*1/0.35;
 var sectionBeats = 4;
 var SPcameras = [];
+
+var border = Type.createEnum(FlxTextBorderStyle,"OUTLINE"); 
 
 /*
 	0- ch3_karaoke
@@ -672,12 +675,16 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	maxCombo.cameras = [game.camOther];
 	maxCombo.antialiasing = true;
 	maxCombo.alignment = "center";
+	maxCombo.borderStyle = border;
+	maxCombo.borderSize = 3;
 	maxCombo.color = playerStrums.members[3].color;
 	add(maxCombo);
 	maxComboText.font = Paths.getPath("fronts/fnt_main.ttf");
 	maxComboText.cameras = [game.camOther];
 	maxComboText.antialiasing = true;
 	maxComboText.alignment = "center";
+	maxComboText.borderStyle = border;
+	maxComboText.borderSize = 3;
 	maxComboText.color = playerStrums.members[3].color;
 	add(maxComboText);
 
@@ -722,12 +729,16 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	SCORE.cameras = [game.camOther];
 	SCORE.antialiasing = true;
 	SCORE.alignment = "center";
+	SCORE.borderStyle = border;
+	SCORE.borderSize = 3;
 	SCORE.color = playerStrums.members[0].color;
 	add(SCORE);
 	SCOREText.font = Paths.getPath("fronts/fnt_main.ttf");
 	SCOREText.cameras = [game.camOther];
 	SCOREText.antialiasing = true;
 	SCOREText.alignment = "center";
+	SCOREText.borderStyle = border;
+	SCOREText.borderSize = 3;
 	SCOREText.color = playerStrums.members[0].color;
 	add(SCOREText);
 	// for (no in game.unspawnNotes){
