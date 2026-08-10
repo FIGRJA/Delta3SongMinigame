@@ -457,15 +457,15 @@ var transferAB = getShader("Dglsl/shd_underwater");
 			//i.cameras = [krisNoteCam,game.camHUD];
 			//i.x = -48 + gog * 45;
 			if (gog == 0)
-				i.color = 0xFF4CFF9D;
+				i.color = 0xFF07e49e;
 			if (gog == 3)
-				i.color = 0xFF07E2FF;
+				i.color = 0xFF0feeff;
 		} else if (gog == 1 || gog == 2) {
 			i.camera = susiNoteCam;
 			if (gog == 1)
-				i.color = 0xFFFF073D;
+				i.color = 0xFF9d1151;
 			if (gog == 2)
-				i.color = 0xFFFF07A0;
+				i.color = 0xFFb15a96;
 		}
 		i.y = ClientPrefs.data.downScroll?415:-100;
 		
@@ -508,15 +508,15 @@ var transferAB = getShader("Dglsl/shd_underwater");
 		i.visible = false;
 		if (gog == 0){
 			i.x = -90 + 90 * 0;
-			i.color = 0xFF008F1F;
+			i.color = 0xFF005f00;
 		}
 		if (gog == 2){
 			i.x = -90 + 90 * 1;
-			i.color = 0xFFD0FF00;
+			i.color = 0xff9cc41b;
 		}
 		if (gog == 3){
 			i.x = -90 + 90 * 2;
-			i.color = 0xFF00FF37;
+			i.color = 0xFF03be00;
 		}
 		if (gog == 1)
 			i.visible = false;
@@ -672,13 +672,13 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	maxCombo.cameras = [game.camOther];
 	maxCombo.antialiasing = true;
 	maxCombo.alignment = "center";
-	maxCombo.color = 0x07E2FF;
+	maxCombo.color = playerStrums.members[3].color;
 	add(maxCombo);
 	maxComboText.font = Paths.getPath("fronts/fnt_main.ttf");
 	maxComboText.cameras = [game.camOther];
 	maxComboText.antialiasing = true;
 	maxComboText.alignment = "center";
-	maxComboText.color = 0x07E2FF;
+	maxComboText.color = playerStrums.members[3].color;
 	add(maxComboText);
 
 	KrisBaner.cameras = [game.camGame];
@@ -722,13 +722,13 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	SCORE.cameras = [game.camOther];
 	SCORE.antialiasing = true;
 	SCORE.alignment = "center";
-	SCORE.color = 0x4CFF9D;
+	SCORE.color = playerStrums.members[0].color;
 	add(SCORE);
 	SCOREText.font = Paths.getPath("fronts/fnt_main.ttf");
 	SCOREText.cameras = [game.camOther];
 	SCOREText.antialiasing = true;
 	SCOREText.alignment = "center";
-	SCOREText.color = 0x4CFF9D;
+	SCOREText.color = playerStrums.members[0].color;
 	add(SCOREText);
 	// for (no in game.unspawnNotes){
 	//    PreSpawnNote(no);
@@ -1227,16 +1227,16 @@ function opponentNoteHit(daNote) {
 	if (!daNote.isSustainNote) {
 		ralsCombo.text = Std.int(ralsCombo.text) + 1;
 		for (note in daNote.tail){
-			note.color = 0xFBAE1F;
+			note.color = 0xffab3a ;
 			note.alpha = 1;
 		}
-		noteSplash(daNote.noteData+4,0xEDF100);
+		noteSplash(daNote.noteData+4,0xffed73);
 		if (RTimerAl!=null)
 			RTimerAl.cancel();
 		FlxTween.tween(ralsSnote, {alpha: 1}, 0.2);
 	}
 	else{
-		noteSplash(daNote.noteData+4,0xEDF100,true);
+		noteSplash(daNote.noteData+4,0xffed73,true);
 		if (RTimerAl!=null)
 			RTimerAl.cancel();
 		RTimerAl = FlxTween.tween(ralsSnote, {alpha: 0}, 0.5 ,{
@@ -1285,8 +1285,8 @@ function goodNoteHit(daNote) {
 			var color2 = 0x878787;
 			if (daNote.rating=="sick"){
 				songScore += 100;
-				color = 0xFBAE1F;
-				color2 = 0xEDF100;
+				color = 0xffab3a;
+				color2 = 0xffed73;
 			}
 			else if (daNote.rating=="good"){
 				songScore += 50;
@@ -1315,7 +1315,7 @@ function goodNoteHit(daNote) {
 		var co = 10-(songScore-0.99)%10;
 		songScore +=co+20;
 	} else {
-		noteSplash(daNote.noteData,0xEDF100,true);
+		noteSplash(daNote.noteData,0xffed73,true);
 		//songScore += 60 / PlayState.SONG.bpm *10 / 4.0;
 		songScore += 0.5;
 		daNote.parent.visible = true;

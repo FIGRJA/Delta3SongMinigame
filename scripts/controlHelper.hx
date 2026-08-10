@@ -270,8 +270,7 @@ function goodNoteHit(daNote) {
 var upTime = 0;
 var tweenRemover = false;//isTutorial
 function onUpdate(e) {
-	trace(game.songName);
-	if (!game.songName.lastIndexOf("tutorialus")==0)
+	if (!(game.songName.lastIndexOf("tutorialus")==0))
         upTime += e;
     if (upTime>5&&!tweenRemover){
         for (sp in keySprites){
@@ -285,10 +284,10 @@ function onUpdate(e) {
             if (FlxG.keys.anyPressed([CustomStr2int(sp.text)])||cpu){
                 if (sp.color == 0xFFFFFF){
                     sp.y += 3;
-                    sp.color = cpu?0xFAF2A9:0xFFEA2F;
+                    sp.color = cpu?0xFAF2A9:0xf7ff09;
                 }
             }else{
-                if (sp.color == 0xFAF2A9||sp.color == 0xFFEA2F){
+                if (sp.color == 0xFAF2A9||sp.color == 0xf7ff09){
                     sp.y += -3;
                     sp.color = 0xFFFFFF;
                 }

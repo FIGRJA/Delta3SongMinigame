@@ -143,7 +143,7 @@
 			"image": "bg/spr_tenna_enemy_bg_parts_2",
 			"flipX": false,
 			"filters": 2,
-			"color": "FFFFFF",
+			"color": "85a0e9",
 			"angle": 0,
 			"name": "L1",
 			"antialiasing": true,
@@ -152,7 +152,7 @@
 				1,
 				1
 			],
-			"alpha": 0.4,
+			"alpha": 0.7,
 			"type": "sprite"
 		},
 		{
@@ -165,7 +165,7 @@
 			"image": "bg/spr_tenna_enemy_bg_parts_2",
 			"flipX": false,
 			"filters": 2,
-			"color": "FFFFFF",
+			"color": "85a0e9",
 			"angle": 0,
 			"name": "L2",
 			"antialiasing": true,
@@ -174,7 +174,7 @@
 				1,
 				1
 			],
-			"alpha": 0.4,
+			"alpha": 0.7,
 			"type": "sprite"
 		},
 		{
@@ -187,7 +187,7 @@
 			"image": "bg/spr_tenna_enemy_bg_parts_2",
 			"flipX": false,
 			"filters": 2,
-			"color": "FFFFFF",
+			"color": "85a0e9",
 			"angle": 0,
 			"name": "L3",
 			"antialiasing": true,
@@ -196,7 +196,7 @@
 				1,
 				1
 			],
-			"alpha": 0.4,
+			"alpha": 0.7,
 			"type": "sprite"
 		},
 		{
@@ -275,7 +275,7 @@
 			"image": "bg/spr_rhythmgame_popularity_1",
 			"flipX": false,
 			"filters": 3,
-			"color": "5050FF",
+			"color": "4a7ce9",
 			"angle": 0,
 			"name": "larity",
 			"antialiasing": false,
@@ -297,7 +297,7 @@
 			"image": "bg/spr_rhythmgame_popularity_0",
 			"flipX": false,
 			"filters": 3,
-			"color": "5050FF",
+			"color": "4a7ce9",
 			"angle": 0,
 			"name": "popu",
 			"antialiasing": false,

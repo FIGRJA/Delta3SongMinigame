@@ -264,9 +264,9 @@ function TW(a) {
     if (a == 1){
         new FlxTimer().start(0.4,()->{
         var RT = genText("MISSED NOTES","left",(FlxG.width/8)-80,40);
-        RT[1].color = 0xFF3434;
+        RT[1].color = 0xfd3396;
         RT = genText(game.songMisses,"right",(FlxG.width/8)+70,40);
-        RT[1].color = 0xFF3434;
+        RT[1].color = 0xfd3396;
         playSnd("punchmed");
         TW(2);
         });
@@ -283,10 +283,10 @@ function TW(a) {
     if (a == 3){
         new FlxTimer().start(0.45,()->{
         var RT = genText("GOLD NOTES","left",(FlxG.width/8)-80,70);
-        RT[1].color = 0xF9FF46;
+        RT[1].color = 0xf8fe08;
         var r = game.ratingsData;
         RT = genText(r[0].hits,"right",(FlxG.width/8)+70,70);
-        RT[1].color = 0xF9FF46;
+        RT[1].color = 0xf8fe08;
         playSnd("punchmed");
         TW(4);
         });
