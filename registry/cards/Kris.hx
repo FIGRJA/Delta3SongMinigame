@@ -3,7 +3,9 @@ import mikolka.vslice.freeplay.DifficultySprite;
 import mikolka.compatibility.freeplay.FreeplaySongData;
 import mikolka.compatibility.freeplay.FreeplayHelpers;
 import mikolka.vslice.freeplay.pslice.BPMCache;
+import mikolka.vslice.freeplay.FreeplayState;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
+import mikolka.funkin.sound.FlxPartialSound;
 import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Json;
 import backend.CacheSystem;
 import backend.StageData;
@@ -32,12 +34,10 @@ function readNEOHead(_File) {
 
 var songs = [];
 var ExMap:Map = [""=>""];
-var GlobalID = 0;
 
 function GenCapsule(SongData){
 	//trace(SongData);
-    var data = new FreeplaySongData(GlobalID, SongData.SongName, "dad", FlxColor.fromRGB(0, 0, 0));
-    GlobalID += 1;
+    var data = new FreeplaySongData(0, SongData.SongName, "dad", FlxColor.fromRGB(0, 0, 0));
     data.songDifficulties = SongData.diffs;
     data.songWeekName = SongData.modName;
     //data.isNew = true;
@@ -63,7 +63,7 @@ function findERS(path,modName) {
 		var diffs = ['play ERS'];
 		for (n in dir){
 			if (n.indexOf("_hard")>0){
-			diffs = ['Hard ERS'];
+			diffs = ['play ERS','Hard ERS'];
 			}
 		}
 		for (n in dir){
@@ -88,64 +88,22 @@ function findERS(path,modName) {
 }
 
 function findNEO(path,modName) {
-	//var s = "";
-	//var IsE = false; 
-	//var h = ()->{
-	//	if (!IsE){
-	//		s = '{
-	//			"dificulties":[
-	//				{
-	//					"name":"play NEO",
-	//					"prefix":"",
-	//					"postfix":"",
-	//					"dir":""
-	//				}
-	//			],
-	//			"songs":[';
-	//		IsE = true;
-	//	}
-	//}
 	for (n in NativeFileSystem.readDirectory(path)){
 		if (n.indexOf(".neo")>0){
-			//if (IsE) s = s + ",";
-			//	
-			//h();
 			var data = readNEOHead(path+"/"+n);
 			GenCapsule({
-					"SongName":n.split(".neo").join(""),
-					"diffs":['play NEO'],
-					"modName":modName,
-					"modDir":path.split("/")[1],
-					"bpm":data.BPM,
-					"songMain":data.Music_file_no_guitar.split(".")[0],
-					"songPlay":data.Music_file.split(".")[0],
-					"prewB":data.Menu_preview.split(".")[0],
-					"prewA":data.Menu_preview.split(".")[0]
-				});
-			//debugPrint(data);
-			//s = s+'{';
-			//s = s+'	"name":"'+n.split(".neo").join("")+'",';
-			//s = s+'	"nameFile":"'+n+'",';
-			//s = s+'	"bpm":'+data.BPM+',';
-			//s = s+'	"speed":'+data.Note_speed+',';
-			//s = s+'	"songMain":"'+data.Music_file_no_guitar.split(".")[0]+'",';
-			//s = s+'	"songPlay":"'+data.Music_file.split(".")[0]+'",';
-			//s = s+'	"prewCh":"'+data.Menu_preview.split(".")[0]+'",';
-			//s = s+'	"prew":"'+data.Menu_preview.split(".")[0]+'",';
-			//s = s+'	"album":'+data.Album+',';
-			//s = s+'	"index":"",';
-			//s = s+'	"hxModule":null,';
-			//s = s+'	"dynamic_solo":false';
-			//s = s+'}';
+				"SongName":n.split(".neo").join(""),
+				"diffs":['play NEO'],
+				"modName":modName,
+				"modDir":path.split("/")[1],
+				"bpm":data.BPM,
+				"songMain":data.Music_file_no_guitar.split(".")[0],
+				"songPlay":data.Music_file.split(".")[0],
+				"prewB":data.Menu_preview.split(".")[0],
+				"prewA":data.Menu_preview.split(".")[0]
+			});
 		}
 	}
-	//if (IsE){
-	//	s = s + "]}";
-	//	var list = TJSON.parse(s);
-	//	//debugPrint(list);
-	//	var pack = TJSON.parse('{"name":"'+i+'"}');
-	//	result.push([pack, list,i]);
-	//}
 }
 function findMIDI(result,path,i) {
 	var s = "";
@@ -246,6 +204,8 @@ var lastcursong = -1;
 var FreePlayState ;
 function init() {
     loadSongsLists();
+	//FreePlayState = FlxG.state.subState;
+	//introDone();
 }
 
 function introDone() {
@@ -289,32 +249,61 @@ function onUpdate() {
     if ((lastcursong != FreePlayState.curSelected||updateDiffs)&&FreePlayState.curCapsule.songData!=null){
         lastcursong = FreePlayState.curSelected;
 		var curSong = ExMap.get(FreePlayState.curCapsule.songData.songId);
-		var song = "mods/"+curSong.modDir+"/mus/"+(getTmpScore(curSong)>0?curSong.prewA:curSong.prewB)+".ogg";
-		FreePlayState.intendedScore = getTmpScore(curSong);
-		FreePlayState.intendedCompletion = getTmpRating(curSong);
+		var song = "mods/"+curSong.modDir+"/mus/"+(getTmpScore()>0?curSong.prewA:curSong.prewB)+".ogg";
+		FreePlayState.intendedScore = getTmpScore();
+		FreePlayState.intendedCompletion = getTmpRating();
         //trace(song);
-		FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(song,true,Paths.formatToSongPath(curSong.SongName)+'/Inst, PATH: mus'), true);
-		FlxG.sound.music.play();
+		playPrew(song);
+		//FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(song,true,Paths.formatToSongPath(curSong.SongName)+'/Inst, PATH: mus'), true);
+		//FlxG.sound.music.play();
     }
     
 }
 
-function getTmpScore(ex) {
-	var path = ex.SongName + ex.modName + ex.diff;
+function getTmpScore() {
+		var ex = ExMap.get(FreePlayState.curCapsule.songData.songId);
+	var path = ex.SongName + ex.modName + FreePlayState.currentDifficulty;
 	if (Highscore.songScores.exists(path))
 		return Highscore.songScores.get(path);
 	return 0;
 }
-function getTmpRating(ex) {
-	var path = ex.SongName + ex.modName + ex.diff;
+function getTmpRating() {
+		var ex = ExMap.get(FreePlayState.curCapsule.songData.songId);
+	var path = ex.SongName + ex.modName + FreePlayState.currentDifficulty;
 	if (Highscore.songRating.exists(path))
 		return Highscore.songRating.get(path);
 	return 0;
 }
+function playPrew(path) {
+	var future = FlxPartialSound.partialLoadFromFile(path,0,1);
+	if(future == null){
+		trace('Internal failure loading instrumentals for"');
+		return false;
+	}
+	future.future.onComplete(function(sound:Sound)
+		{
+			//@:privateAccess{
+				//if(!Std.isOfType(FlxG.state.subState,FreeplayState)) return;
+				var fp = FreePlayState;
+
+				var cap = fp.grpCapsules.activeSongItems[fp.curSelected];
+				if(cap.songData == null  || fp.busy) return;
+			//}
+			
+			trace("Playing preview!");
+			FlxG.sound.playMusic(sound,0);
+			// #if (lime_vorbis && linux)
+			// prevSound?.close();
+			// prevSound = sound;
+			// #end
+			FlxG.sound.music.fadeIn(FreePlayState.FADE_IN_DURATION, FreePlayState.FADE_IN_START_VOLUME, FreePlayState.endVolume);
+		});
+}
+
 function confirm() {
     var level = FreePlayState.curCapsule;
     FreePlayState.styleData = {"getStartDelay":()->{return 2000;}};
-    new FlxTimer().start(0.1, function(tmr:FlxTimer)
+    new FlxTimer().start(0.3, function(tmr:FlxTimer)
 		{
             try{
                 //freeplay sheat
@@ -333,7 +322,7 @@ function confirm() {
                 LoadingState.loadAndSwitchState(new PlayState(), true);
 			    //new FreeplayHelpers().moveToPlaystate(st, data, "",null);
                 PlayState.SONG.song = level.songData.songId;//song name
-                PlayState.SONG.format = level.songData.songWeekName +"^"+ level.songData.currentDifficulty;// mod name + dificult
+                PlayState.SONG.format = level.songData.songWeekName +"^"+ FreePlayState.currentDifficulty;// mod name + dificult
                 trace(PlayState.SONG.song);
                 trace(PlayState.SONG.format);
             }catch(e:Dynamic){trace(e);}
@@ -343,7 +332,7 @@ function confirm() {
 
 
 function onCreate(){
-    FlxG.signals.postUpdate.add(onUpdate);
+    FlxG.signals.preUpdate.add(onUpdate);
 }
 function applyExitMovers(a,b){
     //maybe soon 
@@ -352,5 +341,5 @@ function applyExitMovers(a,b){
 }
 function destroy() {
     
-FlxG.signals.postUpdate.remove(onUpdate);
+FlxG.signals.preUpdate.remove(onUpdate);
 }

@@ -98,12 +98,12 @@
 * [ ]  PlayerCard as songMenu
   * [ ]  new player
   * [ ]  customCard
-    * [ ]  inject songList
-    * [ ]  inject song score
+    * [X]  inject songList
+    * [X]  inject song score
     * [ ]  inject albumArt
     * [X]  playeble songs
     * [ ]  inject stars as notes/time
-    * [ ]  inject song preview
+    * [X]  inject song preview
 
 ## issuse
 
