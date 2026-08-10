@@ -236,7 +236,7 @@ function getTVRating(p) {
 function TW(a) {
 	if (a == 0) {
         var spD = PlayState.SONG.format.split("^");
-        var RB = genText(song+" : "+spD[1]+" \n("+spD[0]+")","center",(FlxG.width/8),0);
+        var RB = genText(song+" : "+spD[1]+" \n("+spD[0]+")","left",(FlxG.width/8),0);
         RB[0].alpha = 0;
         RB[1].alpha = 0;
         FlxTween.tween(RB[0], {alpha: 0.8}, 10 ,{
@@ -333,7 +333,7 @@ function TW(a) {
         new FlxTimer().start(1.2,()->{
             var RT = genText("FC "+(Std.int(game.ratingPercent*1000)/10)+" - ","center",(FlxG.width/8)-40,120);
             Rating = getTVRating(game.ratingPercent*100);
-            COOLText = new FlxText((FlxG.width/2)+40, 467, 0, Rating[0], 90, true);
+            COOLText = new FlxText((FlxG.width/2)-200+(RT[0].text.length*7*4), 467, 0, Rating[0], 90, true);
             COOLText.font = Paths.getPath("fronts/fnt_main.ttf");
             COOLText.cameras = [camEnd];
             COOLText.camera= camEnd;

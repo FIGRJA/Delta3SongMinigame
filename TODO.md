@@ -100,7 +100,7 @@
   * [ ]  customCard
     * [X]  inject songList
     * [X]  inject song score
-    * [ ]  inject albumArt
+    * [X]  inject albumArt //change selfAlbums
     * [X]  playeble songs
     * [ ]  inject stars as notes/time
     * [X]  inject song preview

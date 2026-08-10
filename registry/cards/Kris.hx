@@ -35,6 +35,7 @@ function GenCapsule(SongData){
         "diff" : data.currentDifficulty,
         "diffs" : data.songDifficulties,
         "rank" : data.scoringRank,
+        "album" : SongData.album,
         "prewA" : SongData.prewA ?? SongData.songPlay,
         "prewB" : SongData.prewB ?? SongData.songMain
     };
@@ -62,6 +63,7 @@ function findERS(path,modName) {
 						"modName":modName,
 						"modDir":path.split("/")[1],
 						"bpm":data[3],
+						"album":data[11],
 						"songMain":data[0].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join(""),
 						"songPlay":data[1].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join(""),
 						"prewB":data[6].split(".")[0].split("CUSTOM_SONGS").join("").split("/").join("").split("\\").join(""),
@@ -95,6 +97,7 @@ function findNEO(path,modName) {
 				"modName":modName,
 				"modDir":path.split("/")[1],
 				"bpm":data.BPM,
+				"album":data.Album,
 				"songMain":data.Music_file_no_guitar.split(".")[0],
 				"songPlay":data.Music_file.split(".")[0],
 				"prewB":data.Menu_preview.split(".")[0],
@@ -180,6 +183,7 @@ function loadSongsLists() {
 						"modName":modName,
 						"modDir":i,
 						"bpm":song.bpm,
+						"album":song.album,
 						"songMain":song.songMain,
 						"songPlay":song.songPlay,
 						"prewB":song.prewCh,
@@ -197,7 +201,7 @@ function loadSongsLists() {
 	}
 }
 var isUpdatad = false;
-var testet = 0;
+var testet = 1;
 var lastcursong = -1;
 var FreePlayState ;
 function init() {
@@ -250,10 +254,28 @@ function onUpdate() {
 		var song = "mods/"+curSong.modDir+"/mus/"+(getTmpScore()>0?curSong.prewA:curSong.prewB)+".ogg";
 		FreePlayState.intendedScore = getTmpScore();
 		FreePlayState.intendedCompletion = getTmpRating();
+		FreePlayState.ostName.text = curSong.modDir;
         //trace(song);
 		playPrew(song);
 		//FlxG.sound.music.loadEmbedded(CacheSystem.loadSound(song,true,Paths.formatToSongPath(curSong.SongName)+'/Inst, PATH: mus'), true);
 		//FlxG.sound.music.play();
+		if (curSong.album!=null){
+			var BG = getAlbumCover(curSong.modDir,curSong.album);
+			if (BG!=null){
+				AlbumCover = FreePlayState.albumRoll.newAlbumArt;
+				AlbumCover.loadGraphic(BG );
+				AlbumCover.angle = 10;
+				AlbumCover.offset.set(-60,-110);
+				var scale = 280/(AlbumCover.width>AlbumCover.height?AlbumCover.width:AlbumCover.height);
+				AlbumCover.scale.set(scale,scale);
+				FreePlayState.albumRoll.visible = true;
+				FreePlayState.albumRoll.albumTitle.visible = false;
+				//FreePlayState.albumRoll.applyExitMovers();
+				//FreePlayState.albumRoll.refresh();
+			}
+		}else{
+			//
+		}
     }
     
 }
@@ -296,6 +318,9 @@ function playPrew(path) {
 			// #end
 			FlxG.sound.music.fadeIn(FreePlayState.FADE_IN_DURATION, FreePlayState.FADE_IN_START_VOLUME, FreePlayState.endVolume);
 		});
+}
+function getAlbumCover(mod,cover) {
+	return CacheSystem.loadBitmap("SongAlbums/"+cover+".png",mod,false);
 }
 
 function confirm() {
