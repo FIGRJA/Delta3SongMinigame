@@ -998,7 +998,7 @@ function onSpawnNote(daNote) {
 		daNote.blockHit = true;
 		daNote.ratingDisabled = true;
 		daNote.hitsoundDisabled = true;
-		daNote.extraData.set("hit", FlxG.random.int(Conductor.safeZoneOffset*(acurateDrums/100), Conductor.safeZoneOffset * (0.6*(100-acurateDrums)/100)));
+		daNote.extraData.set("hit", FlxG.random.int(-Conductor.safeZoneOffset * (0.6*(100-acurateDrums)/100), Conductor.safeZoneOffset * (0.6*(100-acurateDrums)/100)));
 		//trace(daNote.extraData.get("hit"));
 		//trace(daNote.strumTime);
 		//if (susiRofls)

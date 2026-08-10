@@ -16,21 +16,6 @@ import backend.Paths;
 import states.LoadingState;
 import tjson.TJSON;
 import Reflect;
-Paths.SOUND_EXT = "mp3";
-trace(Paths.SOUND_EXT);
-
-function readNEOHead(_File) {
-	var d = File.getContent(_File);
-	d = d.split("(/!\\ Chart saved below /!\\)")[0].split("\n");
-	//debugPrint(d);
-	var s = "{";
-	for(i in d){
-		m = i.split(":");
-		s += '"'+m[0].split(" ").join("_")+'":'+m[1]+",";
-	}
-	s += "}";
-	return TJSON.parse(s);
-}
 
 var songs = [];
 var ExMap:Map = [""=>""];
@@ -85,6 +70,19 @@ function findERS(path,modName) {
 			}
 		}
 	}
+}
+
+function readNEOHead(_File) {
+	var d = File.getContent(_File);
+	d = d.split("(/!\\ Chart saved below /!\\)")[0].split("\n");
+	//debugPrint(d);
+	var s = "{";
+	for(i in d){
+		m = i.split(":");
+		s += '"'+m[0].split(" ").join("_")+'":'+m[1]+",";
+	}
+	s += "}";
+	return TJSON.parse(s);
 }
 
 function findNEO(path,modName) {

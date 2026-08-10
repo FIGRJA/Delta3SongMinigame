@@ -163,6 +163,11 @@ function load_all_posible_notes_neo(file:String) {
 function load_all_posible_notes_txt(file:String, postfix:String) {
 	game.unspawnNotes = [];
 	var fileS = file.split(postfix)[0];
+	var indx = fileS.split("music_timing_customsong");
+	if (indx.length==2)
+		indx = indx[1];
+	else
+		indx = "";
 	typeTample = "lead";
 	StausLoad[0] = loadTxtNotes(fileS + postfix);
 	// DeltaRuneCode.call("scr_rhythmgame_notechart_lead", [type]);
@@ -172,7 +177,7 @@ function load_all_posible_notes_txt(file:String, postfix:String) {
 	typeTample = "vocal";
 	StausLoad[2] = loadTxtNotes(fileS + "_vocals" + postfix);
 	// typeTample = "vocal";
-	loadTxtLyrics(fileS + "_lyrics" + postfix);
+	loadTxtLyrics(fileS.split(indx).join("") + "_lyrics" + indx + postfix);
 	// DeltaRuneCode.call("scr_rhythmgame_notechart_vocals", [type]);
 }
 
