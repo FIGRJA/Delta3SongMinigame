@@ -22,9 +22,9 @@
     * [ ]  combo system
       * [X]  +10 score
       * [ ]  animate
-  * [ ]  First logIn
+  * [X]  First logIn
     * [X]  view infinity tutorial
-    * [ ]  view cpuTapping
+    * [X]  view cpuTapping
     * [X]  practice
     * [X]  view controls
   * [ ]  end Screen

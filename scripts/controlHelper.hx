@@ -4,7 +4,6 @@ import Reflect;
 import backend.Controls;
 
 var CustomControls = {
-    // from https://github.com/HaxeFlixel/flixel/blob/master/flixel/input/keyboard/FlxKey.hx
 	"ANY" : -2,
 	"--" : -1,
 	"[A]" : 65,
@@ -236,7 +235,6 @@ function int2str(int) {
 
 
 var isAllowed:Bool = PlayState.SONG.song != "songChart";
-var isTutorial:Bool = game.songName == "tutorialus----(infinity)";
 
 var keyboardBinds = Controls.instance.keyboardBinds;
 var keySprites = [
@@ -256,9 +254,24 @@ function onCreate() {
         add(sp);
     }
 }
+var pressedCPU = [false,false,false,false];
+var pressedCPUT = [null,null,null,null];
+function goodNoteHit(daNote) {
+	if (!daNote.gfNote&&game.cpuControlled) {
+		var key = Std.int(daNote.noteData==3)*2;//+FlxG.random.int(0,1);
+		pressedCPU[key] = true;
+		if (pressedCPUT[key]!=null)
+			pressedCPUT[key]?.cancel();
+		pressedCPUT[key] = new FlxTimer().start(0.2,()->{
+			pressedCPU[key] = false;
+        });
+	}
+}
 var upTime = 0;
-var tweenRemover = true;//isTutorial
+var tweenRemover = false;//isTutorial
 function onUpdate(e) {
+	trace(game.songName);
+	if (!game.songName.lastIndexOf("tutorialus")==0)
         upTime += e;
     if (upTime>5&&!tweenRemover){
         for (sp in keySprites){
@@ -268,13 +281,14 @@ function onUpdate(e) {
     }
     if (keySprites[0].alpha>0){
         for (sp in keySprites){
-            if (FlxG.keys.anyPressed([CustomStr2int(sp.text)])){
+			var cpu = pressedCPU[keySprites.indexOf(sp)];
+            if (FlxG.keys.anyPressed([CustomStr2int(sp.text)])||cpu){
                 if (sp.color == 0xFFFFFF){
                     sp.y += 3;
-                    sp.color = 0xFFEA2F;
+                    sp.color = cpu?0xFAF2A9:0xFFEA2F;
                 }
             }else{
-                if (sp.color == 0xFFEA2F){
+                if (sp.color == 0xFAF2A9||sp.color == 0xFFEA2F){
                     sp.y += -3;
                     sp.color = 0xFFFFFF;
                 }
