@@ -11,7 +11,8 @@ import mikolka.vslice.freeplay.FreeplayState;
 import flixel.addons.transition.FlxTransitionableState;
 
 import mobile.objects.TouchZone;
-import mobile.objects.ScrollableObject;
+if (Controls.instance.mobileC)
+	import mobile.objects.ScrollableObject;
 
 function setVF(Var,Fun) {
 	if (getVar(Var).exists(Fun))

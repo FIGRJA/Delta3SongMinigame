@@ -14,7 +14,7 @@ function onCreatePost() {
 	//game.inst.pause();
 	//game.vocals	.pause();
     
-	game.camGame.scroll.y = game.camFollow.y-2500;
+	//game.camGame.scroll.y = game.camFollow.y-2500;
 		//game.startingSong = false;
 }
 function onUpdate(e) {

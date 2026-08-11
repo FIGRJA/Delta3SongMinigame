@@ -264,6 +264,7 @@ function onUpdate() {
 			if (BG!=null){
 				AlbumCover = FreePlayState.albumRoll.newAlbumArt;
 				AlbumCover.replaceFrameGraphic(0,BG );
+				AlbumCover.antialiasing = false;
 				//AlbumCover.loadGraphic(BG );
 				//AlbumCover.angle = 10;
 				//AlbumCover.offset.set(-60,-110);

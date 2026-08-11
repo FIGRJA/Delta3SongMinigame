@@ -52,9 +52,9 @@ var krisCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
 var ralsCombo:FlxText = new FlxText(-160, 80, 450, "0", 240, true);
 var wordCombo:FlxText = new FlxText(-115, 265, 350, "COMBO", 90, true);
 var maxCombo:FlxText = new FlxText((FlxG.width/2)+320, 647, 0, "000000", 60, true);
-var maxComboText:FlxText = new FlxText((FlxG.width/2)+203, 675, 0, "MAX COMBO", 30, true);
+var maxComboText:FlxText = new FlxText((FlxG.width/2)+200, 675, 0, "MAX COMBO", 30, true);
 var SCORE:FlxText = new FlxText((FlxG.width/2)-460, 647, 0, "000000", 60, true);
-var SCOREText:FlxText = new FlxText((FlxG.width/2)-300, 675, 0, "SCORE", 30, true);
+var SCOREText:FlxText = new FlxText((FlxG.width/2)-285, 675, 0, "SCORE", 30, true);
 var L1 = MusicBeatState.getVariables().get("L1");
 var L2 = MusicBeatState.getVariables().get("L2");
 var L3 = MusicBeatState.getVariables().get("L3");
@@ -219,6 +219,11 @@ else
 	//	for (note in game.unspawnNotes){
 	//		
 	//	}
+	game.skipCountdown = true;
+	try{
+	game.vocals.stop();
+	game.inst.stop();
+	}catch(e:Dynamic){}
 }
 var clear = function() {
 	GL.clearColor(0, 0, 0, 0); 
@@ -315,10 +320,11 @@ function onCreatePost() {
 		//bitmapData.draw(camera.canvas);
 		bitmapData.scroll(-camera.width,-camera.height);
 
-		var SPCam = new FlxSprite(x-(BPix*0.35)/2,y-(BPix*0.35)/2,bitmapData);
+		var SPCam = new FlxSprite(FlxG.random.int(-10,10)*100,FlxG.random.int(-10,10)*100,bitmapData);
 		SPCam.scale.set(0.35,0.35);
 		SPCam.updateHitbox();
 		SPCam.camera = game.camGame;
+		FlxTween.tween(SPCam,{y:y-(BPix*0.35)/2,x:x-(BPix*0.35)/2},1.5);
 
 		//var SPR = new FlxSprite(x,y);
 		//SPR.makeGraphic(camera.width*2+BPix*2, camera.height*2+BPix*2,0x996565,true);
@@ -511,7 +517,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 		i.visible = false;
 		if (gog == 0){
 			i.x = -90 + 90 * 0;
-			i.color = 0xFF005f00;
+			i.color = 0xff009b00;
 		}
 		if (gog == 2){
 			i.x = -90 + 90 * 1;
@@ -519,7 +525,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 		}
 		if (gog == 3){
 			i.x = -90 + 90 * 2;
-			i.color = 0xFF03be00;
+			i.color = 0xff29db26;
 		}
 		if (gog == 1)
 			i.visible = false;
@@ -590,6 +596,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	// debugPrint(Paths.getPath("fronts/fnt_main.ttf"));
 	susiCombo.font = Paths.getPath("fronts/fnt_main.ttf");
 	susiCombo.cameras = [susiNoteCam];
+	susiCombo.alpha = 0.4;
 	// susiCombo.scale.y = 4;
 	susiCombo.antialiasing = false;
 	susiCombo.alignment = "center";
@@ -598,6 +605,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	
 	krisCombo.font = Paths.getPath("fronts/fnt_main.ttf");
 	krisCombo.cameras = [krisNoteCam];
+	krisCombo.alpha = 0.4;
 	// krisCombo.scale.y = 4;
 	krisCombo.antialiasing = false;
 	krisCombo.alignment = "center";
@@ -606,6 +614,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 
 	ralsCombo.font = Paths.getPath("fronts/fnt_main.ttf");
 	ralsCombo.cameras = [ralseiNoteCam];
+	ralsCombo.alpha = 0.4;
 	// ralsCombo.scale.y = 4;
 	ralsCombo.antialiasing = false;
 	ralsCombo.alignment = "center";
@@ -614,6 +623,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 
 	wordCombo.font = Paths.getPath("fronts/fnt_main.ttf");
 	wordCombo.cameras = [];
+	wordCombo.alpha = 0.4;
 	if (statusLoad[0]) wordCombo.cameras.push(krisNoteCam);
 	if (statusLoad[1]) wordCombo.cameras.push(susiNoteCam);
 	if (statusLoad[2]) wordCombo.cameras.push(ralseiNoteCam);
@@ -626,7 +636,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	blackbacknotes.makeGraphic(350, 1000, FlxColor.BLACK);
 	blackbacknotes.alpha = 0.6;
 	blackbacknotes.cameras = [ralseiNoteCam, susiNoteCam, krisNoteCam];
-	insert(4, blackbacknotes);
+	insert(0, blackbacknotes);
 
 	//var distant = 60 / Conductor.bpm * 450;
 	var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
@@ -777,7 +787,8 @@ var transferAB = getShader("Dglsl/shd_underwater");
 		RalsIcon.visible = false;
 	}
 	//debugPrint(-4000/PlayState.SONG.bpm);
-	Conductor.songPosition = (-4*1000*60)/PlayState.SONG.bpm + (-1000);
+	//Conductor.songPosition = (-4*1000*60)/PlayState.SONG.bpm + (-1000);
+	Conductor.songPosition = (-sectionBeats*1000*60)/PlayState.SONG.bpm + (-1500);
 	game.grpHoldSplashes.visible =false;
 
 	if (ClientPrefs.getGameplaySetting('botplay')){
@@ -795,6 +806,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	game.botplayTxt.size = 65;
 	game.botplayTxt.scrollFactor.set(1,1);
 	game.botplayTxt.color = SPcameras[1][4];
+FlxG.sound.music.pause();	
 }
 
 function onEvent(N,v1,v2,T) {

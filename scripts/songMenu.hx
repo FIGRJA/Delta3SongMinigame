@@ -15,7 +15,8 @@ import mikolka.vslice.freeplay.FreeplayState;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 
 import mobile.objects.TouchZone;
-import mobile.objects.ScrollableObject;
+if (Controls.instance.mobileC)
+	import mobile.objects.ScrollableObject;
 
 import tjson.TJSON;
 var isAllowed:Bool = PlayState.SONG.song == "songChart";

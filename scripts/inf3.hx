@@ -5,6 +5,7 @@ var Control = Controls.instance;
 
 
 var isAllowed:Bool = game.songName == "tutorialus-- --(infinity)";
+var isTutor:Bool = (game.songName.lastIndexOf("tutorialus")==0);
 
 
 function setVF(Var,Fun,?AsFun) {
@@ -16,11 +17,9 @@ function setVF(Var,Fun,?AsFun) {
 
 var notes =[];
 function onCreatePost() {
-    isAllowed = game.songName == "tutorialus-- --(infinity)";
-    if (!isAllowed)
-		return;
-    game.botplayTxt.visible = true;
-	game.cpuControlled = true;
+    isTutor = (game.songName.lastIndexOf("tutorialus")==0);
+    if (!isTutor) return;
+    game.camGame.scroll.y = game.camFollow.y-2500;
     setVF("load_delta_notes","addFastNote");
     setVF("D3Main","onCreate","reloadSongs");
     setVF("D3Main","onSectionHit","reloadBPM");
@@ -51,10 +50,13 @@ function onCreatePost() {
         //debugPrint(notes.length);
     //onStartCountdown();
 //setVF("songMenu","loadSongsLists");
+    isAllowed = game.songName == "tutorialus-- --(infinity)";
+    if (!isAllowed) return;
+    game.botplayTxt.visible = true;
+	game.cpuControlled = true;
 }
 function onStartCountdowns() {
-    if (!isAllowed)
-		return;
+    if (!isTutor) return;
 //setVF("D3Main","onCreate");
     //var maxTime = game.inst.length;
     //debugPrint(game.unspawnNotes.length);
@@ -68,13 +70,14 @@ function onStartCountdowns() {
 var kek = false;
 var BAlpha = 1;
 function onUpdate(e) {
-    isAllowed = game.songName == "tutorialus-- --(infinity)";
-    if (!isAllowed)
-		return;
-    setLVD3("susiRofls",false);
-    //debugPrint( game.inst.length);
+    isTutor = (game.songName.lastIndexOf("tutorialus")==0);
+    if (!isTutor) return;
     if (FlxG.sound.music.time +(e*1000)> game.inst.length)
         onEndSong();
+    setLVD3("susiRofls",false);
+    isAllowed = game.songName == "tutorialus-- --(infinity)";
+    if (!isAllowed) return;
+    //debugPrint( game.inst.length);
     if ((Control.PAUSE||Control.ACCEPT)&&!kek){
         PlayState.SONG.song = "songChart";//mini rofls ))
         kek = true;
@@ -129,8 +132,7 @@ function svP()
 }
 
 function onEndSong() {
-    if (!isAllowed){
-		return;}
+    if (!isTutor) return;
     Conductor.songPosition = 0;
     //setSongTime(0);
     //FlxG.sound.music.stop();

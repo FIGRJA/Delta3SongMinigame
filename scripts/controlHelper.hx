@@ -250,6 +250,7 @@ function onCreate() {
         var sp = keySprites[s];
         sp.cameras = [game.camGame]; 
         sp.camera = game.camGame; 
+		sp.antialiasing = false;
         sp.font = Paths.getPath("fronts/fnt_main.ttf");
         sp.alignment = s<=1?"right":"left";
         sp.borderStyle = border;
@@ -260,7 +261,7 @@ function onCreate() {
 var pressedCPU = [false,false,false,false];
 var pressedCPUT = [null,null,null,null];
 function goodNoteHit(daNote) {
-	if (!daNote.gfNote&&game.cpuControlled) {
+	if (!daNote.gfNote&&game.cpuControlled&&keySprites[0].alpha>0) {
 		var key = Std.int(daNote.noteData==3)*2;//+FlxG.random.int(0,1);
 		pressedCPU[key] = true;
 		if (pressedCPUT[key]!=null)
