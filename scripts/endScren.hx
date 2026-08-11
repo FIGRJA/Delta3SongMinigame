@@ -1,4 +1,5 @@
 if (PlayState.SONG.stage!="D3Main") return;
+import mikolka.compatibility.VsliceOptions;
 import flixel.addons.display.FlxBackdrop;
 import flixel.text.FlxTextBorderStyle;
 import flixel.group.FlxTypedGroup;
@@ -19,6 +20,8 @@ var isEnd = false;
 var Control = Controls.instance;
 var camEnd:FlxCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
 var backed;
+var CurChar = VsliceOptions.LAST_MOD.char_name;//from lua calls;EventLoader:32 getFreeplayCharacter ))
+trace(CurChar);
 var isShader = false;
 var song = PlayState.SONG.song.split("\n").join().split("\r").join();
 var isThis = false;
@@ -170,7 +173,7 @@ function onCustomSubstateDestroy(n) {
 	if (!isThis)
 		return;
 
-    if(PlayState.SONG.format == "psych_v1_convert")
+    if(PlayState.SONG.format == "psych_v1_convert"||CurChar=="Kris")
         new FlxTimer().start(0.1,()->{
         var realVR = ClientPrefs.data.vsliceResults;
         ClientPrefs.data.vsliceResults = false;
@@ -224,7 +227,7 @@ function genText(str,a,?x=0,?y=0) {
 var lSnd = ["splat","splat","coin","coin","crowd_cheer_single","crowd_cheer_single"];
 function getTVRating(p) {
     var c = 0;
-    var targ = [[50,"Z"],[65,"C"],[80,"B"],[90,"A"],[98,"S"],[101,"T"]];
+    var targ = [[50,"Z"],[65,"C"],[80,"B"],[90,"A"],[95,"S"],[101,"T"]];
     for (i in targ){
         c+=i[0]>90?1:0;
         if (i[0]>p){
@@ -367,7 +370,7 @@ function TW(a) {
         
         new FlxTimer().start(0.80*l,()->{
             camEnd.filters = [];
-            if(PlayState.SONG.format != "psych_v1_convert"){
+            if(!(PlayState.SONG.format == "psych_v1_convert"||CurChar=="Kris")){
                 MusicBeatState.resetState();
             }
             else{
@@ -384,5 +387,5 @@ function TW(a) {
 }
 function onDestroy() {
                 trace("hi2");
-    ClientPrefs.data.vsliceResults = realVR;
+    //ClientPrefs.data.vsliceResults = realVR;
 }

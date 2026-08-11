@@ -28,6 +28,7 @@ setVF("songMenu","loadSongsLists");
 setVF("load_delta_notes","loadSong");
 setVF("load_delta_notes","writeNoteToSong");
 setVF("load_delta_notes","addFastNote");
+setVF("endScreen","playSnd");
 
 var isMenuChart:Bool = PlayState.SONG.song == "songChart";
 var susiNoteCam:FlxCamera;
@@ -64,6 +65,7 @@ var songScore = 0;
 var BPix = 5*1/0.35;
 var sectionBeats = 4;
 var SPcameras = [];
+var maxComboAllow:Int = 64;
 
 var border = Type.createEnum(FlxTextBorderStyle,"OUTLINE"); 
 
@@ -667,6 +669,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	krisMute.scrollFactor.set(1,0);
 	krisMute.antialiasing = false;
 	krisMute.alpha = 0;
+	krisMute.visible = 0;
 	krisMute.cameras = [krisNoteCam];
 	krisMute.updateHitbox();
 	add(krisMute);
@@ -677,6 +680,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	susiMute.scrollFactor.set(1,0);
 	susiMute.antialiasing = false;
 	susiMute.alpha = 0;
+	susiMute.visible = 0;
 	susiMute.cameras = [susiNoteCam];
 	susiMute.updateHitbox();
 	add(susiMute);
@@ -870,8 +874,8 @@ function onSongStart() {
 var tmpTweenkris:FlxTween;
 var tmpTweensusi:FlxTween;
 var tmpTweenGlobal:FlxTween = null;
-var tmpMissKris:Int = 0;
-var tmpMissSusi:Int = 0;
+var tmpKris:Int = 0;
+var tmpSusie:Int = 0;
 
 function noteMiss(daNote) {
 	if (daNote.isSustainNote) {
@@ -890,12 +894,19 @@ function noteMiss(daNote) {
 		game.songScore += 10;
 		game.vocals.volume = 1;
 		susiMissBack.alpha = 1;
-		tmpMissSusi += 1;
+		tmpSusie = Std.int((Std.int(tmpSusie/(maxComboAllow/3))-1)*maxComboAllow/3);
+		game.RecalculateRating(true);
 		if (tmpTweensusi != null)
 			tmpTweensusi.cancel();
 		tmpTweensusi = FlxTween.tween(susiMissBack, {alpha: 0}, 0.5);
 		FlxTween.color(SusiBaner,0.5,0xFFCF0000,playerStrums.members[2].color,{
-			onUpdate: ()->{SPcameras[0][4]=SusiBaner.color;}
+			onUpdate: ()->{SPcameras[0][4]=SusiBaner.color;},
+			onComplete: ()->{
+				if (tmpKris==maxComboAllow){
+					StageOverlay.alpha = 0.2;
+					StageOverlay.color = 0x85a0e9;
+				}
+			}
 		});
 		for (n in game.notes){
 			if (n.noteType == "drum"){
@@ -909,7 +920,7 @@ function noteMiss(daNote) {
 			FlxTimer.loop(1.8/30,(t)->{
 				shader_.setFloat("Radius"	,2*(30-t)/(30)+shader_.data.Radius.value);
 			},30);
-		tmpMissKris += 1;
+		tmpKris = Std.int((Std.int(tmpKris/(maxComboAllow/3))-1)*maxComboAllow/3);
 		shareSprite(game.boyfriend,10);
 		krisMissBack.alpha = 1;
 		if (tmpTweenkris != null)
@@ -933,14 +944,16 @@ function noteMiss(daNote) {
 			tmpTweenGlobal.cancel();
 		tmpTweenGlobal = FlxTween.tween(StageOverlay, {alpha: 0}, 0.5);
 	}
-	for (mo in [[tmpMissKris, krisMute], [tmpMissSusi, susiMute]]) {
-		if (mo[0] == 3) {
+	for (mo in [[tmpKris, krisMute], [tmpSusie, susiMute]]) {
+		if (mo[0] < 0&&!mo[1].visible) {
+			//mo[0] = -100;
+			mo[1].visible = true;
 			FlxTimer.loop(0.3, (tim) -> {
 				mo[1].alpha = (tim + 1) % 2;
 			}, 4);
 			// runTimer(1,"pog");
 			mo[1].alpha = 1;
-			if (tmpMissKris == 3)	
+			if (krisMute.visible)	
 				new FlxTimer().start(2,()->{onEndSongs();});
 		}
 	}
@@ -1298,7 +1311,15 @@ function goodNoteHit(daNote) {
 	if (!daNote.isSustainNote) {
 		if (!daNote.gfNote) {
 			krisCombo.text = Std.int(krisCombo.text) + 1;
-			tmpMissKris = 0;
+			if (tmpKris==(maxComboAllow-1)){
+				StageOverlay.alpha = 1;
+				StageOverlay.color = 0x85a0e9;
+				if (tmpTweenGlobal != null)
+					tmpTweenGlobal.cancel();
+				tmpTweenGlobal = FlxTween.tween(StageOverlay, {alpha: 0.2}, 0.5);
+				playSnd("crowd_cheer_single");
+			}
+			tmpKris = Math.min(tmpKris+1,maxComboAllow);
 			if (Std.int(krisCombo.text) > Std.int(maxCombo.text)) {
 				maxCombo.text = formatIntToString(Std.int(krisCombo.text), 6);
 				game.maxCombo = Std.int(krisCombo.text);
@@ -1322,7 +1343,7 @@ function goodNoteHit(daNote) {
 					shader_.setFloat("Radius"	,(15-t)/(15)+shader_.data.Radius.value);
 				},15);
 			}
-			songScore += Std.int(krisCombo.text)>=32?10:0;
+			songScore += tmpKris==maxComboAllow?10:0;
 			noteSplash(daNote.noteData,color2);
 			for (note in daNote.tail){
 				note.color = color;
@@ -1330,7 +1351,7 @@ function goodNoteHit(daNote) {
 			}
 		} else {
 			susiCombo.text = Std.int(susiCombo.text) + 1;
-			tmpMissSusi = 0;
+			tmpSusie = Math.min(tmpSusie+1,maxComboAllow);
 		}
 	} else if (daNote.nextNote == null) {
 		daNote.parent.visible = false;

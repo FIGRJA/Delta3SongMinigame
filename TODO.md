@@ -19,7 +19,7 @@
     * [X]  ноты
     * [ ]  реакция на ghost tapping
     * [ ]  ритмичность ralsei
-    * [ ]  combo system
+    * [X]  combo system
       * [X]  +10 score
       * [ ]  animate
   * [X]  First logIn
