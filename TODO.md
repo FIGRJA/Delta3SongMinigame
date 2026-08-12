@@ -49,7 +49,7 @@
   * [ ]  ? multiSL
   * [X]  music Preview
   * [X]  MemoryCheat (use static Array in PlayState as ModchartVarible)
-  * [ ]  coolScore
+  * [X]  coolScore
   * [X]  mobile support
   * [X]  сортировка
 * [ ]  Chart Editor

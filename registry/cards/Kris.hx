@@ -162,10 +162,12 @@ function loadSongsLists() {
 	//for (i in Mods.getModDirectories()) {
 	for (i in list.enabled) {
 		var path = "mods/" + i;
-		if (NativeFileSystem.exists(path + "/pack.json"))
-			modName = DialogueBoxPsych.parseDialogue(path + "/pack.json").name; // dymmy haxe.Json
-		else
-			modName = i;
+		try{
+			if (NativeFileSystem.exists(path + "/pack.json"))
+				modName = DialogueBoxPsych.parseDialogue(path + "/pack.json").name; // dymmy haxe.Json
+			else
+				modName = i;
+		}catch(e:Dynamic){modName = i;}//mobile ...
 		if (NativeFileSystem.exists(path + "/songList.json") ) {
 			// debugPrint(path);&& 
 			try {

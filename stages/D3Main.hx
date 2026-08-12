@@ -920,7 +920,8 @@ function noteMiss(daNote) {
 			FlxTimer.loop(1.8/30,(t)->{
 				shader_.setFloat("Radius"	,2*(30-t)/(30)+shader_.data.Radius.value);
 			},30);
-		tmpKris = Std.int((Std.int(tmpKris/(maxComboAllow/3))-1)*maxComboAllow/3);
+		var xixixi = Std.int(maxComboAllow/3)*3;
+		tmpKris = Std.int((Math.round(tmpKris/(xixixi/3))-1)*xixixi/3);
 		shareSprite(game.boyfriend,10);
 		krisMissBack.alpha = 1;
 		if (tmpTweenkris != null)
@@ -945,7 +946,7 @@ function noteMiss(daNote) {
 		tmpTweenGlobal = FlxTween.tween(StageOverlay, {alpha: 0}, 0.5);
 	}
 	for (mo in [[tmpKris, krisMute], [tmpSusie, susiMute]]) {
-		if (mo[0] < 0&&!mo[1].visible) {
+		if (mo[0] < -40&&!mo[1].visible) {
 			//mo[0] = -100;
 			mo[1].visible = true;
 			FlxTimer.loop(0.3, (tim) -> {

@@ -112,28 +112,6 @@
 			"type": "sprite"
 		},
 		{
-			"x": 13,
-			"y": -6,
-			"scale": [
-				1,
-				1
-			],
-			"image": "bg/spr_rhythmgame_bg_mask_0",
-			"flipX": false,
-			"filters": 2,
-			"color": "3c6498",
-			"angle": 0,
-			"name": "overL",
-			"antialiasing": false,
-			"flipY": false,
-			"scroll": [
-				1,
-				1
-			],
-			"alpha": 0,
-			"type": "sprite"
-		},
-		{
 			"x": 238,
 			"y": 244,
 			"scale": [
@@ -197,6 +175,28 @@
 				1
 			],
 			"alpha": 0.7,
+			"type": "sprite"
+		},
+		{
+			"x": 13,
+			"y": -6,
+			"scale": [
+				1,
+				1
+			],
+			"image": "bg/spr_rhythmgame_bg_mask_0",
+			"flipX": false,
+			"filters": 2,
+			"color": "3c6498",
+			"angle": 0,
+			"name": "overL",
+			"antialiasing": false,
+			"flipY": false,
+			"scroll": [
+				1,
+				1
+			],
+			"alpha": 0,
 			"type": "sprite"
 		},
 		{

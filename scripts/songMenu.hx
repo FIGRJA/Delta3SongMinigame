@@ -12,6 +12,7 @@ import flixel.sound.FlxSound;
 import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Json;//or TJSON
 import mikolka.vslice.StickerSubState;
 import mikolka.vslice.freeplay.FreeplayState;
+import mikolka.funkin.utils.MathUtil;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 
 import mobile.objects.TouchZone;
@@ -584,13 +585,16 @@ function pressAccept() {
 		MusicBeatState.resetState();
 	}
 }
+var targetScore = 0;
 function updateText(?Simpy=false) {
 
 	curAction = Math.abs(freeAction.length + curAction) % freeAction.length;
 	if (diffAction != null)
 		curDiffAction = Math.abs(diffAction.length + curDiffAction) % diffAction.length;
 	// debugPrint("                                                           "+curAction);
-	songScoreText.text = formatIntToString(getTmpScore(), 6);
+	//songScoreText.text = formatIntToString(getTmpScore(), 6);
+	targetScore = getTmpScore();
+	trace(targetScore);
 
 	var bg = getAlbumCover(freeAction[Std.int(curAction)][0][2],freeAction[Std.int(curAction)][2].album);
 	AlbumCover.loadGraphic(bg);
@@ -738,6 +742,8 @@ function onUpdate(e) {
 		timer = 0.05;
 		playSnd("crowd_cheer_single");
 	}
+
+	songScoreText.text = formatIntToString(Std.int(MathUtil.smoothLerp(Std.int(songScoreText.text),targetScore,e,0.5)), 6);
 	
 }
 
