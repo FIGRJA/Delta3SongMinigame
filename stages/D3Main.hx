@@ -203,7 +203,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 		}
 	}
 else
-	statusLoad = [true,true,true];
+	statusLoad = [true,false,false];
 	// for (sos in songsList){
 	//    if (game.songName == sos[1]){
 	//        PlayState.SONG.bpm = sos[2];
@@ -255,6 +255,7 @@ function getSong(mod,song) {
 	
 }
 
+var whoload = [ 'lead'=>0,'drum'=>1,'vocal'=>2,'lyric'=>3];
 function onCreatePost() {
 	if (isMenuChart)
 		return;
@@ -275,6 +276,8 @@ function onCreatePost() {
 
 			if (daNote.sustainLength>0)
 				susAR.push(daNote);
+
+			statusLoad[whoload.get(daNote.noteType)] = true;
 		}
 		for (daNote in susAR){
 			for (n in daNote.tail){
@@ -900,7 +903,8 @@ function noteMiss(daNote) {
 		game.songScore += 10;
 		game.vocals.volume = 1;
 		susiMissBack.alpha = 1;
-		tmpSusie = Std.int((Std.int(tmpSusie/(maxComboAllow/3))-1)*maxComboAllow/3);
+		var xixixi = Std.int(maxComboAllow/3)*3;
+		tmpSusie = Std.int((Math.round(tmpSusie/(xixixi/3))-1)*xixixi/3);
 		game.RecalculateRating(true);
 		if (tmpTweensusi != null)
 			tmpTweensusi.cancel();

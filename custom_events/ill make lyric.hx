@@ -4,7 +4,7 @@ import flixel.util.FlxTimer;
 
 function onCreate() {
 	songTxt = new FlxText(0, 600, FlxG.width, "", 48, true);
-	// songTxt.font = Paths.getPath("fronts/fnt_main.ttf");
+	// songTxt.font = Paths.font("fnt_main.ttf");
 	songTxt.cameras = [game.camOther];
 	songTxt.antialiasing = true;
 	songTxt.alignment = "center";

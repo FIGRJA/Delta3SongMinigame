@@ -113,7 +113,7 @@ function writeNoteToSong(maxTime) {
 			continue;
 		var simpleNote:Arry<Dynamic> = [0.0, 0, 0.0];
 		simpleNote[0] = note.strumTime;
-		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 3+((statusLoad[1]?3:0)) : 0) + (note.noteType == "drum" ? 3 : 0);
+		simpleNote[1] = note.noteData + (note.noteType == "vocal" ? 3+3 : 0) + (note.noteType == "drum" ? 3 : 0);
 		simpleNote[2] = note.sustainLength;
 		simpleNote[3] = note.animSuffix == "-alt" ? "Alt Animation" : null;
         //trace(simpleNote+note.noteType);
@@ -179,7 +179,7 @@ var icons = ["kris","susi","ralsei"];
 var lyricBox;
 var lyricText;
 var lastTime = 0;
-var section = 0;
+var section = -1;
 var e = 0;
 var previewCharaters = new FlxTypedSpriteGroup();
 var animationsS = [ "singDOWN","singUP","singUP-alt","singDOWN-alt", "singUP-alt"];
@@ -285,8 +285,8 @@ Helper = ()->{
         //trace("hi");
         setVar("chartHelper",Helper);
 
-        ChartingState.GRID_PLAYERS = Std.int(statusLoad[0])+Std.int(statusLoad[1])+Std.int(statusLoad[2]);
-        ChartingState.GRID_COLUMNS_PER_PLAYER = Math.max((statusLoad[0]?2:0),Math.max((statusLoad[1]?3:0),(statusLoad[2]?3:0)));
+        ChartingState.GRID_PLAYERS = Math.max((statusLoad[0]?1:0),Math.max((statusLoad[1]?2:0),(statusLoad[2]?3:0)));
+        ChartingState.GRID_COLUMNS_PER_PLAYER = 3;
         ChartingState.keysArray[8] = 57;//flxKey of 'nine'
         if (Type.getClassName(Type.getClass(FlxG.state))=="states.editors.ChartingState"){
             var state =  FlxG.state;
@@ -374,14 +374,17 @@ Helper = ()->{
                 //trace("testm");
                 state.waveformSprite.x = state.gridBg.x - ChartingState.GRID_SIZE*ChartingState.GRID_COLUMNS_PER_PLAYER;
                 //state.waveformSprite.x = FlxG.height/2-(ChartingState.GRID_PLAYERS*ChartingState.GRID_SIZE/2);
+                if (ChartingState.GRID_PLAYERS==1)
+                    state.waveformSprite.x = state.gridBg.x - ChartingState.GRID_SIZE;
                 var i = 0;
                 for (m in 0...3){
-                    if (!statusLoad[m]) continue;
+                    if (m>=ChartingState.GRID_PLAYERS) continue;
                 //trace("test");
                     state.icons[i].changeIcon(icons[m]);
                     Reflect.setProperty(state.characterData,'iconP'+(i+1),icons[m]);
                     state.icons[i].scale.set(2,2);
                     state.icons[i].x += -5;
+                    state.icons[i].visible = statusLoad[m];
                     state.icons[i].updateHitbox();
                     state.icons[i].antialiasing=false;
                     i += 1;
@@ -395,9 +398,17 @@ Helper = ()->{
                     //FlxG.state.icons[i].changeIcon(icons[i]);
                     state.icons[i].antialiasing=false;
                 }
+                if (ChartingState.GRID_PLAYERS==1){
+                    var kek = ChartingState.GRID_SIZE;
+                    ChartingState.GRID_SIZE = 20;
+                    state.updateWaveform();
+                    ChartingState.GRID_SIZE = kek;
+                }
+                
             }//else {
             //    trace (lyricBox.x+" "+lyricBox.y);
             //}
+                ChartingState.GRID_SIZE = 40;
             var lyricUpdated = false;
             if (lastTime != Conductor.songPosition){
                 //if(statusLoad[2]){
@@ -422,7 +433,7 @@ Helper = ()->{
                             //lyricText.text = note.events[0][1]+"\n"+note.events[0][2];
                             else {
                                 dance(note,Conductor.songPosition > note.strumTime && lastTime <= note.strumTime);
-                                if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&note.get_hasSustain()&&statusLoad[2]){
+                                if (note.songData[1]>=3+3&&note.get_hasSustain()&&statusLoad[2]){
                                 if(!lyricUpdated){
                                     try{
                                     singWord(note,Conductor.songPosition>lastTime);

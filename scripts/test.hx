@@ -129,3 +129,10 @@ function setStaticVar(tag:String, varis:Dynamic) {
 }
 
 setVar("extraVar",this);
+
+var settertest;
+function set_settertest(Var) {
+	debugPrint(Var);
+}
+
+settertest = "test";

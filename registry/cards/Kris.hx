@@ -20,11 +20,17 @@ import Reflect;
 var songs = [];
 var ExMap:Map = [""=>""];
 
+
+
 function GenCapsule(SongData){
 	//trace(SongData);
     var data = new FreeplaySongData(0, SongData.SongName, "dad", FlxColor.fromRGB(0, 0, 0));
     data.songDifficulties = SongData.diffs;
     data.songWeekName = SongData.modName;
+	try{
+    	Reflect.setProperty(data,"set_currentDifficulty",trace);//это пиздец...
+		//data.set_currentDifficulty = (v)->{trace(v);};
+	}catch(e:Dynamic){trace("you fall");}
     //data.isNew = true;
     Reflect.setField(data,"currentDifficulty",SongData.diffs[0]);//это пиздец...
 	BPMCache.instance.bpmMap.set("assets/shared/data/"+Paths.formatToSongPath(SongData.SongName),SongData.bpm);
@@ -229,7 +235,6 @@ function introDone() {
     FreePlayState.changeSelection(0,true);
     FreePlayState.changeDiff(0,true);
     isUpdatad = true;
-    
 }
 function onUpdate() {
     if (!isUpdatad) return;

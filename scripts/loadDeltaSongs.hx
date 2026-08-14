@@ -12,7 +12,8 @@ import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 var curStepCrochet:Int = 50;
 var DeltaRuneCode:HScript;
 var songTxt:FlxText;
-var StausLoad = [true,true,true]; // lead,drums,vocal,lyric
+var StausLoad = [false,false,false,false]; // lead,drums,vocal,lyric
+var whoload = [ 'lead'=>0,'drum'=>1,'vocal'=>2,'lyric'=>3];
 function setVF(Var,Fun) {
 	if (getVar(Var).exists(Fun))
 		this.set(Fun,getVar(Var).get(Fun));
@@ -75,10 +76,9 @@ function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 		// PlayState.generateSong();
 		debugPrint("loaded " + game.unspawnNotes.length + " notes");
 		// debugPrint("created "+PlayState.SONG.notes[0].sectionNotes.length+" notes");
-		//debugPrint(StausLoad);
-		return StausLoad;
-	}
-	return [false,false,false];
+		//debugPrint(StausLoad)
+	};
+	return StausLoad;
 }
 //// num => [fun,[args]]
 //var midiMap = [35=>[]];
@@ -194,7 +194,7 @@ function loadTxtNotes(file:String) {
 		//debugPrint("loaded " + file);
 		return true;
 	} else {
-		debugPrint("not loaded " + file);
+		//debugPrint("not loaded " + file);
 		return false;
 	}
 }
@@ -213,7 +213,7 @@ function loadTxtLyrics(file:String) {
 		}
 		//debugPrint("loaded " + file);
 	} else {
-		debugPrint("not loaded " + file);
+		//debugPrint("not loaded " + file);
 	}
 }
 
@@ -282,6 +282,7 @@ function addFastNote(time,data,sus,spec,who) {
 var oldNote:Note;
 
 function scr_rhythmgame_addnote(timming, types, sus, ?spec ) {
+	StausLoad[whoload.get(typeTample)] = true;
 	    //trace("Добавляю ноту: время=" + timming + ", тип=" + typeTample + ", длинна=" + sus);
 	// typeTample = getVar("typeTample");
 	sus = sus * 1000;
