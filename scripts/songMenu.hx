@@ -418,6 +418,39 @@ function findNEO(result,path,i) {
 		result.push([pack, list,i]);
 	}
 }
+function readMIDIinfo(_File) {
+	var d = File.getContent(_File);
+	d = d.split("\n");
+	//debugPrint(d);
+	var s = "{";
+	for(i in d){
+		m = i.split(":");
+		s += '"'+m[0].split(" ").join("_")+'":"'+m[1]+'",';
+	}
+	s += "}";
+	//debugPrint(s);
+	//trace(d);
+	return TJSON.parse(s);
+}
+
+function findMIDI(path,modName) {
+	for (n in NativeFileSystem.readDirectory(path)){
+		if (n.indexOf(".mid")>0&&NativeFileSystem.exists(path+"/mus/"+n.split(".mid").join("")+".ogg")){
+			GenCapsule({
+				"SongName":n.split(".mid").join(""),
+				"diffs":['D:LLP'],
+				"modName":modName,
+				"modDir":path.split("/")[1],
+				"bpm":0,
+				"album":"../"+n.split(".mid").join(""),
+				"songMain":n.split(".mid").join(""),
+				"songPlay":n.split(".mid").join(""),
+				"prewB":null,
+				"prewA":null
+			});
+		}
+	}
+}
 function findMIDI(result,path,i) {
 	var s = "";
 	var IsE = false; 
@@ -441,19 +474,21 @@ function findMIDI(result,path,i) {
 			if (IsE) s = s + ",";
 				
 			h();
-			var data = readNEOHead(path+"/"+n.split(".mid").join("")+".txt");
+			var data = readMIDIinfo(path+"/"+n.split(".mid").join("")+".txt");
 			//debugPrint(data);
 			s = s+'{';
-			s = s+'	"name":"'+n.split(".mid").join("")+'",';
-			s = s+'	"nameFile":"'+n+'",';
-			s = s+'	"bpm":0,';
-			s = s+'	"speed":120,';
-			s = s+'	"songMain":"'+n.split(".mid").join("")+'.ogg",';
-			s = s+'	"songPlay":"'+n.split(".mid").join("")+'.ogg",';
-			s = s+'	"album":../'+n.split(".mid").join("")+',';
-			s = s+'	"index":"",';
-			s = s+'	"hxModule":null,';
-			s = s+'	"dynamic_solo":false';
+			s = s+'	"name":"'+n.split(".mid").join("")+'",\n';
+			s = s+'	"nameFile":"'+n+'",\n';
+			s = s+'	"bpm":0,\n';
+			s = s+'	"speed":120,\n';
+			s = s+'	"songMain":"'+n.split(".mid").join("")+'",\n';
+			s = s+'	"songPlay":"'+n.split(".mid").join("")+'",\n';
+			s = s+'	"album":"../'+n.split(".mid").join("")+'",\n';
+			s = s+'	"index":"",\n';
+			s = s+'	"colorKrisL":"'+data.colorKrisL+'",\n';
+			s = s+'	"colorKrisR":"'+data.colorKrisR+'",\n';
+			s = s+'	"hxModule":null,\n';
+			s = s+'	"dynamic_solo":false\n';
 			s = s+'}';
 		}
 	}
@@ -490,7 +525,7 @@ function loadSongsLists() {
 		}
 		findERS(result,path,i);
 		findNEO(result,path,i);
-		//findMIDI(result,path,i);
+		findMIDI(result,path,i);
 		
 	}
 	return result;

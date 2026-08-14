@@ -112,51 +112,22 @@ function findNEO(path,modName) {
 		}
 	}
 }
-function findMIDI(result,path,i) {
-	var s = "";
-	var IsE = false; 
-	var h = ()->{
-		if (!IsE){
-			s = '{
-				"dificulties":[
-					{
-						"name":"play MIDI",
-						"prefix":"",
-						"postfix":"",
-						"dir":""
-					}
-				],
-				"songs":[';
-			IsE = true;
-		}
-	}
+function findMIDI(path,modName) {
 	for (n in NativeFileSystem.readDirectory(path)){
 		if (n.indexOf(".mid")>0&&NativeFileSystem.exists(path+"/mus/"+n.split(".mid").join("")+".ogg")){
-			if (IsE) s = s + ",";
-				
-			h();
-			var data = readNEOHead(path+"/"+n.split(".mid").join("")+".txt");
-			//debugPrint(data);
-			s = s+'{';
-			s = s+'	"name":"'+n.split(".mid").join("")+'",';
-			s = s+'	"nameFile":"'+n+'",';
-			s = s+'	"bpm":0,';
-			s = s+'	"speed":120,';
-			s = s+'	"songMain":"'+n.split(".mid").join("")+'.ogg",';
-			s = s+'	"songPlay":"'+n.split(".mid").join("")+'.ogg",';
-			s = s+'	"album":../'+n.split(".mid").join("")+',';
-			s = s+'	"index":"",';
-			s = s+'	"hxModule":null,';
-			s = s+'	"dynamic_solo":false';
-			s = s+'}';
+			GenCapsule({
+				"SongName":n.split(".mid").join(""),
+				"diffs":['D:LLP'],
+				"modName":modName,
+				"modDir":path.split("/")[1],
+				"bpm":0,
+				"album":"../"+n.split(".mid").join(""),
+				"songMain":n.split(".mid").join(""),
+				"songPlay":n.split(".mid").join(""),
+				"prewB":null,
+				"prewA":null
+			});
 		}
-	}
-	if (IsE){
-		s = s + "]}";
-		var list = TJSON.parse(s);
-		//debugPrint(list);
-		var pack = TJSON.parse('{"name":"'+i+'"}');
-		result.push([pack, list,i]);
 	}
 }
 
@@ -204,7 +175,7 @@ function loadSongsLists() {
 		}
 		findERS(path,modName);
 		findNEO(path,modName);
-		//findMIDI(result,path,i);
+		findMIDI(path,modName);
 		
 	}
 }
@@ -221,10 +192,14 @@ function init() {
 function introDone() {
     if(isUpdatad) return;
     FreePlayState = backingCard.instance;
+	var diffs = [];
     for (data in songs){
         FreePlayState.songs.push(data[0]);
+		for (i in data[1].diffs)
+			if (!diffs.contains(i))
+				diffs.push(i);
     }
-    FreePlayState.diffIdsTotal = ["Hard ERS","play ERS","play NEO","play"];
+    FreePlayState.diffIdsTotal = diffs;
     for (diffId in FreePlayState.diffIdsTotal)
 		{
 			//ModsHelper.loadModDir(diffIdsTotalModBinds.get(diffId));

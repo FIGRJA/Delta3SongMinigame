@@ -39,11 +39,11 @@
     * [X]  mobile support
     * [ ]  title song
     * [X]  отчсёт
-* [ ]  songs Menu
-  * [ ]  autoDetecting
+* [X]  songs Menu
+  * [X]  autoDetecting
     * [X]  ERS
     * [X]  NEO
-    * [ ]  LLP
+    * [X]  LLP //need conver mp32ogg or metod of load mp3
   * [X]  SongList
   * [X]  Album
   * [ ]  ? multiSL
@@ -92,7 +92,7 @@
   * [X]  notes
     * [X]  convert NoteData
     * [X]  fixLongSize
-  * [ ]  example mod
+  * [ ]  ? example mod
     * [X]  GSAF5
     * [ ]  ? port DDLFRE CMMM
 * [ ]  PlayerCard as songMenu
