@@ -194,7 +194,7 @@ var border = Type.createEnum(FlxTextBorderStyle,"SHADOW_XY",[-10,10]);
 trace(border);
 function genText_(str,a,?x=0,?y=0,?size=60) {
     var text = new FlxText(0, 0, str.length*7*4, str, 15*4, true);
-	text.font = Paths.getPath("fronts/fnt_main.ttf");
+	text.font = Paths.font("fnt_main.ttf");
 	text.cameras = [camEnd];
 	text.camera= camEnd;
     text.antialiasing = false;
@@ -337,7 +337,7 @@ function TW(a) {
             var RT = genText("FC "+(Std.int(game.ratingPercent*1000)/10)+" - ","center",(FlxG.width/8)-40,120);
             Rating = getTVRating(game.ratingPercent*100);
             COOLText = new FlxText((FlxG.width/2)-200+(RT[0].text.length*7*4), 467, 0, Rating[0], 90, true);
-            COOLText.font = Paths.getPath("fronts/fnt_main.ttf");
+            COOLText.font = Paths.font("fnt_main.ttf");
             COOLText.cameras = [camEnd];
             COOLText.camera= camEnd;
             COOLText.antialiasing = false;

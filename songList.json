@@ -110,6 +110,7 @@
             "name":"Third Sanctuary         (bad)",
             "bpm":170,
             "speed":120,
+            "sectionBeats":9,
             "songMain":"rhythm_3rd_sanctuary_noguit",
             "songPlay":"rhythm_3rd_sanctuary_guit",
             "album":"Deltaruine5",

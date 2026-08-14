@@ -60,7 +60,7 @@ function onCustomSubstateCreate(name) {
 	stunAction = false;
 
 	backTimer = new FlxText(0, 0, 350, "3", 250, true);
-	backTimer.font = Paths.getPath("fronts/fnt_main.ttf");
+	backTimer.font = Paths.font("fnt_main.ttf");
 	backTimer.cameras = [game.camOther];
 	// susiCombo.scale.y = 4;
 	backTimer.screenCenter(0x11); // XY
@@ -85,7 +85,7 @@ function onCustomSubstateCreate(name) {
 	if (Control.mobileC) listAct.insert(2,"toCE");
 	for (act in listAct) {
 		var action = new FlxText(0, 0, 500, act, 130, true);
-		action.font = Paths.getPath("fronts/fnt_main.ttf");
+		action.font = Paths.font("fnt_main.ttf");
 		action.cameras = [pauseBG];
 		action.angle = 10;
 		// action.screenCenter(0x11);//XY

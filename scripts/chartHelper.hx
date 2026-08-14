@@ -198,6 +198,14 @@ function notDance() {
     }
     //need ralsei only
 }
+var susieLateDance = [];
+function lateDance() {
+    //trace(susieLateDance);
+    if (susieLateDance.length>0){
+        previewCharaters.members[1].playAnim(susieLateDance.pop(), true);
+    }
+    
+}
 function dance(note,newN:Bool) {
     if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&statusLoad[2]){//ralsei
         //trace((animationsR[Std.int(note.songData[2]>0?0:1)])+(newN?"":"-hold"));
@@ -206,7 +214,11 @@ function dance(note,newN:Bool) {
         FlxG.sound.play(Paths.sound('hitsound'), hitsoundRalsei.value*(newN?1:hitsoundSign.value));
     }
     else if (note.songData[1]>=(statusLoad[0]?3:0)&&statusLoad[1]){//drums
-        previewCharaters.members[1].playAnim(animationsS[note.songData[1]-(statusLoad[0]?3:0)+(Std.int(note.songData[3]=="Alt Animation")*3)], true);
+        var dance = animationsS[note.songData[1]-(statusLoad[0]?3:0)+(Std.int(note.songData[3]=="Alt Animation")*3)];
+        //if (previewCharaters.members[1].animation.finished)
+        //    previewCharaters.members[1].playAnim(dance, true);
+        //else
+            susieLateDance.insert(0,dance);
         FlxG.sound.play(Paths.sound('hitsound'), hitsoundSusie.value);
     }
     else {//lead
@@ -288,7 +300,7 @@ Helper = ()->{
 
                 lyricText = new FlxText(10, 5, 470, statusLoad[2]?'test '+eventNotes.length+'\ntext 1.2.3':"no vocal\nno lyric", 30);
                 lyricText.scrollFactor.set();
-                lyricText.font = Paths.getPath("fronts/fnt_main.ttf");
+                lyricText.font = Paths.font("fnt_main.ttf");
                 lyricText.antialiasing = false;
                 tab_group.add(lyricText);
 
@@ -425,8 +437,10 @@ Helper = ()->{
                     previewCharaters.members[2].animation.play("idle"+previewCharaters.members[2].idleSuffix,true);
                 //}
             }
-            if (lastTime > Conductor.songPosition)
+            lateDance();
+            if (lastTime > Conductor.songPosition){
                 notDance();
+            }
             lastTime = Conductor.songPosition;
         }else{
             if (lyricBox!=null){

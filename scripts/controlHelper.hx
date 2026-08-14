@@ -251,7 +251,7 @@ function onCreate() {
         sp.cameras = [game.camGame]; 
         sp.camera = game.camGame; 
 		sp.antialiasing = false;
-        sp.font = Paths.getPath("fronts/fnt_main.ttf");
+        sp.font = Paths.font("fnt_main.ttf");
         sp.alignment = s<=1?"right":"left";
         sp.borderStyle = border;
         sp.borderSize = 2;

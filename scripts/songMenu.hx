@@ -196,7 +196,7 @@ function onCreate() {
 
 
 	modInfoText = new FlxText((FlxG.width)-580, 0, 580, "", 60, true);
-	modInfoText.font = Paths.getPath("fronts/fnt_main.ttf");
+	modInfoText.font = Paths.font("fnt_main.ttf");
 	modInfoText.cameras = [menu];
 	modInfoText.antialiasing = false;
 	modInfoText.alignment = "right";
@@ -209,7 +209,7 @@ function onCreate() {
 	add(AlbumCover);
 
 	songScoreText = new FlxText((FlxG.width)-580, 660, 580, "000000", 60, true);
-	songScoreText.font = Paths.getPath("fronts/fnt_main.ttf");
+	songScoreText.font = Paths.font("fnt_main.ttf");
 	songScoreText.cameras = [menu];
 	songScoreText.antialiasing = false;
 	songScoreText.alignment = "right";
@@ -220,7 +220,7 @@ function onCreate() {
 		//if (!list.enabled.contains(mod[2]))continue;
 		for (song in mod[1].songs) {
 			var action = new FlxText(0, 0, 12000, song.name, 100, true);
-			action.font = Paths.getPath("fronts/fnt_main.ttf");
+			action.font = Paths.font("fnt_main.ttf");
 			action.cameras = [menu];
 			// action.angle = 10;
 			// action.screenCenter(0x11);//XY
@@ -545,7 +545,7 @@ function pressAccept() {
 		for (diff in freeAction[Std.int(curAction)][0][1].dificulties) {
 			// debugPrint(diff);
 			var action = new FlxText(0, 0, 700, diff.name, 100, true);
-			action.font = Paths.getPath("fronts/fnt_main.ttf");
+			action.font = Paths.font("fnt_main.ttf");
 			action.cameras = [menu];
 			// action.angle = 10;
 			// action.screenCenter(0x11);//XY
