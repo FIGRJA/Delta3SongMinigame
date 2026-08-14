@@ -280,7 +280,7 @@ function addFastNote(time,data,sus,spec,who) {
 }
 
 var oldNote:Note;
-
+var notesAnval = [""=>""];
 function scr_rhythmgame_addnote(timming, types, sus, ?spec ) {
 	StausLoad[whoload.get(typeTample)] = true;
 	    //trace("Добавляю ноту: время=" + timming + ", тип=" + typeTample + ", длинна=" + sus);
@@ -289,6 +289,15 @@ function scr_rhythmgame_addnote(timming, types, sus, ?spec ) {
 	timming = timming * 1000;
 	if (sus > 0) {
 		sus = sus - timming;
+	}
+	var anval = typeTample+Std.string(types)+Std.string(timming);
+	if (notesAnval.exists(anval)){
+		var Anote = notesAnval.get(anval);
+		if (Anote.sustainLength>=sus) return;
+		else {
+			game.unspawnNotes.remove(Anote,true);
+			Anote.kill();
+		}
 	}
 	//if (oldNote!=null&&Math.abs(oldNote.strumTime - timming)<=100.0&&oldNote.noteData==types)return;
 	// var mustPress = typeTample != "vocal";
@@ -318,6 +327,7 @@ function scr_rhythmgame_addnote(timming, types, sus, ?spec ) {
 	daNote.sustainLength = sus;
 
 	game.unspawnNotes.push(daNote);
+	notesAnval.set(anval,daNote);
 
 	if (sus > 0) {
 		var roundSus:Int = Std.int(sus / curStepCrochet);

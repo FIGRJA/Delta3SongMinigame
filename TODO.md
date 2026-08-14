@@ -68,9 +68,9 @@
   * [X]  add handler err
 * [ ]  genetation
   * [ ]  LLP (midi)
-    * [ ]  notes
+    * [X]  notes
       * [X]  kris short notes
-      * [ ]  kris long notes
+      * [X]  kris long notes
       * [X]  ralsei notes
       * [X]  susie notes
     * [ ]  events
