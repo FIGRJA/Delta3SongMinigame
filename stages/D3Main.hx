@@ -181,7 +181,7 @@ if (PlayState.SONG.format != "psych_v1_convert")
 				continue;
 			song.speed ??= 123.75;//1.1
 			song.sectionBeats ??= 4;
-			trace(song);
+			trace(PlayState.SONG.format);
 			song.colorKrisL = song.colorKrisL !=null?Std.parseInt("0x"+song.colorKrisL.split(" ").join(""), 16)|0xFF000000:0xFF07e49e;
 			song.colorKrisR = song.colorKrisR !=null?Std.parseInt("0x"+song.colorKrisR.split(" ").join(""), 16)|0xFF000000:0xFF0feeff;
 			PlayState.SONG.bpm = song.bpm;

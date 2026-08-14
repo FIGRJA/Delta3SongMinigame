@@ -21,7 +21,6 @@ var Control = Controls.instance;
 var camEnd:FlxCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
 var backed;
 var CurChar = VsliceOptions.LAST_MOD.char_name;//from lua calls;EventLoader:32 getFreeplayCharacter ))
-trace(CurChar);
 var isShader = false;
 var song = PlayState.SONG.song.split("\n").join().split("\r").join();
 var isThis = false;
@@ -191,7 +190,6 @@ function onCustomSubstateDestroy(n) {
 }
 //var border = Type.createEnum(FlxTextBorderStyle,"OUTLINE"); 
 var border = Type.createEnum(FlxTextBorderStyle,"SHADOW_XY",[-10,10]); 
-trace(border);
 function genText_(str,a,?x=0,?y=0,?size=60) {
     var text = new FlxText(0, 0, str.length*7*4, str, 15*4, true);
 	text.font = Paths.font("fnt_main.ttf");

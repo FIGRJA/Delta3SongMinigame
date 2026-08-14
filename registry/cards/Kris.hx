@@ -117,7 +117,7 @@ function findMIDI(path,modName) {
 		if (n.indexOf(".mid")>0&&NativeFileSystem.exists(path+"/mus/"+n.split(".mid").join("")+".ogg")){
 			GenCapsule({
 				"SongName":n.split(".mid").join(""),
-				"diffs":['D:LLP'],
+				"diffs":['play MIDI'],
 				"modName":modName,
 				"modDir":path.split("/")[1],
 				"bpm":0,
