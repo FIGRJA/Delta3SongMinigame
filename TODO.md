@@ -112,7 +112,5 @@
 * unknow alt-0-Kris
 * unknow alt-1-susie
 * unknow alt-any-Ralsei
-* invisible soundwave when 1 player
-* broke firstNote in sections
 * unknow how load mp3
 * mobile paths is broken(packs in pl)

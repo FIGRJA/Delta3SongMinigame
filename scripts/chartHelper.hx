@@ -120,8 +120,8 @@ function writeNoteToSong(maxTime) {
 
 		//if (PlayState.SONG.notes[Math.round((note.strumTime / section) + 0.5)]==null)
 		//	PlayState.SONG.notes.push(emty);
-		if (SuperSimpleNotes[Std.int((note.strumTime / section))]==null) {
-			SuperSimpleNotes[Std.int((note.strumTime / section))] = {
+		if (SuperSimpleNotes[Std.int(((Std.int(note.strumTime)+20) / section))]==null) {
+			SuperSimpleNotes[Std.int(((Std.int(note.strumTime)+20) / section))] = {
                 sectionNotes: [],
                 bpm: PlayState.SONG.bpm,
                 mustHitSection: true,
@@ -131,7 +131,7 @@ function writeNoteToSong(maxTime) {
                 sectionBeats: PB
             };
 		}
-		SuperSimpleNotes[Std.int((note.strumTime / section))].sectionNotes.push(simpleNote);
+		SuperSimpleNotes[Std.int(((Std.int(note.strumTime)+20) / section))].sectionNotes.push(simpleNote);
 		//notes++;
 	}
     //trace(PlayState.SONG.notes);
