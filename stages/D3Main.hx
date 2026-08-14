@@ -810,7 +810,13 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	game.botplayTxt.size = 65;
 	game.botplayTxt.scrollFactor.set(1,1);
 	game.botplayTxt.color = SPcameras[1][4];
-FlxG.sound.music.pause();	
+	FlxG.sound.music.pause();	
+	if (game.hitbox!=null){
+		game.hitbox.buttonLeft.color = playerStrums.members[0].color;
+		game.hitbox.buttonRight.color = playerStrums.members[3].color;
+		game.hitbox.buttonUp.color = 0x0;
+		game.hitbox.buttonDown.color = 0x0;
+	}
 }
 
 function onEvent(N,v1,v2,T) {

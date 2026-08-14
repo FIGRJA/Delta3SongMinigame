@@ -507,6 +507,11 @@ setVF("extraVar","getStaticVar");
 	} catch (e:Dynamic){
 		debugPrint(e,FlxColor.RED);
 	}
+	if (game.hitbox!=null){
+		game.removeHitbox();
+
+		//game.removeTouchPad();
+	}
 }
 
 function getAlbumCover(mod,cover) {
@@ -527,7 +532,7 @@ function onCreatePosts() {
         FlxG.sound.music.pause();
 }
 
-function onSongStart() {
+function onStartSong() {
 	if (!isAllowed)
 		return;
 }
@@ -648,6 +653,7 @@ function SetText() {
 	}
 	
 }
+var addRemover = false;
 function onUpdate(e) {
 	if (!isAllowed)
 		return;
@@ -739,8 +745,22 @@ function onUpdate(e) {
 	}
 	if (Control.NOTE_RIGHT){
 		resetSong();
+		updateText();
 		timer = 0.05;
 		playSnd("crowd_cheer_single");
+	}
+	if (Control.mobileC){
+		if (!addRemover){
+			addRemover = true;
+			//game.touchPad.buttonP.label = game.touchPad.buttonP.label.loadGraphic(Paths.image('transitionSwag/stickers-set-2/miscSticker1'));//reset song score in pause button
+			game.touchPad.buttonP.color = 0xD80000;
+		}
+		if (Control.touchPadJustPressed(19)){// p in /source/mobile/input/MobileInputID.hx#L41
+			resetSong();
+			updateText();
+			//timer = 0.05;
+			playSnd("crowd_cheer_single");
+		}
 	}
 
 	songScoreText.text = formatIntToString(Std.int(MathUtil.smoothLerp(Std.int(songScoreText.text),targetScore,e,0.5)), 6);

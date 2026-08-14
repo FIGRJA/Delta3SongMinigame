@@ -115,4 +115,4 @@
 * invisible soundwave when 1 player
 * broke firstNote in sections
 * unknow how load mp3
-* mobile paths is broken(packs in pl,fonts)
+* mobile paths is broken(packs in pl)
