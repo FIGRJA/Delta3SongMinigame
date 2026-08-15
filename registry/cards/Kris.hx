@@ -199,6 +199,7 @@ function introDone() {
 			if (!diffs.contains(i))
 				diffs.push(i);
     }
+	diffs.reverse();
     FreePlayState.diffIdsTotal = diffs;
     for (diffId in FreePlayState.diffIdsTotal)
 		{

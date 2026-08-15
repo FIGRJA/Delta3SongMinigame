@@ -10,7 +10,7 @@
     * [X]  botplay
   * [ ]  functions
     * [ ]  lyric (переделать)
-    * [ ]  прожекторы как показатель жизни
+    * [X]  прожекторы как показатель жизни
     * [ ]  susie controls (not BotPlay)
     * [ ]  friends
     * [X]  отдельные счетчики combo

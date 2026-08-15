@@ -233,7 +233,7 @@
 			"filters": 2,
 			"color": "FFFFFF",
 			"angle": 0,
-			"name": "spod3L",
+			"name": "spodL",
 			"antialiasing": false,
 			"flipY": false,
 			"scroll": [
@@ -255,7 +255,7 @@
 			"filters": 2,
 			"color": "FFFFFF",
 			"angle": 0,
-			"name": "spod3R",
+			"name": "spodR",
 			"antialiasing": false,
 			"flipY": false,
 			"scroll": [

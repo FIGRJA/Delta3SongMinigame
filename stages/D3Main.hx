@@ -65,6 +65,8 @@ var songScore = 0;
 var BPix = 5*1/0.35;
 var sectionBeats = 4;
 var SPcameras = [];
+var spods = [];
+var spodsR = [];
 var maxComboAllow:Int = 64;
 
 var border = Type.createEnum(FlxTextBorderStyle,"OUTLINE"); 
@@ -752,6 +754,41 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	}
 	game.boyfriend.idleSuffix = "-alt";
 	game.boyfriend.recalculateDanceIdle();
+	for (i in ["spodL","spodR"])
+		if (getVar(i).visible){
+			var spod = getVar(i);
+			for (n in 1...3){
+				var Aspod = new FlxSprite(spod.x,spod.y+n*spod.height);
+				Aspod.loadGraphic(Paths.image("bg/spr_rhythmgame_spotlight_0"));
+				Aspod.flipX = spod.flipX;
+				add(Aspod);
+			}
+			for (n in 0...3){
+				var li = new FlxSprite(spod.x,spod.y+n*spod.height);
+				li.loadGraphic(Paths.image("bg/spr_rhythmgame_spotlight_5"));
+				li.flipX = spod.flipX;
+				li.color = 0xFF85a0e9;
+				li.alpha = 0;
+				var liB = new FlxSprite(spod.x,spod.y+n*spod.height);
+				liB.loadGraphic(Paths.image("bg/spr_rhythmgame_spotlight_7"));
+				liB.flipX = spod.flipX;
+				liB.color = 0xFF85a0e9;
+				liB.alpha = 0;
+				var liBR = new FlxSprite(spod.x,spod.y+n*spod.height);
+				liBR.loadGraphic(Paths.image("bg/spr_rhythmgame_spotlight_7"));
+				liBR.flipX = spod.flipX;
+				liBR.color = 0xCF0000;
+				liBR.alpha = 0;
+				spods[n] ??= [];
+				spodsR[n] ??= [];
+				spods[n].push(li);
+				add(li);
+				spodsR[n].push([liBR]);
+				add(liBR);
+				spods[n].push(liB);
+				add(liB);
+			}
+		}
 
 	if (!statusLoad[0]&&FlxG.random.bool(42)){
 		game.boyfriend.visible = false;
@@ -916,6 +953,15 @@ function noteMiss(daNote) {
 			},30);
 		var xixixi = Std.int(maxComboAllow/3)*3;
 		tmpKris = Std.int((Math.round(tmpKris/(xixixi/3))-1)*xixixi/3);
+		if (spods.length!=0){
+			var xi = Std.int(maxComboAllow/3);
+			for (i in 0...spods[0].length){
+				var ala = i%2==0?1:0.3;
+				spods[0][i].alpha = ala*Std.int(tmpKris-xi*2)/xi;
+				spods[1][i].alpha = ala*Std.int(tmpKris-xi)/xi;
+				spods[2][i].alpha = ala*tmpKris/xi;
+			}
+		}
 		shareSprite(game.boyfriend,10);
 		krisMissBack.alpha = 1;
 		if (tmpTweenkris != null)
@@ -938,6 +984,13 @@ function noteMiss(daNote) {
 		if (tmpTweenGlobal != null)
 			tmpTweenGlobal.cancel();
 		tmpTweenGlobal = FlxTween.tween(StageOverlay, {alpha: 0}, 0.5);
+		for (sp in spodsR)
+			for (m in sp){
+				m[0].alpha = 0.6;
+				if (m[1] != null)
+					m[1].cancel();
+				m[1] = FlxTween.tween(m[0], {alpha: 0}, 0.5);
+			}
 	}
 	for (mo in [[tmpKris, krisMute], [tmpSusie, susiMute]]) {
 		if (mo[0] < -40&&!mo[1].visible) {
@@ -1318,6 +1371,15 @@ function goodNoteHit(daNote) {
 			if (Std.int(krisCombo.text) > Std.int(maxCombo.text)) {
 				maxCombo.text = formatIntToString(Std.int(krisCombo.text), 6);
 				game.maxCombo = Std.int(krisCombo.text);
+			}
+			if (spods.length!=0&&tmpKris!=maxComboAllow){
+				var xi = Std.int(maxComboAllow/3);
+				for (i in 0...spods[0].length){
+					var ala = i%2==0?1:0.4;
+					spods[0][i].alpha = ala*Math.min(Std.int(tmpKris-xi*2)/xi,1);
+					spods[1][i].alpha = ala*Math.min(Std.int(tmpKris-xi)/xi,1);
+					spods[2][i].alpha = ala*Math.min(tmpKris/xi,1);
+				}
 			}
 			//debugPrint(((Std.int(Std.int(krisCombo.text)/32)/10)+1));
 			var color = 0x878787 ;
