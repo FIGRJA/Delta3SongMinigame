@@ -121,7 +121,7 @@ function findMIDI(path,modName) {
 				"modName":modName,
 				"modDir":path.split("/")[1],
 				"bpm":0,
-				"album":"../"+n.split(".mid").join(""),
+				//"album":"../"+n.split(".mid").join(""),//stupid LLP used JPG
 				"songMain":n.split(".mid").join(""),
 				"songPlay":n.split(".mid").join(""),
 				"prewB":null,

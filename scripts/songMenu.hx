@@ -485,8 +485,8 @@ function findMIDI(result,path,i) {
 			s = s+'	"songPlay":"'+n.split(".mid").join("")+'",\n';
 			s = s+'	"album":"../'+n.split(".mid").join("")+'",\n';
 			s = s+'	"index":"",\n';
-			s = s+'	"colorKrisL":"'+data.colorKrisL+'",\n';
-			s = s+'	"colorKrisR":"'+data.colorKrisR+'",\n';
+			data.colorKrisL!=null?s = s+'	"colorKrisL":"'+data.colorKrisL+'",\n':1+1;
+			data.colorKrisR!=null?s = s+'	"colorKrisR":"'+data.colorKrisR+'",\n':1+1;
 			s = s+'	"hxModule":null,\n';
 			s = s+'	"dynamic_solo":false\n';
 			s = s+'}';

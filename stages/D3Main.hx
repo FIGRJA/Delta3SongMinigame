@@ -132,24 +132,6 @@ function setLV(L,r) {
 		}
 		V.r = r;
 	}
-	else{
-		try{
-		var V = L.split(".");
-		V.reverse();
-			refSet(this.interp.locals.get(V.pop()).r,V,r);
-		} catch (e:Dynamic) {trace(e);}
-	}
-}
-function refSet(o,V,r) {
-	if (V.length==1){
-		trace(Reflect.field(o,V[0]));
-		Reflect.setField(o,V[0],r);
-		trace(Reflect.field(o,V[0]));
-	}else{
-		var ov = V.pop();
-		refSet(Reflect.field(o,op),V,r);
-	}
-	
 }
 function onCreate() // PlayState.SONG.bpm = 0.1;
 {

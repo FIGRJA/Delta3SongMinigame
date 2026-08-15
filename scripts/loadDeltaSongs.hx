@@ -28,6 +28,7 @@ function onCreate() {
 function loadSong(file:String, ?index:Dynamic, ?isFull:Bool = false) {
 	PlayState.SONG.notes = [];
 	PlayState.SONG.events = [];
+	notesAnval = [""=>""];
 	// PlayState.instance.clearNotesBefore(0);
 	// PlayState.instance.setSongTime(0);
 	//curStepCrochet = 60 / PlayState.SONG.bpm * 1000 / 4.0;
@@ -468,4 +469,17 @@ function loadLua(file) {
 	return true;
 }
 
+function getLV(L) {
+	return this.interp.locals.get(L).r;	
+}
+function setLV(L,r) {
+	if (L.split(".").length==1){
+		var V = this.interp.locals.get(L);
+		if (V==null){
+			debugPrint("err set like "+L);
+			return;
+		}
+		V.r = r;
+	}
+}
 function onDestroy() {}

@@ -25,6 +25,8 @@ function onCreatePost() {
     setVF("D3Main","onSectionHit","reloadBPM");
     setVF("D3Main","getLV","getLVD3");
     setVF("D3Main","setLV","setLVD3");
+    setVF("load_delta_notes","getLV","getLVldn");
+    setVF("load_delta_notes","setLV","setLVldn");
     setVF("D3Main","getSong");
     var maxTime = 32842;
     //debugPrint("hi test 3 "+maxTime);
@@ -37,6 +39,7 @@ function onCreatePost() {
     }
     notes = notes.concat(game.unspawnNotes);
     game.unspawnNotes = [];
+    setLVldn("notesAnval",[""=>""]) ;
     for (n in notes){
         //if (n.strumTime<3000)
         if (!n.isSustainNote)
@@ -74,6 +77,7 @@ function onUpdate(e) {
     if (!isTutor) return;
     if (FlxG.sound.music.time +(e*1000)> game.inst.length)
         onEndSong();
+    //susiRofls )= false;
     setLVD3("susiRofls",false);
     isAllowed = game.songName == "tutorialus-- --(infinity)";
     if (!isAllowed) return;
@@ -104,7 +108,13 @@ function svP()
     new FlxTimer().start(2,()->{
         //game.note = [];
         try {
-            setLVD3("SCORE.text","lox");
+            //setLVD3("SCORE.text","lox");
+            getLVD3("SCOREText").text = "lox";
+            getLVD3("maxCombo").text = "000000";
+            setLVD3("songScore",0);
+            getLVD3("susiCombo").text = "0";
+            getLVD3("krisCombo").text = "0";
+            getLVD3("ralsCombo").text = "0";
             game.inst.loadEmbedded(getSong(getLVD3("moddir"),PlayState.SONG.gameOverLoop));
             game.vocals.loadEmbedded(getSong(getLVD3("moddir"),PlayState.SONG.gameOverEnd));
             FlxG.sound.music = game.inst;
@@ -143,6 +153,8 @@ function onEndSong() {
     //debugPrint(notes.length);
 
     game.unspawnNotes = [];
+
+    setLVldn("notesAnval",[""=>""]) ;
     for (n in notes){
         //if (n.strumTime<3000){
         if (!n.isSustainNote)

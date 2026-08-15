@@ -112,5 +112,5 @@
 * unknow alt-0-Kris
 * unknow alt-1-susie
 * unknow alt-any-Ralsei
-* unknow how load mp3
+* unknow how load mp3 / jpg
 * mobile paths is broken(packs in pl)
