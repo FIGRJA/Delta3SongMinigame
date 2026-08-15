@@ -55,17 +55,30 @@
 * [ ]  Chart Editor
   * [ ]  customWindow
     * [X]  show It
+    * [ ]  control visible (checkbox in main)
     * [X]  lyric preview
     * [ ]  *true* lyric
     * [ ]  custom settings
       * [X]  split OppHitSound
-      * [X]  preview characters
+      * [X]  preview characters ?//v-slice
       * [ ]  save as ***other* file/s** (?.neo)
-      * [X]  conver from DLLFRE
+      * [ ]  convert ?
+        * [X]  conver from DLLFRE (button)(need remove in featur)
+        * [ ]  fullscreen menu
+        * [ ]  moveble strums convect
+        * [ ]  slice to convector apply
+        * [ ]  specical functions for DDLFRE (in preset only used)
+        * [ ]  ? custom preset
+      * [ ]  scale preview //v-slice
+      * [ ]  ? list of lo-fi music
   * [X]  3 players
   * [X]  3 normal icons players
   * [X]  load music from mus
   * [X]  add handler err
+  * [ ]  lo-fi music FROM v-slice
+  * [ ]  custom preview characters //v-slice
+  * [ ]  reset all windows
+  * [ ]  remember someSettings
 * [ ]  genetation
   * [ ]  LLP (midi)
     * [X]  notes
@@ -74,6 +87,7 @@
       * [X]  ralsei notes
       * [X]  susie notes
     * [ ]  events
+    * [ ]  ? some rofls(spritesMap...)
   * [X]  ERS (txt)
   * [X]  NEO
   * [X]  GameScript (like haxeScript/Iris)
@@ -114,3 +128,4 @@
 * unknow alt-any-Ralsei
 * unknow how load mp3 / jpg
 * mobile paths is broken(packs in pl)
+* memory leak (not critical)

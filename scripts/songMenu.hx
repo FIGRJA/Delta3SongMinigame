@@ -542,7 +542,7 @@ setVF("extraVar","getStaticVar");
 	} catch (e:Dynamic){
 		debugPrint(e,FlxColor.RED);
 	}
-	if (game.hitbox!=null){
+	if (game.hitbox!=null&&isAllowed){
 		game.removeHitbox();
 
 		//game.removeTouchPad();
@@ -790,7 +790,7 @@ function onUpdate(e) {
 			//game.touchPad.buttonP.label = game.touchPad.buttonP.label.loadGraphic(Paths.image('transitionSwag/stickers-set-2/miscSticker1'));//reset song score in pause button
 			game.touchPad.buttonP.color = 0xD80000;
 		}
-		if (Control.touchPadJustPressed(19)){// p in /source/mobile/input/MobileInputID.hx#L41
+		if (Control.touchPadJustPressed(Control.mobileBinds["pause"])){// p in /source/mobile/input/MobileInputID.hx#L41
 			resetSong();
 			updateText();
 			//timer = 0.05;
