@@ -6,6 +6,7 @@ import Reflect;
 import Array;
 import flixel.FlxG;
 import flixel.group.FlxTypedSpriteGroup;
+import flixel.sound.FlxSound;
 import flixel.text.FlxText.FlxTextFormat;
 import flixel.text.FlxText.FlxTextFormatMarkerPair;
 import backend.Mods;
@@ -15,6 +16,7 @@ import backend.ui.PsychUIButton;
 import backend.ui.PsychUICheckBox;
 import backend.ui.PsychUINumericStepper;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
+import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Json;
 import states.editors.ChartingState;
 
 function setVF(Var,Fun) {
@@ -140,6 +142,69 @@ function writeNoteToSong(maxTime) {
 	trace("end write");
     return SuperSimpleNotes;
 }
+var lofyList = [""=>""];
+var lofyM = new FlxSound();
+var curlofy = "";
+function scanlofy() {
+    //var list = Mods.parseList();
+    lofyList.clear();
+	for (i in Mods.getModDirectories()) {
+	//for (i in list.enabled) {
+		var path = "mods/" + i + "/music/chartEditorLoop";
+        //if (NativeFileSystem.exists(path))
+        for (n in NativeFileSystem.readDirectory(path)){
+            if (n.indexOf("-metadata.json")>0){
+                var data = DialogueBoxPsych.parseDialogue(path+"/"+n);
+                //Reflect.setField(data,"mod",i);
+                lofyList.set(n.split("-metadata.json")[0],data);
+            }
+        }
+    }
+    //trace(lofyList);
+    
+}
+function playlofy() {
+    if (lofyM.length<1)
+        chuselofy();
+    if (lofyM.playing) return;
+    if (lofyM.time>1)
+        lofyM.resume();
+    else
+        lofyM.play();
+    var data = lofyList.get(curlofy);
+    //trace(lofyM.time);
+    lofyM.fadeIn((60*10)/data.timeChanges[0].bpm);
+    
+}
+function getArrKeysMap(map) {
+    var arr = [];
+    for (i in map.keys()){
+        arr.push(i);
+    }
+    return arr;
+}
+function chuselofy(?name) {
+    if (name==null||!lofyList.exists(name)||FlxG.random.bool(25)){
+        var keys = getArrKeysMap(lofyList);
+        curlofy = keys[FlxG.random.int(0,keys.length-1)];
+    }
+    if (curlofy == name) return;
+    curlofy ??= name;
+    trace(curlofy);
+    var data = lofyList.get(curlofy);
+    lofyM.loadEmbedded(CacheSystem.loadSound(getSong(curlofy),false,"nice Try"),true,false,()->{chuselofy(curlofy);});
+    lofyM.stop();
+    if (lofyM.length>1)
+        FlxG.state.showOutput("playing "+data.songName+" by "+data.artist);
+
+}
+function stoplofy() {
+    //FlxTween.cancelTweensOf(lofyM);
+    if (!lofyM.playing) return;
+    if (lofyM.fadeTween!=null)
+        lofyM.fadeTween.cancel();
+    lofyM.pause();
+}
 
 function onCreatePost() {
     if (game.songName=="songchart") return;
@@ -159,18 +224,18 @@ function onCreatePost() {
         //writeNoteToSong();
    // this.fixScriptName("chartHelper");
     //debugPrint(Std.int(statusLoad[0])+Std.int(statusLoad[1])+Std.int(statusLoad[2]));
+    scanlofy();
 }
 
 function getSong(song) {
     if (song == null) return;
-    var name = "/mus/"+song+".ogg";
-	if (song.indexOf(".mp3")>0)
-		name = "/"+song;
-	for (i in Mods.getModDirectories()){
-        if (NativeFileSystem.exists("mods/"+i+name))
-            return "mods/"+i+name;
+    for (p in ["/mus/","/music/chartEditorLoop/"]){
+        var name = p+song+".ogg";
+        for (i in Mods.getModDirectories()){
+            if (NativeFileSystem.exists("mods/"+i+name))
+                return "mods/"+i+name;
+        }
     }
-    
 }
 var Rstrin = [0];
 var songEx = false;
@@ -210,7 +275,7 @@ function dance(note,newN:Bool) {
     if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&statusLoad[2]){//ralsei
         //trace((animationsR[Std.int(note.songData[2]>0?0:1)])+(newN?"":"-hold"));
         previewCharaters.members[2].idleSuffix = note.songData[2]>0?"":"-alt";
-        previewCharaters.members[2].animation.play((animationsR[Std.int(note.songData[2]>0?0:1)]), newN);
+        previewCharaters.members[2].animation.play((animationsR[Std.int(note.songData[2]>0?0:1)])+(newN?"":"-hold"), newN);
         FlxG.sound.play(Paths.sound('hitsound'), hitsoundRalsei.value*(newN?1:hitsoundSign.value));
     }
     else if (note.songData[1]>=(statusLoad[0]?3:0)&&statusLoad[1]){//drums
@@ -270,6 +335,7 @@ function DLLFRE2DSE() {
         }
     }
     FlxG.state.reloadNotes();
+    FlxG.state.showOutput("converted form DLLFRE!");
 }catch (e:Dynamic) {
         trace(e);
         //FlxG.signals.preUpdate.remove(Helper);
@@ -291,6 +357,8 @@ Helper = ()->{
         if (Type.getClassName(Type.getClass(FlxG.state))=="states.editors.ChartingState"){
             var state =  FlxG.state;
             if (lyricBox==null){
+                FlxG.sound.list.add(lofyM);
+
                 lyricBox = new PsychUIBox((FlxG.width/2)+200, 338, 440, 100, ['lyric','custom settings']);
                 lyricBox.scrollFactor.set();
                 lyricBox.cameras = [state.camUI];
@@ -389,6 +457,7 @@ Helper = ()->{
                     state.icons[i].antialiasing=false;
                     i += 1;
                 }
+                state.showOutput("mus audio has been loaded!");
                 //FlxG.sound.play();
             }
             if (state.curSec!=section){
@@ -453,6 +522,10 @@ Helper = ()->{
                 notDance();
             }
             lastTime = Conductor.songPosition;
+            if (FlxG.sound.music.playing)
+                stoplofy();
+            else
+                playlofy();
         }else{
             if (lyricBox!=null){
                 lyricBox = null;

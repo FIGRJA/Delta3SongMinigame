@@ -32,7 +32,7 @@ var songs = {
     "crowd_cheer_single":   [1  ,Paths.sound("snd_crowd_cheer_single")],
     "drumroll":             [0.3,Paths.sound("snd_drumroll")],
     "punchmed":             [0.3,Paths.sound("snd_punchmed")],
-    "splat":                [0.3,Paths.sound("snd_splat")],
+    "splat":                [0.3,Paths.sound("snd_splat")]
 };  
 function getS() {
     var T = songs.bump[1].play();
@@ -66,8 +66,37 @@ function onCreate() {
 	//	CustomSubstate.openCustomSubstate('END', true);
 	// }
 	// D3Main 820;
+    try{
+        for (alf in ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","Y","Z"]){
+            Reflect.setField(songs,alf,[1  ,Paths.sound("alfabet/snd_speak_and_spell_"+alf)]);
+        }
+    }catch(e:Dynamic){trace(e);}
 
 }
+var sayWhat = [];
+function sayIt(str) {
+    str = str.toUpperCase();
+    for (a in 0...str.length)
+        sayWhat.push(str.charAt(a));
+    sayWhat.reverse();
+}
+var timerSay = 0;
+function onUpdate(e) {
+    if (timerSay>0){
+        timerSay -= e;
+        trace(timerSay);
+        return;
+    }
+
+    if (sayWhat.length>0){
+        var key = sayWhat.pop();
+        if (key != " ")
+            playSnd(key);
+        timerSay = 0.25;
+    }
+    
+}
+
 function onCreatePost() {
     setVF("D3Main","getShader");
     sideTerminalB2 = getShader("Dglsl/shd_crt3");
@@ -144,6 +173,7 @@ var Rating ;
 var a = 0;
 var TimeUp = 0;
 function onCustomSubstateUpdate(n, e) {
+    onUpdate(e);
 	if (!isThis)
 		return;
 
@@ -263,7 +293,10 @@ function TW(a) {
             },
             ease: FlxEase.elasticOut,
             onComplete: (_) -> {
-                TW(1);
+                if (!game.endingSong&&isShader)
+                    TW(66);
+                else
+                    TW(1);
             }       
         });
         
@@ -374,6 +407,18 @@ function TW(a) {
             else{
                 CustomSubstate.closeCustomSubstate();
             }
+        });
+    }
+    if (a == 66){
+        new FlxTimer().start(0.4,()->{
+        var RT = genText("SOMETHING WRONG?","left",(FlxG.width/8)-100,40);
+        RT[1].color = 0xfd3396;
+        RT = genText("I'M RIGHT?","right",(FlxG.width/8)+100,40);
+        RT[1].color = 0xfd3396;
+        playSnd("punchmed"); 
+        isEnd = true;  
+        sayIt("hello   m i k e");  
+        //TW(2);
         });
     }
 

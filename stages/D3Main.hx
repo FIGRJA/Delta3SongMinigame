@@ -116,7 +116,7 @@ function testShader(shaderName){
 
 
 
-var SONG:Dynamic;
+var SONG:Dynamic = {};
 var acurateDrums = 1;
 var moddir = "";
 var shader_;
@@ -457,9 +457,9 @@ var transferAB = getShader("Dglsl/shd_underwater");
 			//i.cameras = [krisNoteCam,game.camHUD];
 			//i.x = -48 + gog * 45;
 			if (gog == 0)
-				i.color = SONG.colorKrisL ;
+				i.color = SONG.colorKrisL ?? 0xFF07e49e;
 			if (gog == 3)
-				i.color = SONG.colorKrisR ;
+				i.color = SONG.colorKrisR ?? 0xFF0feeff;
 		} else if (gog == 1 || gog == 2) {
 			i.camera = susiNoteCam;
 			if (gog == 1)
@@ -862,14 +862,14 @@ function onEvent(N,v1,v2,T) {
 	}
 	
 }
+var sectionOffset = 0;
 function onSectionHit(){
 	if (PlayState.SONG.notes.length>game.curSection) {
 		sectionBeats = PlayState.SONG.notes[game.curSection].sectionBeats;
 		var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
 		bmpDistant.spacing.y = distant*sectionBeats-10;
 		bmpDistant4.spacing.y = distant-10;
-		bmpDistant4.x = 0;
-		bmpDistant.x = 0;
+		sectionOffset = Conductor.songPosition;
 	}
 	//game.stepsToDo = sectionBeats*4;
 }
@@ -1287,7 +1287,7 @@ function onUpdate(e) {
 	}
 
 	var DY = (ClientPrefs.data.downScroll?1:-1)*
-			(0.45 * (Conductor.songPosition % (60 / Conductor.bpm * 1000 * sectionBeats))*
+			(0.45 * (Conductor.songPosition-sectionOffset)*
 			(game.songSpeed/game.playbackRate))+
 			(ClientPrefs.data.downScroll?440:-100);
 	bmpDistant.y = DY;

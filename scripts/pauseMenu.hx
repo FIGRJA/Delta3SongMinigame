@@ -2,13 +2,14 @@ if (PlayState.SONG.stage!="D3Main") return;
 import backend.Controls;
 import backend.MusicBeatState;
 import psychlua.CustomSubstate;
-import flixel.addons.display.FlxBackdrop;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 import flixel.sound.FlxSound;
+import flixel.addons.display.FlxBackdrop;
+import flixel.addons.transition.FlxTransitionableState;
+import mikolka.compatibility.VsliceOptions;
 import mikolka.vslice.StickerSubState;
 import mikolka.vslice.freeplay.FreeplayState;
-import flixel.addons.transition.FlxTransitionableState;
 
 import mobile.objects.TouchZone;
 if (Controls.instance.mobileC)
@@ -24,6 +25,7 @@ var pauseBG:FlxCamera = new FlxCamera(-700, -100, 700, 1500, 1);
 var stunAction = false;
 var isPause:Bool = false;
 var Control = Controls.instance;
+var CurChar = VsliceOptions.LAST_MOD.char_name;//from lua calls;EventLoader:32 getFreeplayCharacter ))
 var backed:FlxBackdrop;
 var backTimer:FlxText;
 var timer:Float;
@@ -81,8 +83,9 @@ function onCustomSubstateCreate(name) {
 	backed.animation.play('pog', true);
 	backed.camera = pauseBG;
 	customSubstate.add(backed);
-	var listAct = ["restart", PlayState.SONG.format != "psych_v1_convert"?"toMenu":"!⚠custom⚠!", "exit"];
-	if (Control.mobileC) listAct.insert(2,"toCE");
+	var listAct = ["restart", "exit"];
+	if (Control.mobileC) listAct.insert(1,"toCE");
+	if (PlayState.SONG.format != "psych_v1_convert"&&CurChar!="Kris") listAct.insert(1,"toMenu");
 	for (act in listAct) {
 		var action = new FlxText(0, 0, 500, act, 130, true);
 		action.font = Paths.font("fnt_main.ttf");
