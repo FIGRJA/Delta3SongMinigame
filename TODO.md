@@ -56,6 +56,7 @@
   * [ ]  customWindow
     * [X]  show It
     * [ ]  control visible (checkbox in main)
+    * [ ]  preview all notes/play-slice //v-slice
     * [X]  lyric preview
     * [ ]  *true* lyric
     * [ ]  custom settings
@@ -79,6 +80,7 @@
   * [ ]  custom preview characters //v-slice
   * [ ]  reset all windows
   * [ ]  remember someSettings
+  * [ ]  fix visible very long note
 * [ ]  genetation
   * [ ]  LLP (midi)
     * [X]  notes
@@ -116,6 +118,8 @@
     * [X]  inject song score
     * [X]  inject albumArt //change selfAlbums
     * [X]  playeble songs
+    * [ ]  interesting backGround
+    * [ ]  inject resetScore
     * [ ]  inject stars as notes/time
     * [X]  inject song preview
 

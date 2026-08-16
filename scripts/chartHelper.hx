@@ -210,7 +210,7 @@ function dance(note,newN:Bool) {
     if (note.songData[1]>=(statusLoad[0]?3:0)+(statusLoad[1]?3:0)&&statusLoad[2]){//ralsei
         //trace((animationsR[Std.int(note.songData[2]>0?0:1)])+(newN?"":"-hold"));
         previewCharaters.members[2].idleSuffix = note.songData[2]>0?"":"-alt";
-        previewCharaters.members[2].animation.play((animationsR[Std.int(note.songData[2]>0?0:1)])+(newN?"":"-hold"), newN);
+        previewCharaters.members[2].animation.play((animationsR[Std.int(note.songData[2]>0?0:1)]), newN);
         FlxG.sound.play(Paths.sound('hitsound'), hitsoundRalsei.value*(newN?1:hitsoundSign.value));
     }
     else if (note.songData[1]>=(statusLoad[0]?3:0)&&statusLoad[1]){//drums

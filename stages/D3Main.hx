@@ -281,7 +281,7 @@ function onCreatePost() {
 	//game.moveCamera(false);
 	//game.camFollow.y = 0;
 	//game.camHUD.scroll.x += 100;
-	game.noteKillOffset = 140;
+	//game.noteKillOffset = 1400;
     game.botplayTxt.text = "autoplay";
 	// getVar("load_delta_notes").call("loadSong",["scripts/deltaCode/gml_ch4_scr_rhythmgame_notechart.hx",2]);
 	// PlayState.SONG.bpm = 148;
@@ -972,7 +972,8 @@ function noteMiss(daNote) {
 		});
 		for (n in game.notes){
 			if (n.noteType == "lead"){
-				FlxTween.color(n,0.5,0xFFCF0000,playerStrums.members[n.noteData].color);
+				FlxTween.cancelTweensOf(n);
+				FlxTween.color(n,0.3,0xFFCF0000,n.color);
 			}
 		}
 		krisCombo.text = "0";
@@ -1027,6 +1028,7 @@ function onSpawnNote(daNote) {
 	//daNote.origins.set();
 	daNote.scrollFactor.set(1,1);
 	daNote.copyScale = false;
+	daNote.copyAlpha = false;
 	//daNote.offsetY = -188;
 	//daNote.offsetX = -105;
 	daNote.offsetY = 6;
@@ -1178,7 +1180,7 @@ function onUpdate(e) {
 	if (isMenuChart)
 		return;
 
-	game.noteKillOffset = 100;
+	game.noteKillOffset = 1000;
 	TimeUp +=e;
 	//debugPrint(ralseiNoteCam.canvas.graphics);
 	if (ClientPrefs.data.shaders)
@@ -1216,9 +1218,28 @@ function onUpdate(e) {
 			//}
 		//}
 		//i.width = 100;
-		if (i.strumTime + i.extraData.get("hit") <= Conductor.songPosition && i.canBeHit && i.noteType == "drum") {
+		var TimeOffset = Conductor.songPosition-i.strumTime;
+		if (TimeOffset>= i.extraData.get("hit") && i.canBeHit && i.noteType == "drum") {
 			// /debugPrint(i);
 			susiGoodHit(i);
+		}
+		if (TimeOffset>100&&!i.missed&&!i.wasGoodHit){
+			if(!i.isSustainNote){
+				game.noteMissCommon(i.noteData,i);
+				//noteMiss(i);
+			game.callOnHScript('noteMiss', [i]);
+			}
+			i.blockHit = true;
+			i.missed = true;
+			i.ignoreNote = true;
+			i.color = 0x9E9D9D;
+			for (n in i.tail){
+				n.blockHit = true;
+				n.ignoreNote = true;
+				n.color = 0x9E9D9D;
+			}
+			FlxTween.tween(i, {alpha: 0}, (100)/(450*(game.songSpeed/game.playbackRate)),{onComplete:()->{game.invalidateNote(i);}});
+
 		}
 		//if(i.noteType == "vocal"&&i.strumTime > Conductor.songPosition){
 		//	DadDead = false;
