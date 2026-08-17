@@ -28,9 +28,9 @@ function setVF(Var,Fun) {
 
 //var songI ;
 //var songV ;
-var unspawnNotes ;
-var eventNotes ;
-var statusLoad = [true,true,true];
+var unspawnNotes:Array ;
+var eventNotes:Array ;
+var statusLoad:Array = [true,true,true];
 
 //function deepEquals(a:Dynamic, b:Dynamic):Bool {//deepseak
 //    // Если типы разные
@@ -144,8 +144,11 @@ function writeNoteToSong(maxTime) {
     return SuperSimpleNotes;
 }
 var lofyList = [""=>""];
-var lofyM = new FlxSound();
-var curlofy = "";
+var lofyM:FlxSound = new FlxSound();
+var lofyControl:Bool = true;
+var curlofy:String = "chartEditorLoop";
+var lofyrandom:PsychUINumericStepper = new PsychUINumericStepper(10 + 363, 23, 5, 25, 0, 100, 0,50);
+var lofyCheckBox:PsychUICheckBox;
 function scanlofy() {
     //var list = Mods.parseList();
     lofyList.clear();
@@ -165,9 +168,15 @@ function scanlofy() {
     
 }
 function playlofy() {
+    if (!lofyControl){
+        stoplofy();
+        return;
+    }
     if (lofyM.length<1)
-        chuselofy();
-    if (lofyM.playing) return;
+        chuselofy(curlofy);
+    if (lofyM.playing) 
+        return;
+
     if (lofyM.time>1)
         lofyM.resume();
     else
@@ -185,16 +194,17 @@ function getArrKeysMap(map) {
     return arr;
 }
 function chuselofy(?name) {
-    if (name==null||!lofyList.exists(name)||FlxG.random.bool(25)){
+    if (name==null||!lofyList.exists(name)||FlxG.random.bool(lofyrandom.value)){
         var keys = getArrKeysMap(lofyList);
         curlofy = keys[FlxG.random.int(0,keys.length-1)];
     }
-    if (curlofy == name) return;
+    if (curlofy == name&&lofyM.length>1) return;
     curlofy ??= name;
     trace(curlofy);
     var data = lofyList.get(curlofy);
     lofyM.loadEmbedded(CacheSystem.loadSound(getSong(curlofy),false,"nice Try"),true,false,()->{chuselofy(curlofy);});
     lofyM.stop();
+    lofyM.volume = 0;
     if (lofyM.length>1)
         addOutText("playing "+data.songName+" by "+data.artist);
         //FlxG.state.showOutput("playing "+data.songName+" by "+data.artist);
@@ -271,23 +281,22 @@ function getSong(song) {
         }
     }
 }
-var Rstrin = [0];
-var songEx = false;
-var Helper ;
-var icons = ["kris","susi","ralsei"];
-var lyricBox;
-var lyricText;
-var lastTime = 0;
-var section = -1;
-var e = 0;
+var Rstrin:Array = [0];
+var songEx:Bool = false;
+var Helper:Dynamic ;
+var icons:Array = ["kris","susi","ralsei"];
+var lyricBox:PsychUIBox;
+var lyricText:FlxText;
+var lastTime:Int = 0;
+var section:Int = -1;
 var previewCharaters:FlxSpriteGroup = new FlxTypedSpriteGroup();
-var animationsS = [ "singDOWN","singUP","singUP-alt","singDOWN-alt", "singUP-alt"];
-var animationsK = [ "singLEFT", "singRIGHT","singRIGHT-alt","singLEFT","singRIGHT-alt","singRIGHT-alt"];
-var animationsR = [ "singUP","idle-alt", "singRIGHT-alt", "idle-alt"];
+var animationsS:Array = [ "singDOWN","singUP","singUP-alt","singDOWN-alt", "singUP-alt"];
+var animationsK:Array = [ "singLEFT", "singRIGHT","singRIGHT-alt","singLEFT","singRIGHT-alt","singRIGHT-alt"];
+var animationsR:Array = [ "singUP","idle-alt", "singRIGHT-alt", "idle-alt"];
 
-var hitsoundSusie = new PsychUINumericStepper(10, 20, 0.2, 0, 0, 1, 1);
-var hitsoundRalsei = new PsychUINumericStepper(10 + 100, 20, 0.2, 0, 0, 1, 1);
-var hitsoundSign = new PsychUINumericStepper(10 + 200, 20, 0.1, 0.4, 0, 1, 1);
+var hitsoundSusie:PsychUINumericStepper = new PsychUINumericStepper(10, 20, 0.2, 0, 0, 1, 1);
+var hitsoundRalsei:PsychUINumericStepper = new PsychUINumericStepper(10 + 100, 20, 0.2, 0, 0, 1, 1);
+var hitsoundSign:PsychUINumericStepper = new PsychUINumericStepper(10 + 200, 20, 0.1, 0.4, 0, 1, 1);
 
 function notDance() {
     for (ch in previewCharaters.members){
@@ -297,7 +306,7 @@ function notDance() {
     }
     //need ralsei only
 }
-var susieLateDance = [];
+var susieLateDance:Array = [];
 function lateDance() {
     //trace(susieLateDance);
     if (susieLateDance.length>0){
@@ -325,7 +334,7 @@ function dance(note,newN:Bool) {
         FlxG.sound.play(Paths.sound('hitsound'), FlxG.state.hitsoundPlayerStepper.value*(newN?0:hitsoundSign.value));
     }
 }
-var DLLFREmap = [["lead",0],["drum",0],["drum",1],["lead",1],[""],["vocal",0],["vocal",1],["vocal",2]];
+var DLLFREmap:Array = [["lead",0],["drum",0],["drum",1],["lead",1],[""],["vocal",0],["vocal",1],["vocal",2]];
 function DLLFRE2DSE() {
     try{
     var SuperSimpleNotes = [];
@@ -431,6 +440,12 @@ Helper = ()->{
 		        tab_group.add(new FlxText(hitsoundRalsei.x, hitsoundRalsei.y - 15, 100, 'Hitsound (Ralsei):'));
                 tab_group.add(hitsoundSign);
 		        tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 130, 'HitSign (for BIG fps):'));
+                lofyCheckBox = new PsychUICheckBox(20 + 300, 5, 'lo-fy play', 70, () ->{lofyControl = lofyCheckBox.checked;});
+                lofyCheckBox.checked = lofyControl;
+		        tab_group.add(lofyCheckBox);
+		        tab_group.add(lofyrandom);
+		        tab_group.add(new FlxText(lofyrandom.x-10, lofyrandom.y + 15, 130, '% random next'));
+		        tab_group.add(new PsychUIButton(20 + 300,25,"reroll",chuselofy,40,20));
 		        tab_group.add(new PsychUIButton(10,50,"DLLFRE2DSE",DLLFRE2DSE,70,20));
                // lyricBox.getTab('lyric').menu.add(previewCharaters);
 
@@ -593,8 +608,8 @@ Helper = ()->{
     }
 }
 
-var ema = 0;
-var dis = false;
+var ema:Float = 0;
+var dis:Bool = false;
 function onUpdate(e) {
     ema += e;
     if (ema>(e*3)&&!dis){
@@ -621,7 +636,7 @@ function onDestroy() {
 }
 
 
-var word = 0;
+var word:Int = 0;
 var oldNote;
 //var RstrinNEXT = [0];
 var blue = new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF0048FF), "$//");
@@ -759,7 +774,6 @@ function onEventS(T,v1, v2) {
     //lyricText.applyMarkup((word+1)+" / "+Rstrin.length+"\n"+v1.split("-").join(""),[]);
 }
 
-var mType = 0;
 function singWord(daNote,toFu) {
     if (daNote!=oldNote){
         //if (Rstrin[0]!=RstrinNEXT[0]){
@@ -803,67 +817,4 @@ function singWord(daNote,toFu) {
     // debugPrint(s);
     //lyricText.text = s;
     lyricText.applyMarkup(s, [blue, blueC]);
-}
-
-function opponentNoteHitss(daNote) {//требуется пересборка 
-	
-	try {
-		if (!daNote.isSustainNote && (RstrinNEXT.length > 0 || Rstrin.length > 0)) {
-			word += 1;
-			// debugPrint(word);
-
-			if (word >= Rstrin.length && RstrinNEXT.length>0) {
-				Rstrin = RstrinNEXT.copy();
-				RstrinNEXT = [];
-				word = 0;
-			}
-            if (word >= Rstrin.length) return
-            if (flxM != null)
-			    flxM.cancel();
-				//return;
-			if (word+1 >= Rstrin.length)
-				flxM = new FlxTimer().start(
-					(daNote.sustainLength / 1000) + 2,
-					()->{
-						if (word+1 >= Rstrin.length){
-							songTxt.text="";
-							//debugPrint("coc");
-							//if (flxT != null)
-							//    flxT.cancel();
-						}
-					}
-				);
-			// debugPrint(daNote.sustainLength/Rstrin[word].length/1000);
-			if (flxT != null)
-				//return;
-			    flxT.cancel();
-            var mword = word;
-			flxT = FlxTimer.loop(daNote.sustainLength / Rstrin[mword].length / 1000, (tim) -> {
-				// if (tim>=Rstrin[word].length&&word>=Rstrin.length){songTxt.text = "";return;}
-				var s = "$//";
-				for (m in 0...Rstrin.length) {
-					var ss = false;
-					for (i in 0...Rstrin[m].length) {
-						if (tim == i && m == mword) {
-							s = s + "$//";
-							ss = true;
-						}
-						if ((tim >= i && m == mword) || (m < mword)) {
-							s = s + Rstrin[m][i][1];
-						} else {
-							s = s + Rstrin[m][i][0];
-						}
-					}
-					if (m == mword && !ss) {
-						s = s + "$//";
-					}
-					// s = s + "";
-				}
-				// debugPrint(s);
-				songTxt.applyMarkup(s, [blue, blueC]);
-			}, Rstrin[word].length);
-		}
-	} catch (e:Dynamic) {
-		debugPrint(e, FlxColor.RED);
-	}
 }
