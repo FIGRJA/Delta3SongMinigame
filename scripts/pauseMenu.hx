@@ -209,8 +209,7 @@ function onCustomSubstateUpdate(name, e) {
 		timer -= e;
 		return;
 	}
-	// debugPrint("lol");
-	if (Control.BACK||back?.justPressed) {
+	if ((Control.BACK||back?.justPressed)&&!game.isDead) {
 
 		playSnd("splat");
 		timer = 4;
@@ -249,6 +248,10 @@ function onCustomSubstateUpdate(name, e) {
 		updateText(true);
 		playSnd("bump");
 	}
+    if (Control.CHAR_SELECT ){
+		MusicBeatState.resetState();
+		playSnd("splat");
+    }
 	// debugPrint("                                                           "+curAction);
 	//if (timer > 0)
 		

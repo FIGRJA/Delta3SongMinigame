@@ -29,10 +29,12 @@ var songs = {
     "bump":                 [0.5,Paths.sound("snd_bump")],
     "closet_impact":        [0.3,Paths.sound("snd_closet_impact")],
     "coin":                 [0.3,Paths.sound("snd_coin")],
+    "hurt":                 [0.3,Paths.sound("snd_hurt1_bc")],
     "crowd_cheer_single":   [1  ,Paths.sound("snd_crowd_cheer_single")],
     "drumroll":             [0.3,Paths.sound("snd_drumroll")],
     "punchmed":             [0.3,Paths.sound("snd_punchmed")],
-    "splat":                [0.3,Paths.sound("snd_splat")]
+    "splat":                [0.3,Paths.sound("snd_splat")],
+    "nocontroller":         [1,Paths.sound("snd_nes_nocontroller")]
 };  
 function getS() {
     var T = songs.bump[1].play();
@@ -84,7 +86,6 @@ var timerSay = 0;
 function onUpdate(e) {
     if (timerSay>0){
         timerSay -= e;
-        trace(timerSay);
         return;
     }
 
@@ -172,6 +173,7 @@ var COOLText = null;
 var Rating ;
 var a = 0;
 var TimeUp = 0;
+var someShade;
 function onCustomSubstateUpdate(n, e) {
     onUpdate(e);
 	if (!isThis)
@@ -179,8 +181,9 @@ function onCustomSubstateUpdate(n, e) {
 
     getVar("D3Main").call("onUpdate",[e]);
     if (Control.CHAR_SELECT ){
+		MusicBeatState.resetState();
 		playSnd("splat");
-		MusicBeatState.resetState();}
+    }
 
 	TimeUp +=e;
 	if (isShader)
@@ -188,6 +191,16 @@ function onCustomSubstateUpdate(n, e) {
 
     if ((Control.ACCEPT||back?.justPressed)&&isEnd)
         TW(8);
+		//MusicBeatState.resetState();
+    if ((Control.BACK)&&isEnd&&isShader&&!game.endingSong){
+        if (someShade!=null)
+            someShade.cancel();
+        var newShade = (sideTerminalB2.data.aberation_amount.value[0]+0.1)*1.2;
+        someShade = FlxTween.num(newShade, 0, 1,  null,num -> sideTerminalB2.data.aberation_amount.value = [num] );
+        if (newShade>700)
+            camEnd.visible=false;
+        
+    }
 		//MusicBeatState.resetState();
     if (COOLText!=null){
         a += e*Rating[1];
@@ -201,22 +214,23 @@ function onCustomSubstateUpdate(n, e) {
 function onCustomSubstateDestroy(n) {
 	if (!isThis)
 		return;
-
     if(PlayState.SONG.format == "psych_v1_convert"||CurChar=="Kris")
         new FlxTimer().start(0.1,()->{
-        var realVR = ClientPrefs.data.vsliceResults;
-        ClientPrefs.data.vsliceResults = false;
-        game.updateTime = false;
-        FlxG.sound.music.volume = 0;
+            var realVR = ClientPrefs.data.vsliceResults;
+            ClientPrefs.data.vsliceResults = false;
+            game.updateTime = false;
+            FlxG.sound.music.volume = 0;
 
-        game.vocals.volume = 0;
-        game.vocals.pause();
-        game.opponentVocals.volume = 0;
-        game.opponentVocals.pause();
-        game.endSong();
-        trace("hi");
-        ClientPrefs.data.vsliceResults = realVR;
-    });
+            game.vocals.volume = 0;
+            game.vocals.pause();
+            game.opponentVocals.volume = 0;
+            game.opponentVocals.pause();
+            game.endSong();
+            trace("hi");
+            ClientPrefs.data.vsliceResults = realVR;
+            if (!game.endingSong)
+                CustomSubstate.openCustomSubstate('DeltaPause', true);
+        });
 }
 //var border = Type.createEnum(FlxTextBorderStyle,"OUTLINE"); 
 var border = Type.createEnum(FlxTextBorderStyle,"SHADOW_XY",[-10,10]); 
@@ -415,9 +429,9 @@ function TW(a) {
         RT[1].color = 0xfd3396;
         RT = genText("I'M RIGHT?","right",(FlxG.width/8)+100,40);
         RT[1].color = 0xfd3396;
-        playSnd("punchmed"); 
+        playSnd("nocontroller"); 
         isEnd = true;  
-        sayIt("hello   m i k e");  
+        sayIt("   hello   m i k e");  
         //TW(2);
         });
     }

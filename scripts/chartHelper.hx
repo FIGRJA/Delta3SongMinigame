@@ -7,6 +7,7 @@ import Array;
 import flixel.FlxG;
 import flixel.group.FlxTypedSpriteGroup;
 import flixel.sound.FlxSound;
+import flixel.text.FlxTextBorderStyle;
 import flixel.text.FlxText.FlxTextFormat;
 import flixel.text.FlxText.FlxTextFormatMarkerPair;
 import backend.Mods;
@@ -195,7 +196,9 @@ function chuselofy(?name) {
     lofyM.loadEmbedded(CacheSystem.loadSound(getSong(curlofy),false,"nice Try"),true,false,()->{chuselofy(curlofy);});
     lofyM.stop();
     if (lofyM.length>1)
-        FlxG.state.showOutput("playing "+data.songName+" by "+data.artist);
+        addOutText("playing "+data.songName+" by "+data.artist);
+        //FlxG.state.showOutput("playing "+data.songName+" by "+data.artist);
+    lofyM.fadeIn((60*10)/data.timeChanges[0].bpm);
 
 }
 function stoplofy() {
@@ -204,6 +207,37 @@ function stoplofy() {
     if (lofyM.fadeTween!=null)
         lofyM.fadeTween.cancel();
     lofyM.pause();
+}
+var outTextGroup:FlxSpriteGroup = new FlxTypedSpriteGroup();
+var border = Type.createEnum(FlxTextBorderStyle,"OUTLINE"); 
+function addOutText(text,?err=false,?used=false) {
+    var newText = new FlxText(25,FlxG.height - 30,0,text,20);
+    newText.borderStyle = border;
+    newText.borderSize = 2;
+    if(err)
+    {
+        if (!used)
+            FlxG.sound.play(Paths.sound('cancelMenu'), 0.6);
+        newText.color = 0xFFFF0000;
+    }
+    else
+    {
+        if (!used)
+            FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
+        newText.color = 0xFFFFFFFF;
+    }
+    FlxTween.tween(newText,{alpha:0},3,{
+        startDelay: 3,
+        onComplete: (_) -> {outTextGroup.remove(newText,true);newText.destroy();}
+    });
+    outTextGroup.add(newText);
+    var lols = FlxG.height - 30 - (outTextGroup.length * 30);
+    outTextGroup.forEachAlive((spr)->
+    {
+        FlxTween.tween(spr,{y:lols},0.2);
+        lols += 20 + 10;
+        //spr.y -= 20 + 10;
+    });
 }
 
 function onCreatePost() {
@@ -246,7 +280,7 @@ var lyricText;
 var lastTime = 0;
 var section = -1;
 var e = 0;
-var previewCharaters = new FlxTypedSpriteGroup();
+var previewCharaters:FlxSpriteGroup = new FlxTypedSpriteGroup();
 var animationsS = [ "singDOWN","singUP","singUP-alt","singDOWN-alt", "singUP-alt"];
 var animationsK = [ "singLEFT", "singRIGHT","singRIGHT-alt","singLEFT","singRIGHT-alt","singRIGHT-alt"];
 var animationsR = [ "singUP","idle-alt", "singRIGHT-alt", "idle-alt"];
@@ -335,7 +369,7 @@ function DLLFRE2DSE() {
         }
     }
     FlxG.state.reloadNotes();
-    FlxG.state.showOutput("converted form DLLFRE!");
+    addOutText("converted form DLLFRE!");
 }catch (e:Dynamic) {
         trace(e);
         //FlxG.signals.preUpdate.remove(Helper);
@@ -358,6 +392,9 @@ Helper = ()->{
             var state =  FlxG.state;
             if (lyricBox==null){
                 FlxG.sound.list.add(lofyM);
+                state.add(outTextGroup);
+                outTextGroup.cameras = [state.camUI];
+                state.outputTxt.visible = false;
 
                 lyricBox = new PsychUIBox((FlxG.width/2)+200, 338, 440, 100, ['lyric','custom settings']);
                 lyricBox.scrollFactor.set();
@@ -457,7 +494,7 @@ Helper = ()->{
                     state.icons[i].antialiasing=false;
                     i += 1;
                 }
-                state.showOutput("mus audio has been loaded!");
+                addOutText("mus audio has been loaded!");
                 //FlxG.sound.play();
             }
             if (state.curSec!=section){
@@ -526,6 +563,11 @@ Helper = ()->{
                 stoplofy();
             else
                 playlofy();
+            if (state.outputAlpha == 4){
+                addOutText(state.outputTxt.text,state.outputTxt.color==0xFFFF0000,true);
+                state.outputAlpha = 0;//lol
+               // trace("triger!!!");
+            }
         }else{
             if (lyricBox!=null){
                 lyricBox = null;

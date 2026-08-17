@@ -829,7 +829,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	getVar("bgDL").alpha = PlayState.chartingMode;
 	game.botplayTxt.font = Paths.font("fnt_main.ttf");
 	game.botplayTxt.cameras = [krisNoteCam];
-	game.botplayTxt.x = -180;
+	game.botplayTxt.x -= 580+(FlxG.width - 1280)/2;
 	game.botplayTxt.y = 80;
 	game.botplayTxt.size = 65;
 	game.botplayTxt.scrollFactor.set(1,1);
@@ -978,6 +978,7 @@ function noteMiss(daNote) {
 		}
 		krisCombo.text = "0";
 		NeedOver = !krisMute.alpha>0;
+		playSnd("hurt");
 	}
 	if (NeedOver){
 		StageOverlay.alpha = 1;

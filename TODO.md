@@ -76,11 +76,12 @@
   * [X]  3 normal icons players
   * [X]  load music from mus
   * [X]  add handler err
-  * [ ]  lo-fi music FROM v-slice
+  * [X]  lo-fi music FROM v-slice
   * [ ]  custom preview characters //v-slice
   * [ ]  reset all windows
   * [ ]  remember someSettings
   * [ ]  fix visible very long note
+  * [X]  fix logOut
 * [ ]  genetation
   * [ ]  LLP (midi)
     * [X]  notes
