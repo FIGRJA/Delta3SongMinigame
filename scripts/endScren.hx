@@ -10,6 +10,12 @@ import Reflect;
 
 
 import mobile.objects.TouchZone;
+/**
+ * [Description] 
+ * HScript importer
+ * @param Var name var of HScript
+ * @param Fun name function to import 
+ */
 function setVF(Var,Fun) {
 	if (getVar(Var).exists(Fun))
 		this.set(Fun,getVar(Var).get(Fun));
@@ -431,7 +437,7 @@ function TW(a) {
         RT[1].color = 0xfd3396;
         playSnd("nocontroller"); 
         isEnd = true;  
-        sayIt("   hello   m i k e");  
+        //sayIt("   hello   m i k e");  
         //TW(2);
         });
     }

@@ -15,6 +15,12 @@ import mobile.objects.TouchZone;
 if (Controls.instance.mobileC)
 	import mobile.objects.ScrollableObject;
 
+/**
+ * [Description] 
+ * HScript importer
+ * @param Var name var of HScript
+ * @param Fun name function to import 
+ */
 function setVF(Var,Fun) {
 	if (getVar(Var).exists(Fun))
 		this.set(Fun,getVar(Var).get(Fun));

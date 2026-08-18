@@ -19,7 +19,12 @@ import backend.ui.PsychUINumericStepper;
 import mikolka.funkin.custom.NativeFileSystem as NativeFileSystem;
 import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Json;
 import states.editors.ChartingState;
-
+/**
+ * [Description] 
+ * HScript importer
+ * @param Var name var of HScript
+ * @param Fun name function to import 
+ */
 function setVF(Var,Fun) {
 	if (getVar(Var).exists(Fun))
 		this.set(Fun,getVar(Var).get(Fun));
@@ -147,7 +152,8 @@ var lofyList = [""=>""];
 var lofyM:FlxSound = new FlxSound();
 var lofyControl:Bool = true;
 var curlofy:String = "chartEditorLoop";
-var lofyrandom:PsychUINumericStepper = new PsychUINumericStepper(10 + 363, 23, 5, 25, 0, 100, 0,50);
+var lofyrandom:PsychUINumericStepper = new PsychUINumericStepper(10 + 363, 23, 5, 25, 0, 100, 0,55);
+var lofyvolume:PsychUINumericStepper = new PsychUINumericStepper(10 + 363, 7, 0.05, 1, 0, 1, 2,55,true);
 var lofyCheckBox:PsychUICheckBox;
 function scanlofy() {
     //var list = Mods.parseList();
@@ -208,7 +214,7 @@ function chuselofy(?name) {
     if (lofyM.length>1)
         addOutText("playing "+data.songName+" by "+data.artist);
         //FlxG.state.showOutput("playing "+data.songName+" by "+data.artist);
-    lofyM.fadeIn((60*10)/data.timeChanges[0].bpm);
+    lofyM.fadeIn((60*80)/data.timeChanges[0].bpm,0,lofyvolume.value);
 
 }
 function stoplofy() {
@@ -220,6 +226,13 @@ function stoplofy() {
 }
 var outTextGroup:FlxSpriteGroup = new FlxTypedSpriteGroup();
 var border = Type.createEnum(FlxTextBorderStyle,"OUTLINE"); 
+
+/**
+ * [Description]
+ * @param text message
+ * @param err=false turn message to RED
+ * @param used=false off notify sound
+ */
 function addOutText(text,?err=false,?used=false) {
     var newText = new FlxText(25,FlxG.height - 30,0,text,20);
     newText.borderStyle = border;
@@ -240,6 +253,8 @@ function addOutText(text,?err=false,?used=false) {
         startDelay: 3,
         onComplete: (_) -> {outTextGroup.remove(newText,true);newText.destroy();}
     });
+    newText.alpha = 0;
+    FlxTween.tween(newText,{alpha:1},0.2);
     outTextGroup.add(newText);
     var lols = FlxG.height - 30 - (outTextGroup.length * 30);
     outTextGroup.forEachAlive((spr)->
@@ -384,6 +399,8 @@ function DLLFRE2DSE() {
         //FlxG.signals.preUpdate.remove(Helper);
         if (lyricText!=null)
             lyricText.text = "i'm ...\n"+e;
+        addOutText("what...",true);
+        
     }
 }
 var RedE = new FlxTextFormatMarkerPair(new FlxTextFormat(0xAF0000), "'");
@@ -440,11 +457,22 @@ Helper = ()->{
 		        tab_group.add(new FlxText(hitsoundRalsei.x, hitsoundRalsei.y - 15, 100, 'Hitsound (Ralsei):'));
                 tab_group.add(hitsoundSign);
 		        tab_group.add(new FlxText(hitsoundSign.x, hitsoundSign.y - 15, 130, 'HitSign (for BIG fps):'));
-                lofyCheckBox = new PsychUICheckBox(20 + 300, 5, 'lo-fy play', 70, () ->{lofyControl = lofyCheckBox.checked;});
+                lofyCheckBox = new PsychUICheckBox(20 + 300, 5, 'lo-fy', 30, () ->{lofyControl = lofyCheckBox.checked;});
                 lofyCheckBox.checked = lofyControl;
 		        tab_group.add(lofyCheckBox);
+		        tab_group.add(lofyvolume);
+                lofyvolume.onValueChange=()->{
+                    if (lofyM.fadeTween!=null)
+                        if (lofyM.fadeTween.active){
+                            var ti = (1-lofyM.fadeTween.percent)*lofyM.fadeTween.duration;
+                            lofyM.fadeTween.cancel();
+                            lofyM.fadeIn(ti,lofyM.volume,lofyvolume.value);
+                            return;
+                        }
+                    lofyM.volume=lofyvolume.value;
+                };
 		        tab_group.add(lofyrandom);
-		        tab_group.add(new FlxText(lofyrandom.x-10, lofyrandom.y + 15, 130, '% random next'));
+		        tab_group.add(new FlxText(lofyrandom.x-7, lofyrandom.y + 15, 130, '% random next'));
 		        tab_group.add(new PsychUIButton(20 + 300,25,"reroll",chuselofy,40,20));
 		        tab_group.add(new PsychUIButton(10,50,"DLLFRE2DSE",DLLFRE2DSE,70,20));
                // lyricBox.getTab('lyric').menu.add(previewCharaters);
@@ -467,6 +495,7 @@ Helper = ()->{
                     return;
                 }else if (lyricBox!=null&&lyricText.color == 0xF7EDED){
                     lyricText.applyMarkup("'thanks'",[Green]);
+                    addOutText("thanks!");
                     //lyricText.text = "thanks";
                     lyricText.color = 0xffffff;
                 }
@@ -546,8 +575,8 @@ Helper = ()->{
                                     }
                                 }catch (e:Dynamic){
                                     trace(e);
-                                    e = "ERROR:\n"+Std.string(e).split(":")[2];
-                                    Rstrin.push([[e,e]]);
+                                    e = Std.string(e).split(":")[2];
+                                    addOutText("err "+e,true,true);
                                     //lyricText.applyMarkup(e,[]);
                                 }
                             }
@@ -559,7 +588,7 @@ Helper = ()->{
                                     try{
                                     singWord(note,Conductor.songPosition>lastTime);
                                     lyricUpdated = true;
-                                    }catch (e:Dynamic){trace(e);}
+                                    }catch (e:Dynamic){trace(e);addOutText("err "+e,true);}
                                 }}
                             }
                         }
@@ -603,8 +632,11 @@ Helper = ()->{
     }catch (e:Dynamic) {
         trace(e);
         FlxG.signals.preUpdate.remove(Helper);
-        if (lyricText!=null)
+        if (lyricText!=null){
             lyricText.text = "i'm dead\n"+e;
+            addOutText("i'm dead",true);
+            addOutText(e);
+        }
     }
 }
 

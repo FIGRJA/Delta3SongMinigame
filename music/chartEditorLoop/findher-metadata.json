@@ -1,8 +1,8 @@
 {
   "timeFormat": "ms",
   "artist": "Toby Fox",
-  "songName": "Welcome to the Green Room",
-  "timeChanges": [{ "d": 4, "n": 4, "t": 0, "bt": [4, 4, 4, 4], "bpm": 85 }],
+  "songName": "findher",
+  "timeChanges": [{ "d": 4, "n": 4, "t": 0, "bt": [4, 4, 4, 4], "bpm": 150 }],
   "generatedBy": "Manual rofls (by FIGRJA)",
   "looped": true,
   "version": "2.0.0"

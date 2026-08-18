@@ -14,6 +14,12 @@ var DeltaRuneCode:HScript;
 var songTxt:FlxText;
 var StausLoad = [false,false,false,false]; // lead,drums,vocal,lyric
 var whoload = [ 'lead'=>0,'drum'=>1,'vocal'=>2,'lyric'=>3];
+/**
+ * [Description] 
+ * HScript importer
+ * @param Var name var of HScript
+ * @param Fun name function to import 
+ */
 function setVF(Var,Fun) {
 	if (getVar(Var).exists(Fun))
 		this.set(Fun,getVar(Var).get(Fun));
