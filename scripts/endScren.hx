@@ -431,14 +431,19 @@ function TW(a) {
     }
     if (a == 66){
         new FlxTimer().start(0.4,()->{
-        var RT = genText("SOMETHING WRONG?","left",(FlxG.width/8)-100,40);
-        RT[1].color = 0xfd3396;
-        RT = genText("I'M RIGHT?","right",(FlxG.width/8)+100,40);
-        RT[1].color = 0xfd3396;
-        playSnd("nocontroller"); 
-        isEnd = true;  
-        //sayIt("   hello   m i k e");  
-        //TW(2);
+            textAr[textAr.length-1][0].visible = false;
+            textAr[textAr.length-1][1].visible = false;
+            backed.velocity.y = 0;
+            backed.velocity.x = 0;
+            backed.pause();
+            var RT = genText("SOMETHING WRONG?","left",(FlxG.width/8)-100,80);
+            //RT[1].color = 0xfd3396;
+            RT = genText("I'M RIGHT?","right",(FlxG.width/8)+100,80);
+            //RT[1].color = 0xfd3396;
+            playSnd("nocontroller"); 
+            isEnd = true;  
+            //sayIt("   hello   m i k e");  
+            //TW(2);
         });
     }
 

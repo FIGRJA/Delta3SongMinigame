@@ -336,13 +336,13 @@ function findERS(result,path,i) {
 		var s = '{
 			"dificulties":[
 				{
-					"name":"play ERS",
+					"name":"play ers",
 					"prefix":"music_timing_customsong",
 					"postfix":".txt",
 					"dir":"SongCharts/"
 				}';
 		s +=diffsH?(',{
-				"name":"Hard ERS",
+				"name":"hard ers",
 				"prefix":"music_timing_customsong",
 				"postfix":"_hard.txt",
 				"dir":"SongCharts/"
@@ -389,7 +389,7 @@ function findNEO(result,path,i) {
 			s = '{
 				"dificulties":[
 					{
-						"name":"play NEO",
+						"name":"play neo",
 						"prefix":"",
 						"postfix":"",
 						"dir":""
@@ -445,24 +445,7 @@ function readMIDIinfo(_File) {
 	return TJSON.parse(s);
 }
 
-function findMIDI(path,modName) {
-	for (n in NativeFileSystem.readDirectory(path)){
-		if (n.indexOf(".mid")>0&&NativeFileSystem.exists(path+"/mus/"+n.split(".mid").join("")+".ogg")){
-			GenCapsule({
-				"SongName":n.split(".mid").join(""),
-				"diffs":['D:LLP'],
-				"modName":modName,
-				"modDir":path.split("/")[1],
-				"bpm":0,
-				"album":"../"+n.split(".mid").join(""),
-				"songMain":n.split(".mid").join(""),
-				"songPlay":n.split(".mid").join(""),
-				"prewB":null,
-				"prewA":null
-			});
-		}
-	}
-}
+
 function findMIDI(result,path,i) {
 	var s = "";
 	var IsE = false; 
@@ -471,7 +454,7 @@ function findMIDI(result,path,i) {
 			s = '{
 				"dificulties":[
 					{
-						"name":"play MIDI",
+						"name":"play midi",
 						"prefix":"",
 						"postfix":"",
 						"dir":""

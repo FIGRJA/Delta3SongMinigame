@@ -637,6 +637,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 
 	//var distant = 60 / Conductor.bpm * 450;
 	var distant = 0.45 * (60 / Conductor.bpm* 1000) * (game.songSpeed)*1;
+	trace("hi");
 	bmpDistant = new FlxBackdrop(null, 0x10, 0, (distant*sectionBeats)-10); // 0x10 = Y
 	// bmpDistant.y = 0;
 	bmpDistant.x = -200;
@@ -648,6 +649,7 @@ var transferAB = getShader("Dglsl/shd_underwater");
 	// bmpDistant.velocity.y = distant/(60 / Conductor.bpm)*game.songSpeed ;
 	// 60/Conductor.bpm *game.songSpeed*1000;
 	insert(6, bmpDistant);
+	trace("hi");
 
 	bmpDistant4 = new FlxBackdrop(null, 0x10, 0, distant-10); // 0x10 = Y
 	bmpDistant4.x = -200;

@@ -10,6 +10,8 @@ import mikolka.stages.cutscenes.dialogueBox.DialogueBoxPsych; // import haxe.Jso
 import backend.CacheSystem;
 import backend.StageData;
 import backend.Highscore;
+import backend.WeekData;
+//import backend.WeekData.WeekFile;
 import backend.Song;
 import backend.Mods;
 import backend.Paths;
@@ -20,17 +22,43 @@ import Reflect;
 var songs = [];
 var ExMap:Map = [""=>""];
 
-
+function GenWeek(SongData) {
+	var song = [SongData.SongName,"dad",[0,0,0]];
+	var weekFile = WeekData.weeksLoaded.get("//"+SongData.modDir);
+	if (weekFile == null){
+		weekFile = new WeekData({
+			"songs":[],
+			"weekCharacters":['','',''],
+			"weekBackground":'',
+			"weekBefore":'',
+			"storyName":'generated',
+			"weekName":"//"+SongData.modName,
+			"startUnlocked":true,
+			"hiddenUntilUnlocked":false,
+			"hideStoryMode":true,
+			"hideFreeplay":false,
+			"difficulties":SongData.diffs.join(",")
+		},'');
+		trace(SongData.diffs.join(","));
+		weekFile.folder = SongData.modDir;
+		//weekFile.folder = "Delta3SongMinigame";
+		WeekData.weeksLoaded.set("//"+SongData.modDir,weekFile);
+		WeekData.weeksList.push("//"+SongData.modDir);
+	}
+	weekFile.songs.push(song);
+	return WeekData.weeksList.indexOf("//"+SongData.modDir);
+}
 
 function GenCapsule(SongData){
-	//trace(SongData);
-    var data = new FreeplaySongData(0, SongData.SongName, "dad", FlxColor.fromRGB(0, 0, 0));
+	var id = GenWeek(SongData);
+	//var id = 0;
+    var data = new FreeplaySongData(id, SongData.SongName, "dad", FlxColor.fromRGB(0, 0, 0));
     data.songDifficulties = SongData.diffs;
     data.songWeekName = SongData.modName;
-	try{
-    	Reflect.setProperty(data,"set_currentDifficulty",trace);//это пиздец...
-		//data.set_currentDifficulty = (v)->{trace(v);};
-	}catch(e:Dynamic){trace("you fall");}
+	//try{
+    //	Reflect.setProperty(data,"set_currentDifficulty",trace);//это пиздец...
+	//	//data.set_currentDifficulty = (v)->{trace(v);};
+	//}catch(e:Dynamic){trace("you fall");}
     //data.isNew = true;
     Reflect.setField(data,"currentDifficulty",SongData.diffs[0]);//это пиздец...
 	BPMCache.instance.bpmMap.set("assets/shared/data/"+Paths.formatToSongPath(SongData.SongName),SongData.bpm);
@@ -52,10 +80,10 @@ function GenCapsule(SongData){
 function findERS(path,modName) {
 	if (NativeFileSystem.isDirectory(path + "/SongCharts")){
 		var dir = NativeFileSystem.readDirectory(path + "/SongCharts/");
-		var diffs = ['play ERS'];
+		var diffs = ['play ers'];
 		for (n in dir){
 			if (n.indexOf("_hard")>0){
-			diffs = ['play ERS','Hard ERS'];
+			diffs = ['play ers','hard ers'];
 			}
 		}
 		for (n in dir){
@@ -99,7 +127,7 @@ function findNEO(path,modName) {
 			var data = readNEOHead(path+"/"+n);
 			GenCapsule({
 				"SongName":n.split(".neo").join(""),
-				"diffs":['play NEO'],
+				"diffs":['play neo'],
 				"modName":modName,
 				"modDir":path.split("/")[1],
 				"bpm":data.BPM,
@@ -117,7 +145,7 @@ function findMIDI(path,modName) {
 		if (n.indexOf(".mid")>0&&NativeFileSystem.exists(path+"/mus/"+n.split(".mid").join("")+".ogg")){
 			GenCapsule({
 				"SongName":n.split(".mid").join(""),
-				"diffs":['play MIDI'],
+				"diffs":['play midi'],
 				"modName":modName,
 				"modDir":path.split("/")[1],
 				"bpm":0,
@@ -185,6 +213,7 @@ var lastcursong = -1;
 var FreePlayState ;
 function init() {
     loadSongsLists();
+	setVar("krisCount",Std.int(getVar("krisCount"))+1);
 	//FreePlayState = FlxG.state.subState;
 	//introDone();
 }
@@ -216,15 +245,24 @@ function onUpdate() {
     if (!isUpdatad) return;
     var updateDiffs = false;
     for (data in songs){
+		if (data[1].diffs.indexOf(data[0].currentDifficulty)==-1)
+			trace("SngCapsuleData: i want a "+data[0].currentDifficulty+" but...");
         if (data[0].currentDifficulty != data[1].diff){
             updateDiffs = true;
             Reflect.setField(data[0],"currentDifficulty", data[1].diff);
             data[0].songDifficulties = data[1].diffs;
             data[0].scoringRank = data[1].rank;
             data[0].difficultyRating = testet;
-            //data[0].songStartingBpm = data[1].bpm;// BPMCache.bpmMap.set("assets/shared/data/name",bpm)
+            data[0].songStartingBpm = data[1].bpm;// BPMCache.bpmMap.set("assets/shared/data/name",bpm)
         }
     }
+	if (getVar("krisCount")>1){
+		trace("who are "+getVar("krisCount"));
+		destroy();
+		setVar("krisCount",Std.int(getVar("krisCount"))-1);
+		trace("i save you...");
+		return;
+	}
     if (updateDiffs){
         trace("иди нах");
         //testet +=1;
@@ -246,11 +284,11 @@ function onUpdate() {
 			var BG = getAlbumCover(curSong.modDir,curSong.album);
 			if (BG!=null){
 				AlbumCover = FreePlayState.albumRoll.newAlbumArt;
-				AlbumCover.replaceFrameGraphic(0,BG );
+				//AlbumCover.replaceFrameGraphic(0,BG );
 				AlbumCover.antialiasing = false;
-				//AlbumCover.loadGraphic(BG );
-				//AlbumCover.angle = 10;
-				//AlbumCover.offset.set(-60,-110);
+				AlbumCover.loadGraphic(BG );
+				AlbumCover.angle = 10;
+				AlbumCover.offset.set(-60,-110);
 				var scale = 280/(AlbumCover.width>AlbumCover.height?AlbumCover.width:AlbumCover.height);
 				//AlbumCover.scale.set(scale,scale);
 				FreePlayState.albumRoll.visible = true;
@@ -318,9 +356,10 @@ function confirm() {
                 FreePlayState.persistentUpdate = false;
 		        Mods.currentModDirectory = "Delta3SongMinigame";
                 var songLowercase:String = Paths.formatToSongPath("loadCharts");
-		        var poop:String = Highscore.formatSong(songLowercase, 1);
+		        //var poop:String = Highscore.formatSong(songLowercase, 1);
                 //trace(poop);
-                PlayState.SONG = Song.loadFromJson(poop, songLowercase);
+                //trace(songLowercase);
+                PlayState.SONG = Song.loadFromJson(songLowercase, songLowercase);
                 if(PlayState.SONG == null) throw "Song parsing failed!";
                 PlayState.isStoryMode = false;
                 PlayState.storyDifficulty = 0;
