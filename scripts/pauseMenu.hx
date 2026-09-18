@@ -81,10 +81,13 @@ function onCustomSubstateCreate(name) {
 	backed = new FlxBackdrop();
 
 	backed.antialiasing = false;
+	//backed.angle = 10;
 	// backed.loadGraphic(Paths.image("anim/tv"));
 	backed.frames = Paths.getSparrowAtlas("anim/tv");
 	backed.velocity.set(-100 * 35 / 36, 100 * 37 / 36);
 	backed.scale.set(3, 3);
+	//backed.drawBlit = false;
+	//backed.spacing.set(backed.height*5/360,-backed.height*7/36);
 	backed.animation.addByPrefix("pog", 'spr_dw_tv_starbgtile_', 16);
 	backed.animation.play('pog', true);
 	backed.camera = pauseBG;
@@ -221,11 +224,28 @@ function onCustomSubstateUpdate(name, e) {
 		timer = 4;
 		//FlxTween.tween(pauseBG, {x: -700, alpha: 0}, 60 / Conductor.bpm, {ease: FlxEase.circOut});
 		FlxTween.tween(pauseBG, {x: -700, alpha: 0}, 0.5, {ease: FlxEase.circOut});
+		FlxTween.num(Conductor.songPosition,Conductor.songPosition+((-1*1000*60)/PlayState.SONG.bpm), 1.48, {ease: FlxEase.circOut,onUpdate: ()->{
+			getVar("D3Main").call("onUpdate",[0]);
+			FlxG.sound.music.time = Conductor.songPosition;
+			game.vocals.time = Conductor.songPosition;
+			game.opponentVocals.time = Conductor.songPosition;
+			var fakeCrochet:Float = (60 / PlayState.SONG.bpm) * 1000;
+			game.notes.forEachAlive(function(daNote:Note)
+			{
+				var strumGroup:FlxTypedGroup<StrumNote> = game.playerStrums;
+				if (!daNote.mustPress)
+					strumGroup = game.opponentStrums;
+
+				var strum:StrumNote = strumGroup.members[daNote.noteData];
+				daNote.followStrumNote(strum, fakeCrochet, game.songSpeed / game.playbackRate);
+			});
+		}} ,num -> Conductor.songPosition = num );
 		backTimer.visible = true;
 		FlxTimer.loop(0.5, (tim) -> {
 			backTimer.text = 3 - tim;
 			if (tim == 3)
 				CustomSubstate.closeCustomSubstate();
+				//game.setSongTime(Conductor.songPosition);
 		}, 4);
 
 		inst.fadeOut(1.5, 0, () -> {

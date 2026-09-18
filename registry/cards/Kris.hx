@@ -18,6 +18,7 @@ import backend.Paths;
 import states.LoadingState;
 import tjson.TJSON;
 import Reflect;
+import mikolka.vslice.ui.MainMenuState;
 
 var songs = [];
 var ExMap:Map = [""=>""];
@@ -284,13 +285,16 @@ function onUpdate() {
 			var BG = getAlbumCover(curSong.modDir,curSong.album);
 			if (BG!=null){
 				AlbumCover = FreePlayState.albumRoll.newAlbumArt;
-				//AlbumCover.replaceFrameGraphic(0,BG );
-				AlbumCover.antialiasing = false;
-				AlbumCover.loadGraphic(BG );
-				AlbumCover.angle = 10;
-				AlbumCover.offset.set(-60,-110);
-				var scale = 280/(AlbumCover.width>AlbumCover.height?AlbumCover.width:AlbumCover.height);
-				//AlbumCover.scale.set(scale,scale);
+				if (MainMenuState.pSliceVersion!="3.5-dev")
+					AlbumCover.replaceFrameGraphic(0,BG );
+				else{
+					AlbumCover.antialiasing = false;
+					AlbumCover.loadGraphic(BG );
+					AlbumCover.angle = 10;
+					AlbumCover.offset.set(-60,-110);
+					var scale = 280/(AlbumCover.width>AlbumCover.height?AlbumCover.width:AlbumCover.height);
+					AlbumCover.scale.set(scale,scale);
+				}
 				FreePlayState.albumRoll.visible = true;
 				FreePlayState.albumRoll.albumTitle.visible = false;
 				//FreePlayState.albumRoll.applyExitMovers();
@@ -349,7 +353,7 @@ function getAlbumCover(mod,cover) {
 function confirm() {
     var level = FreePlayState.curCapsule;
     FreePlayState.styleData = {"getStartDelay":()->{return 2000;}};
-    new FlxTimer().start(0.3, function(tmr:FlxTimer)
+    new FlxTimer().start(0.5, function(tmr:FlxTimer)
 		{
             try{
                 //freeplay sheat
@@ -380,6 +384,7 @@ function confirm() {
 
 function onCreate(){
     FlxG.signals.preUpdate.add(onUpdate);
+    FreePlayState.styleData = {"getStartDelay":()->{return 2000;}};
 }
 function applyExitMovers(a,b){
     //maybe soon 

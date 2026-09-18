@@ -300,3 +300,11 @@ function onUpdate(e) {
     }
     
 }
+function noteMiss(n) {
+	upTime = 0;
+	tweenRemover = false;
+	for (sp in keySprites){
+		FlxTween.tween(sp, {alpha: 1}, 0.5);
+	}
+	
+}
